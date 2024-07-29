@@ -73,18 +73,56 @@ input[type="submit"]:hover {
 
 /* Estilos adicionales según la situación */
 .notification {
-    padding: 15px;
-    margin-bottom: 20px;
-    border-radius: 4px;
-    font-size: 16px;
+    animation: fadeInOut 5s ease-in-out forwards;
 }
+
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
 
 .notification.success {
-    background-color: #4CAF50;
-    color: white;
-}
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+    padding: 10px 15px;
+    margin-bottom: 15px; 
+    border-radius: 4px;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out; 
+  }
+  
+  .notification.success p {
+    margin: 0;
+  }
+  
+  .notification.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1; 
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px; 
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+  }
+  
+  .notification.error p {
+    margin: 0;
+  }
+  
+  
 
-.notification.error {
-    background-color: #f44336;
-    color: white;
-}
+    
+

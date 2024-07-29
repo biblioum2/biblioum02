@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cookieParser = require('cookie-parser');
-const { getBooks, getUsers, getUserLiveSearch} = require('../queries/getData');
+const { getBooks, getUsers, getUserLiveSearch, getAllCategories} = require('../queries/getData');
 const { deleteUser } = require('../queries/deleteData');
 router.use(cookieParser());
 
@@ -94,7 +94,16 @@ router.delete('/admin/users/:id', async (req, res) => {
   }
 });
 
-router.get('/admin/books', (req, res) => {
-  res.render('books', { title: 'libros', currentPage: 'books', bookAdded: undefined, postResponse: false});
+router.get('/admin/books', async (req, res) => {
+  const categories = await getAllCategories();
+  console.log('categorias',categories);
+  res.render('books', { categories: categories ,title: 'libros', currentPage: 'books', success: undefined, postResponse: false});
+});
+
+
+router.get('/admin/books/success', async (req, res) => {
+  const categories = await getAllCategories();
+  
+  res.render('books', { title: 'books', categories: categories ,currentPage: 'books', success: true });
 });
 module.exports = router;

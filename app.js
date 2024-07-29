@@ -7,7 +7,11 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 const pool = require("./config/database"); // Importa la configuración de la base de datos
 const { getUser } = require("./queries/getData");
-const { insertUser, insertBook } = require("./queries/inputData");
+const {
+  insertUser,
+  insertBook,
+  insertBookCategory,
+} = require("./queries/inputData");
 
 const app = express();
 const port = 3000;
@@ -43,13 +47,11 @@ app.post("/admin/users", async (req, res) => {
     res.redirect("/admin/users/success");
   } catch (error) {
     console.log("Error al agregar usuario: ", error);
-    res
-      .status(500)
-      .render("users", {
-        title: "users",
-        currentPage: "users",
-        success: false,
-      });
+    res.status(500).render("users", {
+      title: "users",
+      currentPage: "users",
+      success: false,
+    });
   }
 });
 
@@ -109,34 +111,34 @@ app.post("/admin/books", async (req, res) => {
     title,
     edition,
     author,
-    categoryId,
-    publicationDate,
+    category,
+    publication_date,
     isbn,
     summary,
     available,
-    image,
+    available_copies,
+    cover,
   } = req.body;
+console.log(`ID categoria ${category}`);
   try {
-    insertBook(
+    const bookId = await insertBook({
       title,
-      edition,
       author,
-      categoryId,
-      publicationDate,
+      edition,
       isbn,
       summary,
       available,
-      image
-    );
-    res.render("books");
+      publication_date,
+      available_copies,
+      cover,
+    });
+    console.log(bookId);
+    await insertBookCategory(bookId, category);
+    res.redirect("/admin/books/success");
   } catch (error) {
     console.log("Error al agregar libro: ", error);
   }
 });
-
-
-
-
 
 // Iniciar servidor
 app.listen(port, () => {

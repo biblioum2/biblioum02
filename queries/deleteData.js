@@ -51,6 +51,35 @@ const deleteTableBooks = async () => {
         console.log('Error al obtener los datos', error);
     }
 };
+
+async function deleteBook(id) {
+    const query = `
+        DELETE FROM books
+        WHERE id = $1
+        RETURNING *;
+    `;
+    const values = [id];
+    try {
+      const res = await pool.query(query, values);
+      return res.rows[0];
+    } catch (err) {
+      console.error("Error deleting book", err);
+    }
+  }
+
+const deleteBooks = async () => {
+    const query = `
+        DELETE FROM books
+    `;
+
+    try {
+        const res = await pool.query(query);
+        return console.log(`Lbros eliminada`);
+    } catch (error) {
+        console.log('Error al obtener los datos', error);
+    }
+};
+// deleteBooks();
 const deleteTableOrders = async () => {
     const query = `
         DROP TABLE orders

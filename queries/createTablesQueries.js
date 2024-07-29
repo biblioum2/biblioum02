@@ -22,11 +22,15 @@ CREATE TABLE IF NOT EXISTS categories (
 const createTableBooks = `
 CREATE TABLE IF NOT EXISTS books (
     id SERIAL PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    author VARCHAR(255) NOT NULL,
+    title VARCHAR(120) NOT NULL,
+    author VARCHAR(75) NOT NULL,
+    edition VARCHAR(3),
     isbn VARCHAR(50) NOT NULL,
+    summary VARCHAR(255),
+    available VARCHAR(3) NOT NULL CHECK (available IN ('yes', 'no')),
     publication_year INT,
-    available_copies INT DEFAULT 1
+    available_copies INT DEFAULT 1,
+    cover VARCHAR(255)
 );
 `;
 
@@ -51,6 +55,7 @@ CREATE TABLE IF NOT EXISTS orders (
     FOREIGN KEY (book_id) REFERENCES books(id)
 );
 `;
+
 const createTableBooksCategories = `
 CREATE TABLE IF NOT EXISTS book_categories (
     book_id INT,
@@ -70,26 +75,23 @@ CREATE TABLE IF NOT EXISTS activity_log (
     FOREIGN KEY (user_id) REFERENCES users(user_id)
 );
 `;
-    
-
-
 
 const createTables = async () => {
     try {
         await pool.query(createTableUsers);
         console.log('Tabla usuarios creada');
         await pool.query(createTableCategories);
-        console.log('Tabla de categorias creada');
+        console.log('Tabla de categorías creada');
         await pool.query(createTableBooks);
         console.log('Tabla de libros creada');
         await pool.query(createTableBooksCategories);
-        console.log('Tabla de catlibros creada');
+        console.log('Tabla de categorías de libros creada');
         await pool.query(createTableFavorites);
         console.log('Tabla de favoritos creada');
         await pool.query(createTableOrders);
-        console.log('Tabla de ordenes creada');
+        console.log('Tabla de órdenes creada');
         await pool.query(createTableActivityLog);
-        console.log('Tabla de log creada');
+        console.log('Tabla de registros de actividad creada');
     } catch (error) {
         console.log(`Error al crear tablas.`, error);
     } finally {
@@ -97,10 +99,15 @@ const createTables = async () => {
     }
 };
 
+// Llama a la función para crear todas las tablas
 // createTables();
+
 // module.exports = {
 //     createTableUsers,
 //     createTableCategories,
 //     createTableBooks,
-//     createTableFavorites
+//     createTableFavorites,
+//     createTableOrders,
+//     createTableBooksCategories,
+//     createTableActivityLog
 // };

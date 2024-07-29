@@ -1,5 +1,4 @@
-const pool = require('../config/database');
-
+const pool = require("../config/database");
 
 // FUNCION PARA CREAR USUARIO
 const insertUser = async (username, passwordHash, email, role) => {
@@ -11,11 +10,11 @@ const insertUser = async (username, passwordHash, email, role) => {
 
   try {
     const res = await pool.query(query, values);
-    console.log('Usuario insertado:', res.rows);
-    return res.rows[0];  // Opcional: devolver el usuario insertado
+    console.log("Usuario insertado:", res.rows);
+    return res.rows[0]; // Opcional: devolver el usuario insertado
   } catch (error) {
-    console.error('Error al insertar usuario:', error);
-    throw error;  // Propagar el error para manejarlo en un nivel superior
+    console.error("Error al insertar usuario:", error);
+    throw error; // Propagar el error para manejarlo en un nivel superior
   }
 };
 
@@ -29,53 +28,15 @@ async function insertCategory(name) {
   `;
   const values = [name];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    console.log("echo");
+    return res.rows[0];
   } catch (err) {
-      console.error('Error creating category', err);
+    console.error("Error creating category", err);
   }
 }
 
-async function getAllCategories() {
-  const query = `
-      SELECT * FROM categories;
-  `;
-  try {
-      const res = await pool.query(query);
-      return res.rows;
-  } catch (err) {
-      console.error('Error fetching categories', err);
-  }
-}
 
-async function getCategoryById(id) {
-  const query = `
-      SELECT * FROM categories WHERE id = $1;
-  `;
-  const values = [id];
-  try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
-  } catch (err) {
-      console.error('Error fetching category', err);
-  }
-}
-
-async function updateCategory(id, name) {
-  const query = `
-      UPDATE categories
-      SET name = $1
-      WHERE id = $2
-      RETURNING *;
-  `;
-  const values = [name, id];
-  try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
-  } catch (err) {
-      console.error('Error updating category', err);
-  }
-}
 
 async function deleteCategory(id) {
   const query = `
@@ -85,85 +46,66 @@ async function deleteCategory(id) {
   `;
   const values = [id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    return res.rows[0];
   } catch (err) {
-      console.error('Error deleting category', err);
+    console.error("Error deleting category", err);
   }
 }
 
 // QUERIES PARA TALBA BOOKS
 
-async function insertBook(title, author, isbn, publication_year, available_copies) {
-  const query = `
-      INSERT INTO books (title, author, isbn, publication_year, available_copies)
-      VALUES ($1, $2, $3, $4, $5)
-      RETURNING *;
-  `;
-  const values = [title, author, isbn, publication_year, available_copies];
-  try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
-  } catch (err) {
-      console.error('Error creating book', err);
-  }
+async function insertBook({
+    title,
+    author,
+    edition,
+    isbn,
+    summary,
+    available,
+    publication_year,
+    available_copies,
+    cover
+}) {
+    const query = `
+        INSERT INTO books (
+            title, 
+            author, 
+            edition, 
+            isbn, 
+            summary, 
+            available, 
+            publication_year, 
+            available_copies, 
+            cover
+        ) VALUES (
+            $1, $2, $3, $4, $5, $6, $7, $8, $9
+        ) RETURNING id;
+    `;
+    
+    const values = [
+        title,
+        author,
+        edition,
+        isbn,
+        summary,
+        available,
+        publication_year,
+        available_copies,
+        cover
+    ];
+    
+    try {
+        const res = await pool.query(query, values);
+        console.log('Book inserted successfully');
+        return res.rows[0].id;
+    } catch (err) {
+        console.error('Error inserting book:', err);
+    }
 }
 
-async function getAllBooks() {
-  const query = `
-      SELECT * FROM books;
-  `;
-  try {
-      const res = await pool.query(query);
-      return res.rows;
-  } catch (err) {
-      console.error('Error fetching books', err);
-  }
-}
 
-async function getBookById(id) {
-  const query = `
-      SELECT * FROM books WHERE id = $1;
-  `;
-  const values = [id];
-  try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
-  } catch (err) {
-      console.error('Error fetching book', err);
-  }
-}
 
-async function updateBook(id, title, author, isbn, publication_year, available_copies) {
-  const query = `
-      UPDATE books
-      SET title = $1, author = $2, isbn = $3, publication_year = $4, available_copies = $5
-      WHERE id = $6
-      RETURNING *;
-  `;
-  const values = [title, author, isbn, publication_year, available_copies, id];
-  try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
-  } catch (err) {
-      console.error('Error updating book', err);
-  }
-}
 
-async function deleteBook(id) {
-  const query = `
-      DELETE FROM books
-      WHERE id = $1
-      RETURNING *;
-  `;
-  const values = [id];
-  try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
-  } catch (err) {
-      console.error('Error deleting book', err);
-  }
-}
 
 //  QUERIES PARA LA TABLA FAVORITES
 
@@ -175,10 +117,10 @@ async function insertFavorite(user_id, book_id) {
   `;
   const values = [user_id, book_id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    return res.rows[0];
   } catch (err) {
-      console.error('Error creating favorite', err);
+    console.error("Error creating favorite", err);
   }
 }
 
@@ -188,10 +130,10 @@ async function getAllFavoritesByUser(user_id) {
   `;
   const values = [user_id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows;
+    const res = await pool.query(query, values);
+    return res.rows;
   } catch (err) {
-      console.error('Error fetching favorites', err);
+    console.error("Error fetching favorites", err);
   }
 }
 
@@ -201,10 +143,10 @@ async function getAllUsersByFavoriteBook(book_id) {
   `;
   const values = [book_id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows;
+    const res = await pool.query(query, values);
+    return res.rows;
   } catch (err) {
-      console.error('Error fetching favorite users', err);
+    console.error("Error fetching favorite users", err);
   }
 }
 
@@ -216,13 +158,12 @@ async function deleteFavorite(user_id, book_id) {
   `;
   const values = [user_id, book_id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    return res.rows[0];
   } catch (err) {
-      console.error('Error deleting favorite', err);
+    console.error("Error deleting favorite", err);
   }
 }
-
 
 // QUERIES PARA LAS ORDERS
 
@@ -234,10 +175,10 @@ async function insertOrder(user_id, book_id, loan_date, return_date) {
   `;
   const values = [user_id, book_id, loan_date, return_date];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    return res.rows[0];
   } catch (err) {
-      console.error('Error creating order', err);
+    console.error("Error creating order", err);
   }
 }
 
@@ -246,10 +187,10 @@ async function getAllOrders() {
       SELECT * FROM orders;
   `;
   try {
-      const res = await pool.query(query);
-      return res.rows;
+    const res = await pool.query(query);
+    return res.rows;
   } catch (err) {
-      console.error('Error fetching orders', err);
+    console.error("Error fetching orders", err);
   }
 }
 
@@ -259,10 +200,10 @@ async function getOrderById(id) {
   `;
   const values = [id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    return res.rows[0];
   } catch (err) {
-      console.error('Error fetching order', err);
+    console.error("Error fetching order", err);
   }
 }
 
@@ -275,10 +216,10 @@ async function updateOrder(id, user_id, book_id, loan_date, return_date) {
   `;
   const values = [user_id, book_id, loan_date, return_date, id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    return res.rows[0];
   } catch (err) {
-      console.error('Error updating order', err);
+    console.error("Error updating order", err);
   }
 }
 
@@ -290,10 +231,10 @@ async function deleteOrder(id) {
   `;
   const values = [id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    return res.rows[0];
   } catch (err) {
-      console.error('Error deleting order', err);
+    console.error("Error deleting order", err);
   }
 }
 
@@ -307,10 +248,10 @@ async function insertBookCategory(book_id, category_id) {
   `;
   const values = [book_id, category_id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    console.log('categoria asignada a libro con exito');
   } catch (err) {
-      console.error('Error creating book-category relationship', err);
+    console.error("Error creating book-category relationship", err);
   }
 }
 
@@ -320,10 +261,10 @@ async function getBooksByCategoryId(category_id) {
   `;
   const values = [category_id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows;
+    const res = await pool.query(query, values);
+    return res.rows;
   } catch (err) {
-      console.error('Error fetching books for category', err);
+    console.error("Error fetching books for category", err);
   }
 }
 
@@ -335,14 +276,28 @@ async function deleteBookCategory(book_id, category_id) {
   `;
   const values = [book_id, category_id];
   try {
-      const res = await pool.query(query, values);
-      return res.rows[0];
+    const res = await pool.query(query, values);
+    return res.rows[0];
   } catch (err) {
-      console.error('Error deleting book-category relationship', err);
+    console.error("Error deleting book-category relationship", err);
+  }
+}
+async function insertcolumn() {
+  const query = `
+        SELECT column_name, data_type
+        FROM information_schema.columns
+        WHERE table_name = 'books';
+    `;
+  try {
+    const res = await pool.query(query);
+    console.log(`Resultado: ${JSON.stringify(res.rows)}`);
+    return res.rows; // Devuelve todas las filas
+  } catch (err) {
+    console.error("Error al obtener columnas", err);
   }
 }
 
-
+// insertcolumn();
 
 // Ejemplos de uso
 // const ins = async () => {
@@ -357,13 +312,12 @@ async function deleteBookCategory(book_id, category_id) {
 // };
 
 // insertUser('severo', 'password', 'enrrimarq2000@gmail.com', 'admin');
-
 module.exports = {
   insertUser: insertUser,
   insertBook: insertBook,
   // insertCategory: insertCategory,
   // insertFavorite: insertFavorite,
   // insertOrder: insertOrder,
-  // insertBookCategory: insertBookCategory,
+  insertBookCategory: insertBookCategory,
   // insertActivityLog: insertActivityLog,
 };

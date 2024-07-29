@@ -7,19 +7,19 @@ const getBooks = async () => {
   const query = `
 SELECT *
 FROM books
-WHERE id >= (SELECT floor(random() * (SELECT max(id) FROM books)))
-ORDER BY id
-LIMIT 10;
+
   `;
   try {
     const res = await pool.query(query);
     console.log(`LIBROS: ${res.rows}`);
+    const data= JSON.stringify(res.rows);
+    console.log(data);
     return res.rows;
   } catch (error) {
     console.log("Error al obtener los libros", error);
   }
 };
-
+getBooks();
 // OBTENCION DE LIBROS POR CATEGORIA
 
 const getBooksForCategory = async (name, limit, offset) => {
@@ -43,6 +43,19 @@ LIMIT $2 OFFSET $3;
   }
 };
 
+// Funcion para obtener libros por id con el objetivo de mostrarlos en su single page
+async function getBookById(id) {
+  const query = `
+      SELECT * FROM books WHERE id = $1;
+  `;
+  const values = [id];
+  try {
+      const res = await pool.query(query, values);
+      return res.rows[0];
+  } catch (err) {
+      console.error('Error fetching book', err);
+  }
+}
 
 const getUsers = async (offset) => {
   const query = `
@@ -95,7 +108,30 @@ const getUserLiveSearch = async (name) => {
 };
 
 // CATEGORIAS
+async function getAllCategories() {
+  const query = `
+      SELECT * FROM categories;
+  `;
+  try {
+      const res = await pool.query(query);
+      return res.rows;
+  } catch (err) {
+      console.error('Error fetching categories', err);
+  }
+}
 
+async function getCategoryById(id) {
+  const query = `
+      SELECT * FROM categories WHERE id = $1;
+  `;
+  const values = [id];
+  try {
+      const res = await pool.query(query, values);
+      return res.rows[0];
+  } catch (err) {
+      console.error('Error fetching category', err);
+  }
+}
 // CREAR
 
   
@@ -105,4 +141,5 @@ module.exports = {
   getUser,
   getUsers,
   getUserLiveSearch,
+  getAllCategories,
 };
