@@ -1,6 +1,7 @@
 require("dotenv").config();
 
 const express = require("express");
+// const helmet = require('helmet');
 const session = require("express-session");
 const bodyParser = require("body-parser");
 const path = require("path");
@@ -15,6 +16,8 @@ const {
 
 const app = express();
 const port = 3000;
+
+
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,18 +44,39 @@ app.use("/", indexRouter);
 // Ruta POST para agregar un usuario con validación de datos
 app.post("/admin/users", async (req, res) => {
   const { username, password, email, role } = req.body;
-
-  try {
-    await insertUser(username, password, email, role);
-    res.redirect("/admin/users/success");
-  } catch (error) {
-    console.log("Error al agregar usuario: ", error);
-    res.status(500).render("users", {
-      title: "users",
-      currentPage: "users",
-      success: false,
-    });
+  const errors = {
+    username: false,
+    password: false,
+    email: false,
   }
+  const emailCheck = await pool.query('SELECT 1 FROM users WHERE email = $1', [email]);
+  const usernameCheck = await pool.query('SELECT 1 FROM users WHERE username = $1', [username]);
+  
+  if (emailCheck.rowCount > 0 && usernameCheck.rowCount > 0) {
+    console.error('Error: El email y el username ya existen y deben ser únicos.');
+    errors.email = true;
+    errors.username = true;
+  } else if (emailCheck.rowCount > 0) {
+    console.error('Error: El email ya existe y debe ser único.');
+    errors.email = true;
+  } else if (usernameCheck.rowCount > 0) {
+    console.error('Error: El username ya existe y debe ser único.');
+    errors.user = true;
+  }
+  if (errors.email || errors.username) {
+    res.render('users', { errors: errors, })
+  }
+    try {
+      await insertUser(username, password, email, role);
+      res.redirect("/admin/users/success");
+    } catch (error) {
+      console.log("Error al agregar usuario: ", error);
+      res.status(500).render("users", {
+        title: "users",
+        currentPage: "users",
+        success: false,
+      });
+    }
 });
 
 app.post("/login", async (req, res) => {
@@ -132,7 +156,11 @@ console.log(`ID categoria ${category}`);
       available_copies,
       cover,
     });
+
+    
     console.log(bookId);
+    console.log(publication_date);
+
     await insertBookCategory(bookId, category);
     res.redirect("/admin/books/success");
   } catch (error) {

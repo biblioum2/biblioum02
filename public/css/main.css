@@ -101,14 +101,14 @@ body {
     width: 100%;
     height: auto;
 }
-#vista-de-libros #slider2 .carrusel .viewport .slider{
+#vista-de-libros #slider2 .carrusel .viewport .sliderCarr{
     display: flex;
     padding: 0;
     width: 400%;
     height: 100%;
     
 }
-#vista-de-libros #slider2 .carrusel .viewport .slider .carrusel-cel{
+#vista-de-libros #slider2 .carrusel .viewport .sliderCarr .carrusel-cel{
     width: 100%;
     list-style: none;
     margin-right: 50px;
@@ -136,9 +136,81 @@ body {
     border-bottom: none;
 }
 
-#vista-de-libros #slider2 .carrusel .viewport .slider{
+#vista-de-libros #slider2 .carrusel .viewport .sliderCarr{
     display: flex;
     flex-wrap: nowrap;
 }
 
 /*Configurando los botones */
+
+.slider1 {
+    width: 100%;
+    /* max-width: 800px; */
+    overflow: hidden;
+    position: relative;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+.slide {
+    width: 100%;
+    flex-shrink: 0;
+}
+
+.slides.img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Estilo general para el select */
+select {
+    appearance: none; /* Elimina el estilo por defecto del navegador */
+    -webkit-appearance: none; /* Compatibilidad con Webkit */
+    -moz-appearance: none; /* Compatibilidad con Firefox */
+    background-color: #58181F; /* Fondo del select */
+    border: 2px solid #000; /* Borde del select */
+    border-radius: 0px 5px 5px 0px; /* Esquinas redondeadas */
+    padding: 10px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño de la fuente */
+    color: #FFF; /* Color del texto */
+    width: 13%; /* Ancho del select */
+    height: 45px;
+    box-sizing: border-box; /* Incluye el borde y el relleno en el tamaño total */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el select */
+}
+
+/* Estilo para cuando el select está en foco */
+select:focus {
+    outline: none; /* Elimina el borde de enfoque por defecto */
+    border-color: #66afe9; /* Color del borde en foco */
+    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5); /* Sombra en foco */
+}
+
+/* Estilo para la opción seleccionada */
+select option {
+    background-color: #FFF; /* Fondo de las opciones */
+    color: #333; /* Color del texto de las opciones */
+}
+
+/* Estilo para los select en diferentes estados (hover y activo) */
+select:hover {
+    border-color: #999; /* Color del borde al pasar el mouse */
+}
+
+select:active {
+    border-color: #666; /* Color del borde al hacer clic */
+}
+
+/* Estilo del contenedor del select */
+.content-title select {
+    margin-top: 5px; /* Espaciado inferior */
+    background-image: url('data:image/svg+xml;utf8,<svg fill="%23fff" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 15px;
+}
+

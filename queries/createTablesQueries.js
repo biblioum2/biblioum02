@@ -3,9 +3,9 @@ const pool = require('../config/database');
 const createTableUsers = `
 CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
-    username VARCHAR(34) NOT NULL,
-    email VARCHAR(90) NOT NULL,
-    password_hash VARCHAR(14) NOT NULL,
+    username VARCHAR(34) NOT NULL CONSTRAINT username_unique UNIQUE,
+    email VARCHAR(90) NOT NULL CONSTRAINT email_unique UNIQUE,
+    password_hash VARCHAR(120) NOT NULL,
     phone VARCHAR(10),
     role VARCHAR(7) NOT NULL CHECK (role IN ('admin', 'student')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -26,9 +26,9 @@ CREATE TABLE IF NOT EXISTS books (
     author VARCHAR(75) NOT NULL,
     edition VARCHAR(3),
     isbn VARCHAR(50) NOT NULL,
-    summary VARCHAR(255),
+    summary TEXT,
     available VARCHAR(3) NOT NULL CHECK (available IN ('yes', 'no')),
-    publication_year INT,
+    publication_year DATE,
     available_copies INT DEFAULT 1,
     cover VARCHAR(255)
 );
@@ -100,7 +100,7 @@ const createTables = async () => {
 };
 
 // Llama a la función para crear todas las tablas
-// createTables();
+createTables();
 
 // module.exports = {
 //     createTableUsers,

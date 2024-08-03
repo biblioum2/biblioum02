@@ -36,10 +36,19 @@ router.get('/', async (req, res) => {
   const isAdmin = req.cookies.isAdmin ? true : false;
   const username = req.cookies.username;
   const email = req.cookies.email;
+  const categories = await getAllCategories();
+  const sliderImgs = {
+    slider1: 'img/sliders/imagen1.jpg',
+    slider2: 'img/sliders/imagen2.jpg',
+    slider3: 'img/sliders/imagen3.jpg',
+    slider4: 'img/sliders/imagen4.jpg'
+
+  }
   try {
     const books = await getBooks();
-    console.log(`Esto es el resultado en main books: ${books}`);
-    res.render('main', { title: 'Página de Inicio',books: books, authToken: authToken, isAdmin: isAdmin, user: user, });
+    const booksjson = JSON.stringify(books);
+    console.log(`Esto es el resultado en main books: ${booksjson}`);
+    res.render('main', { categories: categories, title: 'Página de Inicio', sliderImgs: sliderImgs, books: books, authToken: authToken, isAdmin: isAdmin, user: user, });
   } catch (error) {
     console.log(`Error al consultar`, error);
     res.status(500).send('Error al obtener los libros main');
@@ -57,13 +66,15 @@ router.get('/admin', (req, res) => {
 
 router.get('/admin/users', async (req, res) => {
   const users = await getUsers(0);
-  res.render('users', { title: 'users', users: users, currentPage: 'users',success: undefined, postResponse: false});
+  const success = req.query.success === 'true';
+  res.render('users', { title: 'users', users: users, currentPage: 'users',success: success, postResponse: false});
 });
 
 // Otras rutas básicas pueden ir aquí
 router.get('/admin/users/success', async (req, res) => {
   const users = await getUsers(0);
-  res.render('users', { title: 'users', users: users, currentPage: 'users', success: true });
+  // res.render('users', { title: 'users', users: users, currentPage: 'users', success: true });
+  res.redirect(`/admin/users?success=true`);
 });
 
 router.get('/admin/users/data', async (req, res) => {
@@ -96,14 +107,18 @@ router.delete('/admin/users/:id', async (req, res) => {
 
 router.get('/admin/books', async (req, res) => {
   const categories = await getAllCategories();
+  const success = req.query.success === 'true';
+
   console.log('categorias',categories);
-  res.render('books', { categories: categories ,title: 'libros', currentPage: 'books', success: undefined, postResponse: false});
+  res.render('books', { categories: categories ,title: 'libros', currentPage: 'books', success: success, postResponse: false});
 });
 
 
 router.get('/admin/books/success', async (req, res) => {
-  const categories = await getAllCategories();
+  // const categories = await getAllCategories();
   
-  res.render('books', { title: 'books', categories: categories ,currentPage: 'books', success: true });
+  // res.render('books', { title: 'books', categories: categories ,currentPage: 'books', success: true, postResponse: false });
+  res.redirect(`/admin/books?success=true`);
+
 });
 module.exports = router;

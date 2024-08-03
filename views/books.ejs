@@ -17,14 +17,12 @@
 
   <main>
 
-    <% if (success !== undefined) { %>
+    <% if (success !== false) { %>
     <div class="notification <%= success ? 'success' : 'error' %>">
       <% if (success) { %>
       <p>Libro insertado con éxito!</p>
-      <% success = undefined %>
       <% } else { %>
       <p>¡Error al agregar Libro!</p>
-      <% success = undefined %>
       <% } %>
     </div>
     <% } %>

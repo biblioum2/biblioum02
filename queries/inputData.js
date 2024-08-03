@@ -29,14 +29,37 @@ async function insertCategory(name) {
   const values = [name];
   try {
     const res = await pool.query(query, values);
-    console.log("echo");
+    console.log(`Categoría "${name}" insertada con éxito.`);
     return res.rows[0];
   } catch (err) {
-    console.error("Error creating category", err);
+    console.error("Error al crear la categoría", err);
   }
 }
 
+// Función para insertar múltiples categorías
+async function insertMultipleCategories(categories) {
+  for (const category of categories) {
+    await insertCategory(category);
+  }
+  console.log('Todas las categorías han sido insertadas.');
+}
 
+// Lista de categorías a insertar
+const categories = [
+  "Ficción",
+  "No Ficción",
+  "Ciencia",
+  "Historia",
+  "Biografía",
+  "Fantasía",
+  "Misterio",
+  "Romance",
+  "Tecnología",
+  "Educación"
+];
+
+// Insertar las categorías
+// insertMultipleCategories(categories);
 
 async function deleteCategory(id) {
   const query = `

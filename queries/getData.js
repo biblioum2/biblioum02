@@ -22,24 +22,21 @@ FROM books
 getBooks();
 // OBTENCION DE LIBROS POR CATEGORIA
 
-const getBooksForCategory = async (name, limit, offset) => {
+const getBooksByCategory = async (categoryId) => {
   const query = `
-SELECT b.id, b.title, b.author, b.isbn, b.publication_year, b.available_copies
-FROM books b
-JOIN book_categories bc ON b.id = bc.book_id
-JOIN categories c ON bc.category_id = c.id
-WHERE c.name = $1
-ORDER BY b.id
-LIMIT $2 OFFSET $3;
+      SELECT b.id, b.title, b.author, b.edition, b.isbn, b.summary, b.available, b.publication_year, b.available_copies, b.cover
+      FROM books b
+      JOIN book_categories bc ON b.id = bc.book_id
+      JOIN categories c ON bc.category_id = c.id
+      WHERE c.id = $1;
+  `;
 
-    `;
-  const values = [name, limit, offset];
   try {
-    const res = await pool.query(query, values);
-    console.log(`LIBROS POR CATEGORIA: ${res.rows}`);
-    return res.rows;
-  } catch (error) {
-    console.log("Error al obtener los datos", error);
+      const res = await pool.query(query, [categoryId]);
+      return res.rows;
+  } catch (err) {
+      console.error('Error executing query', err.stack);
+      throw err;
   }
 };
 
@@ -142,4 +139,5 @@ module.exports = {
   getUsers,
   getUserLiveSearch,
   getAllCategories,
+  getBooksByCategory,
 };
