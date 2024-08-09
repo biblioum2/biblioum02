@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cookieParser = require('cookie-parser');
-const { getBooks, getUsers, getUserLiveSearch, getAllCategories} = require('../queries/getData');
+const { getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById} = require('../queries/getData');
 const { deleteUser } = require('../queries/deleteData');
 router.use(cookieParser());
 
@@ -47,12 +47,23 @@ router.get('/', async (req, res) => {
   try {
     const books = await getBooks();
     const booksjson = JSON.stringify(books);
-    console.log(`Esto es el resultado en main books: ${booksjson}`);
+    // console.log(`Esto es el resultado en main books: ${booksjson}`);
     res.render('main', { categories: categories, title: 'Página de Inicio', sliderImgs: sliderImgs, books: books, authToken: authToken, isAdmin: isAdmin, user: user, });
   } catch (error) {
     console.log(`Error al consultar`, error);
     res.status(500).send('Error al obtener los libros main');
   }
+});
+
+router.get('/book', async (req, res) => {
+  const user = req.session.user;
+  const authToken = req.cookies.authToken ? true : false;
+  const isAdmin = req.cookies.isAdmin ? true : false;
+ const idBook = req.query.id;
+ const data = await getBookDetailsById(idBook);
+ console.log(data);
+ 
+ res.render('book', { bookData: data, title: data.title, currentPage: 'book', user: user, isAdmin: isAdmin, authToken: authToken });
 });
 
 router.get('/admin', (req, res) => {

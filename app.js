@@ -1,8 +1,8 @@
 require("dotenv").config();
 
 const express = require("express");
-// const helmet = require('helmet');
 const session = require("express-session");
+const cors = require("cors");
 const bodyParser = require("body-parser");
 const path = require("path");
 const cookieParser = require("cookie-parser");
@@ -17,7 +17,24 @@ const {
 const app = express();
 const port = 3000;
 
+// Configuración CORS
+app.use(cors({
+  origin: 'http://localhost:3000', // Permite solicitudes desde tu dominio
+}));
 
+// Middleware para configurar CSP
+app.use((req, res, next) => {
+  res.setHeader("Content-Security-Policy", 
+    "default-src 'self'; " +
+    "img-src 'self' https://i.imgur.com https://drive.google.com; " +
+    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com; " +
+    "script-src 'self' https://kit.fontawesome.com; " +
+    "font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com; " +
+    "connect-src 'self' https://kit.fontawesome.com https://ka-f.fontawesome.com; " +
+    "object-src 'none';"
+  );
+  next();
+});
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));

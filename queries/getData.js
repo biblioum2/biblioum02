@@ -13,13 +13,40 @@ FROM books
     const res = await pool.query(query);
     console.log(`LIBROS: ${res.rows}`);
     const data= JSON.stringify(res.rows);
-    console.log(data);
+    // console.log(data);
     return res.rows;
   } catch (error) {
     console.log("Error al obtener los libros", error);
   }
 };
-getBooks();
+// getBooks();
+
+//OBTENCION DE LIBRO PARA PAGINA INDIVIDUAL
+const getBookDetailsById = async (bookId) => {
+  const query = `
+      SELECT 
+          books.*,
+          STRING_AGG(categories.name, ', ') AS categories
+      FROM 
+          books
+      JOIN 
+          book_categories ON books.id = book_categories.book_id
+      JOIN 
+          categories ON book_categories.category_id = categories.id
+      WHERE 
+          books.id = $1
+      GROUP BY 
+          books.id;
+  `;
+
+  try {
+      const res = await pool.query(query, [bookId]);
+      return res.rows[0]; // Devuelve el primer (y único) resultado, ya que el ID es único
+  } catch (error) {
+      console.error('Error al ejecutar la consulta:', error);
+      throw error;
+  }
+};
 // OBTENCION DE LIBROS POR CATEGORIA
 
 const getBooksByCategory = async (categoryId) => {
@@ -80,7 +107,7 @@ const getUser = async (name) => {
   const value = [name];
   try {
     const res = await pool.query(query, value);
-    console.log("El get user usuario es: ", res.rows[0]);
+    // console.log("El get user usuario es: ", res.rows);
     return res.rows;
   } catch (error) {
     console.log("Error al consultar usuario", error);
@@ -111,11 +138,27 @@ async function getAllCategories() {
   `;
   try {
       const res = await pool.query(query);
+      const data = JSON.stringify(res.rows);
+      // console.log("ESTO ES: ", data);
       return res.rows;
   } catch (err) {
       console.error('Error fetching categories', err);
   }
 }
+// getAllCategories()
+async function getAllCategoriesForBooks() {
+  const query = `
+      SELECT * FROM book_categories;
+  `;
+  try {
+      const res = await pool.query(query);
+      const data = JSON.stringify(res.rows);
+      // console.log("ESTO ES: ", data);
+  } catch (err) {
+      console.error('Error fetching categories', err);
+  }
+}
+// getAllCategoriesForBooks();
 
 async function getCategoryById(id) {
   const query = `
@@ -140,4 +183,7 @@ module.exports = {
   getUserLiveSearch,
   getAllCategories,
   getBooksByCategory,
+  getBookDetailsById,
 };
+
+

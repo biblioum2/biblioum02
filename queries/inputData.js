@@ -277,7 +277,7 @@ async function insertBookCategory(book_id, category_id) {
     console.error("Error creating book-category relationship", err);
   }
 }
-
+// insertBookCategory(7,9);
 async function getBooksByCategoryId(category_id) {
   const query = `
       SELECT * FROM book_categories WHERE category_id = $1;
@@ -333,6 +333,127 @@ async function insertcolumn() {
 //   // Cierra la conexión después de insertar los datos
 //   await pool.end();
 // };
+const books = [
+  {
+    "title": "Eloquent Javascript",
+    "author": "Marijn Haverbeke",
+    "edition": "4ª",
+    "isbn": "970-17-0108-9",
+    "summary": "Eloquent JavaScript A Modern Introduction to Programming es un libro esencial para cualquier desarrollador que quiera dominar JavaScript. Escrito por Marijn Haverbeke, este libro proporciona una introducción exhaustiva y accesible al lenguaje de programación JavaScript, combinando los fundamentos con principios avanzados. A través de ejemplos prácticos y ejercicios desafiantes, los lectores aprenderán desde conceptos básicos como variables y funciones hasta temas avanzados como la programación asíncrona y el manejo del DOM. Perfecto tanto para principiantes como para desarrolladores experimentados, Eloquent JavaScript es una guía completa para convertirte en un experto en JavaScript.",
+    "available": "yes",
+    "publication_year": "2024-08-10",
+    "available_copies": 1,
+    "cover": "https://i.imgur.com/prwImiQ.png"
+  },
+  {
+    "title": "Javascript the Good Parts",
+    "author": "Douglas Crockford",
+    "edition": "1ª",
+    "isbn": "978-0-596-51774-8",
+    "summary": "JavaScript: The Good Parts es una obra fundamental escrita por Douglas Crockford, que se centra en las características más robustas y efectivas del lenguaje JavaScript. Este libro destila el lenguaje hasta sus elementos más esenciales y útiles, dejando de lado las características problemáticas. A través de una exploración profunda de las buenas partes de JavaScript, Crockford ofrece una guía clara y concisa que ayuda a los desarrolladores a escribir código más limpio, eficiente y mantenible. Ideal para desarrolladores que desean mejorar su comprensión y habilidades en JavaScript, JavaScript: The Good Parts es un recurso invaluable para aprovechar al máximo este lenguaje versátil y poderoso.",
+    "available": "yes",
+    "publication_year": "2024-08-10",
+    "available_copies": 3,
+    "cover": "https://i.imgur.com/vxJt2vG.png"
+  },
+  {
+    "title": "Javascript Designs Patterns",
+    "author": "Addy Osmany",
+    "edition": "1ª",
+    "isbn": "978-0-596-51774-8",
+    "summary": "JavaScript Design Patterns es un libro de Stoyan Stefanov que ofrece una profunda comprensión de los patrones de diseño aplicados al lenguaje JavaScript. Este libro explora cómo utilizar patrones de diseño comunes para resolver problemas recurrentes en el desarrollo de software y mejorar la estructura y la mantenibilidad del código. A través de ejemplos prácticos y explicaciones claras, Stefanov guía a los desarrolladores en la implementación de patrones como el Singleton, el Módulo y el Observador. Ideal para quienes buscan optimizar sus habilidades en diseño de software y aplicar soluciones probadas en sus proyectos JavaScript, JavaScript Design Patterns es una lectura esencial para mejorar la calidad y la eficiencia del código.",
+    "available": "yes",
+    "publication_year": "2024-08-10",
+    "available_copies": 2,
+    "cover": "https://i.imgur.com/w23n6BK.png"
+  },
+  {
+    "title": "Codigo limpio",
+    "author": "Robert Cecil Martin",
+    "edition": "1ª",
+    "isbn": "978-84-415-3210-6",
+    "summary": "\"Código Limpio\" de Robert C. Martin ofrece una guía esencial para escribir código que sea claro y fácil de mantener. El libro proporciona principios y prácticas para mejorar la calidad del código, enfocándose en la simplicidad, la legibilidad y la consistencia. Martin cubre temas como la organización del código, la elección de nombres descriptivos, y la estructura de funciones y clases. Ideal para desarrolladores que desean producir software de alta calidad y mejorar la mantenibilidad de sus proyectos, el libro es una referencia clave para cualquier profesional del desarrollo de software.",
+    "available": "yes",
+    "publication_year": "2024-08-10",
+    "available_copies": 2,
+    "cover": "https://i.imgur.com/LHM7ujw.png"
+  },
+  {
+    "title": "Calculo de una variable",
+    "author": "Claudio Pita Ruiz",
+    "edition": "1ª",
+    "isbn": "970-17-0108-9",
+    "summary": "\"Cálculo de una Variable\" de James Stewart es un libro fundamental para aprender cálculo diferencial e integral de funciones de una sola variable. El texto cubre conceptos clave como límites, derivadas, integrales y sus aplicaciones. Con numerosos ejemplos y ejercicios prácticos, el libro ayuda a comprender y aplicar técnicas y teoremas importantes en cálculo. Es una excelente referencia tanto para estudiantes que comienzan en cálculo como para aquellos que buscan reforzar sus conocimientos en el tema.",
+    "available": "yes",
+    "publication_year": "2024-08-10",
+    "available_copies": 1,
+    "cover": "https://i.imgur.com/iEYQP4u.png"
+  },
+  {
+    "title": "El lenguaje de programacion C",
+    "author": "Brian W. Kernighan",
+    "edition": "2ª",
+    "isbn": "968-880-205-0",
+    "summary": "\"El Lenguaje de Programación C\" de Brian W. Kernighan y Dennis M. Ritchie es una obra clave para aprender el lenguaje de programación C. El libro ofrece una introducción clara al lenguaje, cubriendo desde los conceptos básicos hasta temas avanzados. Con ejemplos prácticos y explicaciones detalladas, los autores abordan la sintaxis del lenguaje, estructuras de datos, control de flujo y gestión de memoria. Es una referencia esencial para desarrolladores que desean entender a fondo C y aplicar sus principios en programación de sistemas y aplicaciones.",
+    "available": "yes",
+    "publication_year": "2024-08-10",
+    "available_copies": 2,
+    "cover": "https://i.imgur.com/J9bntsu.png"
+  },
+  {
+    "title": "Linux Basics for Hackers",
+    "author": "OccupyTheWeb",
+    "edition": "1ª",
+    "isbn": "1­-593-27­-855­-1",
+    "summary": "**\"Linux Basics for Hackers\"** es una guía que cubre los fundamentos de Linux desde la perspectiva de la seguridad informática. El libro aborda la instalación y configuración de Linux, el uso de comandos básicos, la gestión de archivos y usuarios, y la configuración de redes y servicios. También explora herramientas de hacking, técnicas de seguridad y scripting para automatizar tareas. Es una introducción útil para quienes desean aprender Linux con un enfoque en ciberseguridad y hacking ético.",
+    "available": "yes",
+    "publication_year": "2024-08-10",
+    "available_copies": 3,
+    "cover": "https://i.imgur.com/jixA03i.png"
+  }
+];
+
+//LIBROS
+const insertBooks = async () => {
+  // await pool.connect();
+
+  for (const book of books) {
+    const query = `
+      INSERT INTO books (title, author, edition, isbn, summary, available, publication_year, available_copies, cover)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `;
+
+    const values = [
+      book.title,
+      book.author,
+      book.edition,
+      book.isbn,
+      book.summary,
+      book.available,
+      book.publication_year,
+      book.available_copies,
+      book.cover
+    ];
+
+    try {
+      await pool.query(query, values);
+      console.log(`Libro con ID ${book.title} insertado correctamente.`);
+    } catch (err) {
+      console.error(`Error insertando el libro con ID ${book.title}:`, err);
+    }
+  }
+return console.log('exito');
+
+  // await pool.end();
+};
+
+// insertBooks();
+
+
+
+
+
+
 
 // insertUser('severo', 'password', 'enrrimarq2000@gmail.com', 'admin');
 module.exports = {

@@ -204,7 +204,7 @@ footer{
 }
 
 #Cabecera {
-    background: url(multimedia/barra-libros.jpg);
+    background: url(../img/barra-libros.jpg);
     background-size: cover;
     background-repeat: no-repeat;
     padding: 15px;
@@ -259,7 +259,7 @@ footer{
     border-top: 1px solid #e1e1e1;
     padding: 1px 20px 1px 16px;
     max-width: 200px;
-    margin: 10px auto;
+    margin: 10px 570px;
     line-height: 27px;
     vertical-align: baseline;
 }

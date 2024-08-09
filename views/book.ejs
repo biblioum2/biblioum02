@@ -5,10 +5,10 @@
         <title>Libro de ejemplo</title>
         <meta http-equiv="X-UA-Compatible" content="IE-edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
-        <link rel="stylesheet" type="text/css" href="Pagina%20de%20libros.css" />
-        <link rel="stylesheet" type="text/css" href="Navegador/Navegador-libros/Nav.css" />
-        <link rel="stylesheet" type="text/css" href="Footer/footer.css" />
-        <link rel="icon" href="multimedia/libro.ico" />
+        <link rel="stylesheet" type="text/css" href="css/Pagina%20de%20libros.css" />
+        <link rel="stylesheet" type="text/css" href="css/Nav-libros.css" />
+        <link rel="stylesheet" type="text/css" href="css/footer.css" />
+        <link rel="icon" href="img/libro.ico" />
         <script src="https://kit.fontawesome.com/b408879b64.js" crossorigin="anonymous"></script>
         <!-- <a href="https://www.flaticon.es/iconos-gratis/biblioteca-en-linea" title="biblioteca en línea iconos">Biblioteca en línea iconos creados por Kalashnyk - Flaticon</a> -->
 </head>
@@ -20,44 +20,59 @@
                 <h1>𝐂𝐀𝐓Á𝐋𝐎𝐆𝐎 𝐄𝐋𝐄𝐂𝐓𝐑𝐎𝐍𝐈𝐂𝐎</h1> <!-- Titulo de sitio -->
              </header> 
           </div>
-       <nav>
-      <div class="mobile"> <!-- Caja responsive -->
-        <div class="header"> <!-- Header y nav -->
-          <div class="logo">Logo</div> <!-- Palabra logo en nav -->
-          <div class="more"><button>More</button></div> <!-- Boton More -->
-        </div>
-        <div class="links"> <!-- vinculos -->
-          <a href="#">Services</a>
-          <a href="#">About</a>
-          <a href="#">Contact</a>
-          <a href="#">Search</a>
-          <a href="#">Sign up</a>
-          <a href="#">Login</a>
-        </div>
-      </div>
-            
-            <div class="desktop"> <!-- Diseño escritorio -->
-                <div class="Logo"><img src="multimedia/uman.png" alt="" /></div> <!-- Palabra logo en nav -->
-                
-                <div class="primary"> <!-- Buscador -->
-                    <input type="text" placeholder="Buscar..." /> <!-- Buscador -->
-                    <button><i class="fa-solid fa-magnifying-glass"></i></button> <!-- Buscador -->
-                </div>
-                
-                <div class="secondary full"> <!-- Links escritorio en nav -->
-                    <a href="#">Buscar</a>
-                    <a href="#">Regístrate</a>
-                    <a href="#">Iniciar Sesión</a>                    
-                </div>
-                <div class="secondary mini"> <!-- Links en movil -->
-                    <a href="#" class="more">Más</a> <!-- Boton desplegable -->
-                    <div class="submenu"> <!-- Submenu -->
-                    <a href="#">Regístrate</a>
-                    <a href="#">Inicia Sesión</a>                        
-                    </div>
-                </div>
+          <nav>
+            <div class="mobile">
+              <!-- Caja responsive -->
+              <div class="header">
+                <!-- Header y nav -->
+                <div class="logo">Logo</div> <!-- Palabra logo en nav -->
+                <div class="more"><button>More</button></div> <!-- Boton More -->
+              </div>
+              <div class="links">
+                <!-- vinculos -->
+                <a href="#">Services</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="#">Search</a>
+                <a href="#">Sign up</a>
+                <% if (authToken) {%>
+                <a href="./login">Estas logueado</a>
+                <% } else { %>
+                <a href="./login">Login</a>
+                <% } %>
+              </div>
             </div>
-        </nav> <!-- Caja nav -->
+            <div class="desktop">
+              <!-- Diseño escritorio -->
+              <div class="Logo"><img src="img/uman.png" alt="" /></div> <!-- Palabra logo en nav -->
+              <div class="primary">
+                <!-- Buscador -->
+                <input type="text" placeholder="Buscar..." /> <!-- Buscador -->
+                <button><i class="fa-solid fa-magnifying-glass"></i></button> <!-- Buscador -->
+              </div>
+              <div class="secondary full">
+                <!-- Links escritorio en nav -->
+                <a href="#">Buscar</a>
+                <% if (isAdmin) {%>
+                  <a href="./admin">Admin</a>
+                  <% } %>
+                <% if (authToken) {%>
+                <a href="./logout">Cerrar sesion</a>
+                <% } else { %>
+                <a href="./login">Login</a>
+                <% } %>
+              </div>
+              <div class="secondary mini">
+                <!-- Links en movil -->
+                <a href="#" class="more">Más</a> <!-- Boton desplegable -->
+                <div class="submenu">
+                  <!-- Submenu -->
+                  <a href="#">Regístrate</a>
+                  <a href="./login">Inicia Sesión</a>
+                </div>
+              </div>
+            </div>
+          </nav><!-- Caja nav -->
         <div class="contenedor-libros">
             <div id="botones-lateral">
                 <div>
@@ -72,19 +87,20 @@
                 </div>         
             </div>
             <div id="ejemplar">
-                <div id="libro"><img src="multimedia/Libros/Calculo_de_una_Variable/Portada.jpeg" alt="Libro" /></div>
+                <div id="libro"><img src="<%= bookData.cover %>" alt="Libro" /></div>
             </div>
             <div id="info">
                 <div id="texto">
-                    <p><b>CÁLCULO DE UNA VARIABLE - 1ra Edición</b></p>
+                    <p><b><%= bookData.title %> - <%= bookData.edition %> Edición</b></p>
                     <br />
-                    <p><b>AUTOR: </b>Claudio Pita Ruiz</p>
-                    <br /><br />
-                    <p><b>ISBN-13: </b>9786074423488</p><br />
-                    <p><b>EDICIÓN: </b>1ra Edición</p><br />
-                    <p><b>SUBTEMA: </b>Cálculo Diferencial</p><br />
-                    <p><b>ARCHIVO: </b>Físico, Ebook</p><br />
-                    <p><b>IDIOMA: </b>Español</p>
+                    <p><b>AUTOR: </b><%= bookData.author %></p><br>                
+                    <p><b>CATEGORIA: </b><%= bookData.categories %></p><br />
+                    <p><b>EDICIÓN: </b><%= bookData.edition %> Edición</p><br />
+                    <p><b>ISBN-13: </b><%= bookData.isbn %></p><br />
+                    <p><b>ARCHIVO: </b>Físico</p><br />
+                    <p><b>IDIOMA: </b>Español</p><br>
+                    <p><b>DISPONIBLES: </b><%= bookData.available_copies %></p>
+
                 </div>
                 <div class="botones">
                 <div class="btn-1">
@@ -101,15 +117,15 @@
             <div class="content-title">
               <h2 class="title-slider">Descripción</h2>
           </div>
-          <div class="text">
+          <div id="t1" class="text">
             <p>En este libro se tratan los temas que normalmente constituyen un primer curso de cálculo (Diferencial e Integral de funciones de una variable Real, o bien, simplemente Calculo de una Variable), como el que se imparte en el último año de la preparatoria o en los primeros semestres de una licenciatura. A diferencia de muchos de los libros de cálculo que existen en el mercado, este no ofrece un estudio de los temas clásicos de Geometría Analítica que también se estudian en alguno de los cursos de preparatoria.</p>
 
-<br /><p>Más bien, la familiaridad entre algunas ecuaciones algebraicas (como las de las rectas y las de las cónicas) y su representación geométrica en el plano cartesiano, así como una plataforma básica en el manejo adecuado de expresiones algebraicas, son consideradas como ingredientes básicos para poder sacar el provecho que este libro ofrece.<br />
-El hecho de que el calculo de una variable se encuentre dentro de las materias de preparatoria y luego aparezca (con un curso similar) en los primeros semestres de la formación profesional de un estudiante de ciencias básicas o de ingeniería, no es mas que una muestra de la reconocida importancia que tiene el estudio de las ideas manejadas en estas disciplinas, para luego continuar construyendo sobre ellas otras de las mas importantes necesarias partes del conocimien to matemático que un profesionista debe tener.</p>
+            <br /><p>Más bien, la familiaridad entre algunas ecuaciones algebraicas (como las de las rectas y las de las cónicas) y su representación geométrica en el plano cartesiano, así como una plataforma básica en el manejo adecuado de expresiones algebraicas, son consideradas como ingredientes básicos para poder sacar el provecho que este libro ofrece.<br />
+            El hecho de que el calculo de una variable se encuentre dentro de las materias de preparatoria y luego aparezca (con un curso similar) en los primeros semestres de la formación profesional de un estudiante de ciencias básicas o de ingeniería, no es mas que una muestra de la reconocida importancia que tiene el estudio de las ideas manejadas en estas disciplinas, para luego continuar construyendo sobre ellas otras de las mas importantes necesarias partes del conocimien to matemático que un profesionista debe tener.</p>
             </div>
-            <div class="show-more">
+            <button id="showMore" class="show-more">
                 Ver más
-            </div>
+            </button>
             </div>
         <div class="footer">
         <footer> <!-- Etiqueta footer -->
@@ -150,5 +166,8 @@ El hecho de que el calculo de una variable se encuentre dentro de las materias d
         </footer>
     </div> <!-- Caja Footer -->
         </div>
+
+        <script src="f/book.js">            
+        </script>
     </body>
 </html>
