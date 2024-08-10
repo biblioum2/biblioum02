@@ -1,48 +1,73 @@
-.footer{
+.footer {
     width: 100%;
 }
-footer{
+
+footer {
     color: white;
     font-size: 16px;
-    background: #343434;
+    background: #091E3E;
     padding-top: 50px;
     font-family: Arial, Helvetica, sans-serif;
 
-    
+
 }
-.container-footer{
+
+.container {
     width: 100%;
     margin: auto;
     display: flex;
     justify-content: center;
 }
-.footer-content{
-    width: 33.3%;
+
+.footer-content {
+    width: 50%;
 }
-h3{
+
+.footer-content .contacto .fa-map-marker {
+    color: #FF0000;
+}
+
+.footer-content .contacto .fa-phone {
+    color: #40E0D0;
+}
+
+h3 {
     font-size: 28px;
     margin-bottom: 15px;
     text-align: center;
 }
-.footer-content p{
-    width: 190px;
-    margin: auto;
+
+.footer-content .text-footer p {
+    width: 200px;
+    margin-left: 150px;
     padding: 7px;
 }
-.footer-content ul{
+
+.footer-content .text-footer .contacto p i {
+    margin-right: 10px;
+}
+
+.footer-content .text-footer .contacto {
+    margin-top: 5px;
+}
+
+.footer-content ul {
     text-align: center;
 }
-.Lista{
+
+.Lista {
     padding: 0;
 }
-.Lista li{
+
+.Lista li {
     width: auto;
     text-align: center;
     list-style-type: none;
     padding: 7px;
     position: relative;
 }
-.Lista li::before{
+
+.Lista li::before {
     content: '';
     position: absolute;
     transform: translate(-50%, -50%);
@@ -53,41 +78,51 @@ h3{
     background: #f18930;
     transition-duration: .5s;
 }
-.Lista li:hover::before{
+
+.Lista li:hover::before {
     width: 70px;
 }
-.social-icons{
-    
+
+.social-icons {
+
     text-align: center;
     padding: 0;
 }
-.social-icons li{
+
+.social-icons li {
     display: inline-block;
     text-align: center;
     padding: 5px;
 }
-.social-icons i{
+
+.social-icons i {
     color: #FFF;
     font-size: 25px;
 }
-a{
+
+a {
     text-decoration: none;
+    color: white;
 }
-a:hover{
+
+a:hover {
     color: #f18930;
 }
-.social-icons i:hover{
+
+.social-icons i:hover {
     color: #f18930;
 }
-.bottom-bar{
-    
+
+.bottom-bar {
+
     background: #f18930;
     text-align: center;
     padding: 10px 0;
     margin-top: 50px;
 
 }
-.bottom-bar p{
+
+.bottom-bar p {
     color: #343434;
     margin: 0;
     font-size: 16px;

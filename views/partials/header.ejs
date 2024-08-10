@@ -1,0 +1,61 @@
+<div id="Principal">
+  <div class="Logo">
+    <header id="Cabecera">  <!-- header -->
+    <!-- Logo UMAN -->
+       <h1>𝐂𝐀𝐓Á𝐋𝐎𝐆𝐎 𝐄𝐋𝐄𝐂𝐓𝐑𝐎𝐍𝐈𝐂𝐎</h1> <!-- Titulo de sitio -->
+    </header> 
+ </div>
+    <nav>
+      <div class="mobile">
+        <!-- Caja responsive -->
+        <div class="header">
+          <!-- Header y nav -->
+          <div class="logo">Logo</div> <!-- Palabra logo en nav -->
+          <div class="more"><button>More</button></div> <!-- Boton More -->
+        </div>
+        <div class="links">
+          <!-- vinculos -->
+          <a href="#">Services</a>
+          <a href="#">About</a>
+          <a href="#">Contact</a>
+          <a href="#">Search</a>
+          <a href="#">Sign up</a>
+          <% if (authToken) {%>
+          <a href="./login">Estas logueado</a>
+          <% } else { %>
+          <a href="./login">Login</a>
+          <% } %>
+        </div>
+      </div>
+      <div class="desktop">
+        <!-- Diseño escritorio -->
+        <div class="Logo"><img src="img/uman.png" alt="" /></div> <!-- Palabra logo en nav -->
+        <div class="primary">
+          <!-- Buscador -->
+          <input type="text" placeholder="Buscar..." /> <!-- Buscador -->
+          <button><i class="fa-solid fa-magnifying-glass"></i></button> <!-- Buscador -->
+        </div>
+        <div class="secondary full">
+          <!-- Links escritorio en nav -->
+          <a href="/">Inicio</a>
+          <% if (isAdmin) {%>
+            <a href="./admin">Admin</a>
+            <% } %>
+          <% if (authToken) {%>
+          <a href="./logout">Cerrar sesion</a>
+          <% } else { %>
+          <a href="./login">Login</a>
+          <% } %>
+        </div>
+        <div class="secondary mini">
+          <!-- Links en movil -->
+          <a href="#" class="more">Más</a> <!-- Boton desplegable -->
+          <div class="submenu">
+            <!-- Submenu -->
+            <a href="#">Regístrate</a>
+            <a href="./login">Inicia Sesión</a>
+          </div>
+        </div>
+      </div>
+    </nav> <!-- Caja nav -->
+  </div> <!-- Header y Navegador -->

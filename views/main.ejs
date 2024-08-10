@@ -7,7 +7,9 @@
   <link rel=icon href="img/biblioteca.ico" />
   <link rel="stylesheet" type="text/css" href="css/main.css" />
   <link rel="stylesheet" type="text/css" href="css/footer.css" />
-  <link rel="stylesheet" type="text/css" href="css/Nav.css" />
+  <!-- <link rel="stylesheet" type="text/css" href="css/Nav.css" /> -->
+  <link rel="stylesheet" type="text/css" href="css/Nav-libros.css" />
+
   <script src="https://kit.fontawesome.com/b408879b64.js" crossorigin="anonymous"></script>
   <meta http-equiv="X-UA-Compatible" content="IE-edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -16,63 +18,7 @@
 
 <body>
   <div class="container-main">
-    <div id="Principal">
-      <div class="Logo">
-      </div>
-      <nav>
-        <div class="mobile">
-          <!-- Caja responsive -->
-          <div class="header">
-            <!-- Header y nav -->
-            <div class="logo">Logo</div> <!-- Palabra logo en nav -->
-            <div class="more"><button>More</button></div> <!-- Boton More -->
-          </div>
-          <div class="links">
-            <!-- vinculos -->
-            <a href="#">Services</a>
-            <a href="#">About</a>
-            <a href="#">Contact</a>
-            <a href="#">Search</a>
-            <a href="#">Sign up</a>
-            <% if (authToken) {%>
-            <a href="./login">Estas logueado</a>
-            <% } else { %>
-            <a href="./login">Login</a>
-            <% } %>
-          </div>
-        </div>
-        <div class="desktop">
-          <!-- Diseño escritorio -->
-          <div class="Logo"><img src="img/uman.png" alt="" /></div> <!-- Palabra logo en nav -->
-          <div class="primary">
-            <!-- Buscador -->
-            <input type="text" placeholder="Buscar..." /> <!-- Buscador -->
-            <button><i class="fa-solid fa-magnifying-glass"></i></button> <!-- Buscador -->
-          </div>
-          <div class="secondary full">
-            <!-- Links escritorio en nav -->
-            <a href="#">Buscar</a>
-            <% if (isAdmin) {%>
-              <a href="./admin">Admin</a>
-              <% } %>
-            <% if (authToken) {%>
-            <a href="./logout">Cerrar sesion</a>
-            <% } else { %>
-            <a href="./login">Login</a>
-            <% } %>
-          </div>
-          <div class="secondary mini">
-            <!-- Links en movil -->
-            <a href="#" class="more">Más</a> <!-- Boton desplegable -->
-            <div class="submenu">
-              <!-- Submenu -->
-              <a href="#">Regístrate</a>
-              <a href="./login">Inicia Sesión</a>
-            </div>
-          </div>
-        </div>
-      </nav> <!-- Caja nav -->
-    </div> <!-- Header y Navegador -->
+    <%- include('./partials/header') %>
     <div id="Estanteria">
       <!-- cuerpo -->
       <div id="contenido">
@@ -121,53 +67,8 @@
         </div>
       </div>
     </div> <!-- Contenido central -->
-    <div class="footer">
-      <footer>
-        <!-- Etiqueta footer -->
-        <div class="container">
-          <!-- Footer Up -->
-          <div class="footer-content">
-            <!-- contactos -->
-            <div class="text-footer">
-              <h3>Contáctanos!</h3>
-              <div class="contacto">
-                <p><i class="fa fa-map-marker"></i>info@uman.edu.mx</p>
-                <p><i class="fa fa-phone"></i>(899)-922-2086</p>
-                <p><i class="fa fa-envelope"></i>Calle Primera S/N, Col. El Círculo<br /> C.P 88640 Reynosa, México</p>
-              </div>
-            </div>
-          </div>
-          <div class="footer-content">
-            <!-- Links -->
-            <h3>Enlaces rápidos</h3>
-            <ul class="Lista">
-              <!-- Lista de links -->
-              <li><a href="">Inicio</a></li>
-              <li><a href="">Sobre Nosotros</a></li>
-              <li><a href="">Servicios</a></li>
-              <li><a href="">Planes de estudio</a></li>
-              <li><a href="">Contactos</a></li>
-            </ul>
-          </div>
-          <div class="footer-content">
-            <!-- Redes sociales -->
-            <h3>Síguenos!</h3>
-            <ul class="social-icons">
-              <!-- iconos de redes sociales -->
-              <li><a href="#"><i class="fab fa-facebook"></i></a></li>
-              <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-              <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-              <li><a href="#"><i class="fab fa-linkedin"></i></a></li>
-            </ul>
-          </div>
-        </div>
-        <div class="bottom-bar">
-          <!-- Footer Down -->
-          <p>&copy; 2024 Universidad Mexico Americana del Norte. Designer by: Cristian E.</p>
-        </div>
-      </footer>
-    </div> <!-- Caja Footer -->
   </div> <!-- contenedor -->
+  <%- include(`./partials/footer`) %>
 </body>
 <script src="/f/home.js"></script>
 </html>
