@@ -140,3 +140,6 @@ document.addEventListener('click', (event) => {
         }
     }
 });
+
+//Funcion para validar los datos del formulario
+

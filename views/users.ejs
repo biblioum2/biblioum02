@@ -11,7 +11,7 @@
 <body>
     <%- include('./partials/adminHeader.ejs') %>
     
-    <% if (success !== false) { %>
+    <% if (typeof success !== 'undefined') { %>
         <div class="notification <%= success ? 'success' : 'error' %>">
           <% if (success) { %>
             <p>¡Usuario insertado con éxito!</p>
@@ -30,14 +30,35 @@
                 <div class="form-group">
                     <label for="username">Nombre de usuario</label>
                     <input type="text" id="username" name="username" autocomplete="off" required>
+                    <% if (errors.username && errors.username.error.length > 0) { %>
+                        <ul>
+                            <% errors.username.error.forEach(function(err) { %>
+                                <li><%= err %></li>
+                            <% }); %>
+                        </ul>
+                    <% } %>
                 </div>
                 <div class="form-group">
                     <label for="password">Contraseña</label>
                     <input type="password" id="password" name="password" autocomplete="new-password" required>
+                    <% if (errors.password && errors.password.error.length > 0) { %>
+                        <ul>
+                            <% errors.password.error.forEach(function(err) { %>
+                                <li><%= err %></li>
+                            <% }); %>
+                        </ul>
+                    <% } %>
                 </div>
                 <div class="form-group">
                     <label for="email">Correo electrónico</label>
                     <input type="email" id="email" name="email" autocomplete="off" required>
+                    <% if (errors.email && errors.email.error.length > 0) { %>
+                        <ul>
+                            <% errors.email.error.forEach(function(err) { %>
+                                <li><%= err %></li>
+                            <% }); %>
+                        </ul>
+                    <% } %>
                 </div>
                 <div class="form-group">
                     <label for="role">Rol</label>
@@ -46,7 +67,7 @@
                         <option value="admin">Administrador</option>
                     </select>                
                 </div>
-                <button type="submit" class="btn-submit">Agregar Usuario</button>
+                <button id="user-submit-form" type="submit" class="btn-submit">Agregar Usuario</button>
             </form>
         </section>
 

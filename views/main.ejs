@@ -27,43 +27,44 @@
           <div class="slides">
             <% let imgNumber = 0 %>
             <% for (const key in sliderImgs) { %>
-              <% imgNumber++ %>
+            <% imgNumber++ %>
 
-              <img src="<%= sliderImgs[key] %>" class="slide" alt="Image <%= imgNumber %>">
+            <img src="<%= sliderImgs[key] %>" class="slide" alt="Image <%= imgNumber %>">
             <% } %>
           </div>
-      </div>
+        </div>
         <div id="vista-de-libros">
           <div id="slider2">
             <div class="content-title">
               <h2 class="title-slider">Área de informática</h2>
-              <select style="text-align: center;">             
+              <select style="text-align: center;">
                 <% categories.forEach(category => { %>
                 <option value=<%= `${category.id}` %>> <%= category.name %> </option>
-                <% }); %>              
-            </select>
+                <% }); %>
+              </select>
             </div>
-           
+
             <div class="carrusel">
               <!-- Contenedor de carrusel -->
               <div class="viewport" style="height: 339.8px; touch-action: pan-y;" id="books">
                 <!-- Contenedor de libros en fila -->
                 <div class="sliderCarr" style="left: 0px; transform: translate();">
                   <!-- Funcion de slider dentro del contenedor de libros en fila -->
-                   <% books.forEach(element => { %>
-                    <div class="carrusel-cel" style="max-width: 258px; position: absolute left auto" aria-hidden="true">
-                      <a href="./book?id=<%=element.id%>" class="img-related" title="">
-                        <img src="<%= element.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
-                      </a> <!-- Portada de los libros -->
-                      <h3>
-                        <a class="img-related" title="El lenguaje de programacion C" style="color: black; font-size: 17px; font-family:monospace;"><%= element.title %></a>
-                      </h3> <!-- Subtitulos de los libros, depende que libro sea sera su titulo -->
-                    </div>
-                   <% }); %>
+                  <% books.forEach(element => { %>
+                  <div class="carrusel-cel" style="max-width: 258px; position: absolute left auto" aria-hidden="true">
+                    <a href="./book?id=<%=element.id%>" class="img-related" title="">
+                      <img src="<%= element.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
+                    </a> <!-- Portada de los libros -->
+                    <h3>
+                      <a class="img-related" title="El lenguaje de programacion C" style="color: black; font-size: 17px; font-family:monospace;"><%= element.title %></a>
+                    </h3> <!-- Subtitulos de los libros, depende que libro sea sera su titulo -->
+                  </div>
+                  <% }); %>
                 </div>
               </div>
             </div>
           </div>
+          
         </div>
       </div>
     </div> <!-- Contenido central -->
@@ -71,4 +72,5 @@
   <%- include(`./partials/footer`) %>
 </body>
 <script src="/f/home.js"></script>
+
 </html>

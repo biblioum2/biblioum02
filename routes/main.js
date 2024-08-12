@@ -76,9 +76,11 @@ router.get('/admin', (req, res) => {
 });
 
 router.get('/admin/users', async (req, res) => {
-  const users = await getUsers(0);
-  const success = req.query.success === 'true';
-  res.render('users', { title: 'users', users: users, currentPage: 'users',success: success, postResponse: false});
+  let users = await getUsers(0);
+  let success = req.query.success === 'true' ? true : req.query.success === 'false' ? false : undefined;
+  const errors = req.session.errors || {};
+  req.session.errors = {};
+  res.render('users', { title: 'users', users: users, currentPage: 'users',success: success, errors: errors, postResponse: false});
 });
 
 // Otras rutas básicas pueden ir aquí
@@ -86,6 +88,11 @@ router.get('/admin/users/success', async (req, res) => {
   const users = await getUsers(0);
   // res.render('users', { title: 'users', users: users, currentPage: 'users', success: true });
   res.redirect(`/admin/users?success=true`);
+});
+router.get('/admin/users/failed', async (req, res) => {
+  const users = await getUsers(0);
+  // res.render('users', { title: 'users', users: users, currentPage: 'users', success: true });
+  res.redirect(`/admin/users?success=false`);
 });
 
 router.get('/admin/users/data', async (req, res) => {
@@ -106,9 +113,9 @@ router.delete('/admin/users/:id', async (req, res) => {
   try {
       const result = await deleteUser(userId);
       if (result.rowCount > 0) {
-          res.json({ success: true });
+          return res.json({ success: true });
       } else {
-          res.json({ success: false, message: 'Usuario no encontrado.' });
+          return res.json({ success: true, message: 'Usuario no encontrado.' });
       }
   } catch (err) {
       console.error('Error al eliminar el usuario:', err);

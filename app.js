@@ -18,20 +18,23 @@ const app = express();
 const port = 3000;
 
 // Configuración CORS
-app.use(cors({
-  origin: 'http://localhost:3000', // Permite solicitudes desde tu dominio
-}));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // Permite solicitudes desde tu dominio
+  })
+);
 
 // Middleware para configurar CSP
 app.use((req, res, next) => {
-  res.setHeader("Content-Security-Policy", 
+  res.setHeader(
+    "Content-Security-Policy",
     "default-src 'self'; " +
-    "img-src 'self' https://i.imgur.com https://drive.google.com; " +
-    "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com; " +
-    "script-src 'self' https://kit.fontawesome.com; " +
-    "font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com; " +
-    "connect-src 'self' https://kit.fontawesome.com https://ka-f.fontawesome.com; " +
-    "object-src 'none';"
+      "img-src 'self' https://i.imgur.com https://drive.google.com; " +
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com; " +
+      "script-src 'self' https://kit.fontawesome.com; " +
+      "font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com; " +
+      "connect-src 'self' https://kit.fontawesome.com https://ka-f.fontawesome.com; " +
+      "object-src 'none';"
   );
   next();
 });
@@ -60,40 +63,161 @@ app.use("/", indexRouter);
 
 // Ruta POST para agregar un usuario con validación de datos
 app.post("/admin/users", async (req, res) => {
-  const { username, password, email, role } = req.body;
-  const errors = {
-    username: false,
-    password: false,
-    email: false,
-  }
-  const emailCheck = await pool.query('SELECT 1 FROM users WHERE email = $1', [email]);
-  const usernameCheck = await pool.query('SELECT 1 FROM users WHERE username = $1', [username]);
-  
-  if (emailCheck.rowCount > 0 && usernameCheck.rowCount > 0) {
-    console.error('Error: El email y el username ya existen y deben ser únicos.');
-    errors.email = true;
-    errors.username = true;
-  } else if (emailCheck.rowCount > 0) {
-    console.error('Error: El email ya existe y debe ser único.');
-    errors.email = true;
-  } else if (usernameCheck.rowCount > 0) {
-    console.error('Error: El username ya existe y debe ser único.');
-    errors.user = true;
-  }
-  if (errors.email || errors.username) {
-    res.render('users', { errors: errors, })
-  }
-    try {
-      await insertUser(username, password, email, role);
-      res.redirect("/admin/users/success");
-    } catch (error) {
-      console.log("Error al agregar usuario: ", error);
-      res.status(500).render("users", {
-        title: "users",
-        currentPage: "users",
-        success: false,
-      });
+  let { username, password, email, role } = req.body;
+  username = username.trim();
+  password = password.trim();
+  email = email.trim();
+  role = role.trim();
+
+  // Funciones de validación
+  const validateUsername = (username) => {
+    const minLength = 3;
+    const maxLength = 15;
+    const validChars = /^[a-z0-9]+$/;
+
+    if (username.length < minLength || username.length > maxLength) {
+      return {
+        valid: false,
+        error: `El nombre de usuario debe tener entre ${minLength} y ${maxLength} caracteres.`,
+      };
     }
+
+    if (!validChars.test(username)) {
+      return {
+        valid: false,
+        error:
+          "El nombre de usuario contiene caracteres no válidos. Solo se permiten letras minúsculas y números.",
+      };
+    }
+
+    return { valid: true };
+  };
+
+  const validateEmail = (email) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      return {
+        valid: false,
+        error: "El formato del correo electrónico no es válido.",
+      };
+    }
+
+    return { valid: true };
+  };
+
+  const validatePassword = (password) => {
+    const minLength = 8;
+    const maxLength = 20;
+    const hasUpperCase = /[A-Z]/;
+    const hasLowerCase = /[a-z]/;
+    const hasDigit = /\d/;
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (password.length < minLength || password.length > maxLength) {
+      return {
+        valid: false,
+        error: `La contraseña debe tener entre ${minLength} y ${maxLength} caracteres.`,
+      };
+    }
+
+    if (!hasUpperCase.test(password)) {
+      return {
+        valid: false,
+        error: "La contraseña debe contener al menos una letra mayúscula.",
+      };
+    }
+
+    if (!hasLowerCase.test(password)) {
+      return {
+        valid: false,
+        error: "La contraseña debe contener al menos una letra minúscula.",
+      };
+    }
+
+    if (!hasDigit.test(password)) {
+      return {
+        valid: false,
+        error: "La contraseña debe contener al menos un dígito.",
+      };
+    }
+
+    if (!hasSpecialChar.test(password)) {
+      return {
+        valid: false,
+        error: "La contraseña debe contener al menos un carácter especial.",
+      };
+    }
+
+    return { valid: true };
+  };
+
+  // Validaciones
+  const usernameValidation = validateUsername(username);
+  const emailValidation = validateEmail(email);
+  const passwordValidation = validatePassword(password);
+
+  const errors = {
+    username: { exist: false, error: [] },
+    password: { exist: false, error: [] },
+    email: { exist: false, error: [] },
+  };
+
+  // Registrar errores de validación
+  if (!usernameValidation.valid) {
+    errors.username.error.push(usernameValidation.error);
+  }
+
+  if (!emailValidation.valid) {
+    errors.email.error.push(emailValidation.error);
+  }
+
+  if (!passwordValidation.valid) {
+    errors.password.error.push(passwordValidation.error);
+  }
+
+  // Consultas a la base de datos
+  const emailCheck = await pool.query("SELECT 1 FROM users WHERE email = $1", [
+    email,
+  ]);
+  const usernameCheck = await pool.query(
+    "SELECT 1 FROM users WHERE username = $1",
+    [username]
+  );
+
+  if (emailCheck.rowCount > 0) {
+    errors.email.exist = true;
+    errors.email.error.push("Correo no disponible");
+  }
+
+  if (usernameCheck.rowCount > 0) {
+    errors.username.exist = true;
+    errors.username.error.push("Usuario no disponible");
+  }
+
+  // Verificar si hay errores y redirigir
+  if (
+    errors.email.exist ||
+    errors.username.exist ||
+    errors.password.error.length > 0
+  ) {
+    req.session.errors = errors;
+    return res.redirect("/admin/users/failed");
+  }
+
+  // Continuar con la lógica de procesamiento
+
+  try {
+    await insertUser(username, password, email, role);
+    return res.redirect("/admin/users/success");
+  } catch (error) {
+    console.log("Error al agregar usuario: ", error);
+    res.status(500).render("users", {
+      title: "users",
+      currentPage: "users",
+      success: false,
+    });
+  }
 });
 
 app.post("/login", async (req, res) => {
@@ -160,7 +284,7 @@ app.post("/admin/books", async (req, res) => {
     available_copies,
     cover,
   } = req.body;
-console.log(`ID categoria ${category}`);
+  console.log(`ID categoria ${category}`);
   try {
     const bookId = await insertBook({
       title,
@@ -174,7 +298,6 @@ console.log(`ID categoria ${category}`);
       cover,
     });
 
-    
     console.log(bookId);
     console.log(publication_date);
 
@@ -189,3 +312,4 @@ console.log(`ID categoria ${category}`);
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
+  
