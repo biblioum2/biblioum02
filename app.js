@@ -71,42 +71,41 @@ app.post("/admin/users", async (req, res) => {
 
   // Funciones de validación
   const validateUsername = (username) => {
+    const errors = [];
     const minLength = 3;
     const maxLength = 15;
     const validChars = /^[a-z0-9]+$/;
 
     if (username.length < minLength || username.length > maxLength) {
-      return {
-        valid: false,
-        error: `El nombre de usuario debe tener entre ${minLength} y ${maxLength} caracteres.`,
-      };
+      errors.push(`El nombre de usuario debe tener entre ${minLength} y ${maxLength} caracteres.`);
     }
 
     if (!validChars.test(username)) {
-      return {
-        valid: false,
-        error:
-          "El nombre de usuario contiene caracteres no válidos. Solo se permiten letras minúsculas y números.",
-      };
+      errors.push("El nombre de usuario contiene caracteres no válidos. Solo se permiten letras minúsculas y números.");
     }
 
-    return { valid: true };
+    return {
+      valid: errors.length === 0,
+      error: errors
+    };
   };
 
   const validateEmail = (email) => {
+    const errors = [];
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
     if (!emailRegex.test(email)) {
-      return {
-        valid: false,
-        error: "El formato del correo electrónico no es válido.",
-      };
+      errors.push("El formato del correo electrónico no es válido.");
     }
 
-    return { valid: true };
+    return {
+      valid: errors.length === 0,
+      error: errors
+    };
   };
 
   const validatePassword = (password) => {
+    const errors = [];
     const minLength = 8;
     const maxLength = 20;
     const hasUpperCase = /[A-Z]/;
@@ -115,41 +114,29 @@ app.post("/admin/users", async (req, res) => {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
 
     if (password.length < minLength || password.length > maxLength) {
-      return {
-        valid: false,
-        error: `La contraseña debe tener entre ${minLength} y ${maxLength} caracteres.`,
-      };
+      errors.push(`La contraseña debe tener entre ${minLength} y ${maxLength} caracteres.`);
     }
 
     if (!hasUpperCase.test(password)) {
-      return {
-        valid: false,
-        error: "La contraseña debe contener al menos una letra mayúscula.",
-      };
+      errors.push("La contraseña debe contener al menos una letra mayúscula.");
     }
 
     if (!hasLowerCase.test(password)) {
-      return {
-        valid: false,
-        error: "La contraseña debe contener al menos una letra minúscula.",
-      };
+      errors.push("La contraseña debe contener al menos una letra minúscula.");
     }
 
     if (!hasDigit.test(password)) {
-      return {
-        valid: false,
-        error: "La contraseña debe contener al menos un dígito.",
-      };
+      errors.push("La contraseña debe contener al menos un dígito.");
     }
 
     if (!hasSpecialChar.test(password)) {
-      return {
-        valid: false,
-        error: "La contraseña debe contener al menos un carácter especial.",
-      };
+      errors.push("La contraseña debe contener al menos un carácter especial.");
     }
 
-    return { valid: true };
+    return {
+      valid: errors.length === 0,
+      error: errors
+    };
   };
 
   // Validaciones
@@ -158,32 +145,14 @@ app.post("/admin/users", async (req, res) => {
   const passwordValidation = validatePassword(password);
 
   const errors = {
-    username: { exist: false, error: [] },
-    password: { exist: false, error: [] },
-    email: { exist: false, error: [] },
+    username: { exist: false, valid: usernameValidation.valid, error: usernameValidation.error },
+    password: { exist: false, valid: passwordValidation.valid, error: passwordValidation.error },
+    email: { exist: false, valid: emailValidation.valid, error: emailValidation.error },
   };
 
-  // Registrar errores de validación
-  if (!usernameValidation.valid) {
-    errors.username.error.push(usernameValidation.error);
-  }
-
-  if (!emailValidation.valid) {
-    errors.email.error.push(emailValidation.error);
-  }
-
-  if (!passwordValidation.valid) {
-    errors.password.error.push(passwordValidation.error);
-  }
-
   // Consultas a la base de datos
-  const emailCheck = await pool.query("SELECT 1 FROM users WHERE email = $1", [
-    email,
-  ]);
-  const usernameCheck = await pool.query(
-    "SELECT 1 FROM users WHERE username = $1",
-    [username]
-  );
+  const emailCheck = await pool.query("SELECT 1 FROM users WHERE email = $1", [email]);
+  const usernameCheck = await pool.query("SELECT 1 FROM users WHERE username = $1", [username]);
 
   if (emailCheck.rowCount > 0) {
     errors.email.exist = true;
@@ -197,16 +166,27 @@ app.post("/admin/users", async (req, res) => {
 
   // Verificar si hay errores y redirigir
   if (
-    errors.email.exist ||
-    errors.username.exist ||
+    errors.email.error.length > 0 ||
+    errors.username.error.length > 0 ||
     errors.password.error.length > 0
   ) {
     req.session.errors = errors;
+    for (let key in errors) {
+      if (errors.hasOwnProperty(key)) {
+        console.log(`Key: ${key}`);
+        console.log(`Exist: ${errors[key].exist}`);
+        console.log(`Valid: ${errors[key].valid}`);
+        console.log(`Errors: ${errors[key].error.join(', ')}`); // Si `error` es un array
+      }
+    }
+    
+    errors.password.error.forEach((err, index) => {
+      console.log(`Error de contraseña ${index + 1}: ${err}`);
+    });
     return res.redirect("/admin/users/failed");
-  }
+  };
 
   // Continuar con la lógica de procesamiento
-
   try {
     await insertUser(username, password, email, role);
     return res.redirect("/admin/users/success");
@@ -219,6 +199,7 @@ app.post("/admin/users", async (req, res) => {
     });
   }
 });
+
 
 app.post("/login", async (req, res) => {
   const { username, password, remember } = req.body;

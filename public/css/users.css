@@ -158,6 +158,10 @@ body {
         opacity: 1;
     }
 }
-
-
+.error-true {
+    background-color: green;
+}
+.error-false {
+    background-color: red;
+}
     

@@ -100,7 +100,7 @@ const createTables = async () => {
 };
 
 // Llama a la función para crear todas las tablas
-// createTables();
+createTables();
 
 // module.exports = {
 //     createTableUsers,

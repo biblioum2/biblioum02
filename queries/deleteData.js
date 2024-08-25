@@ -110,12 +110,13 @@ const deleteUser = async (userId) => {
         DELETE FROM users WHERE user_id = $1;
     `;
     try {
-         const result = await pool.query(query, [userId]);
-        return result.rowCount;
+        const result = await pool.query(query, [userId]);
+        return result; // Devuelve el objeto completo result
     } catch (err) {
-        console.error('Error deleting user', err);
+        console.error('Error al eliminar el usuario', err);
     }
 }
+
 
 module.exports = {
     deleteUser,

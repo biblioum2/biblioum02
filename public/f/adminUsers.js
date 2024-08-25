@@ -123,23 +123,31 @@ document.addEventListener('click', (event) => {
             fetch(`http://localhost:3000/admin/users/${userId}`, {
                 method: 'DELETE',
             })
-            .then(res => res.ok ? res.json() : Promise.reject(res))
+            .then(res => {
+                console.log('Respuesta del servidor:', res);
+                return res.ok ? res.json() : res.json().then(data => Promise.reject(data));
+            })
             .then(data => {
+                console.log('Datos recibidos del servidor:', data);
+                
                 if (data.success) {
                     const row = document.querySelector(`tr[data-id="${userId}"]`);
-                    row.remove();
+                    if (row) {
+                        row.remove();
+                    }
                     alert('Usuario eliminado con éxito.');
                 } else {
-                    alert('Error al eliminar el usuario desde cliente');
+                    alert('Error al eliminar el usuario desde el servidor.');
                 }
             })
             .catch(err => {
                 console.error('Error desde fetch:', err);
-                alert('Error al eliminar el usuario.');
+                alert('Error al eliminar el usuario desde JS.');
             });
         }
     }
 });
+
 
 //Funcion para validar los datos del formulario
 

@@ -109,19 +109,24 @@ router.get('/admin/user/data', async (req, res) => {
 
 router.delete('/admin/users/:id', async (req, res) => {
   const userId = req.params.id;
-  console.log('este es el id a eliminar:',userId);
+  console.log('ID a eliminar:', userId);
   try {
       const result = await deleteUser(userId);
+      console.log('Resultado de deleteUser:', result); // Verifica el resultado
+
       if (result.rowCount > 0) {
-          return res.json({ success: true });
+          console.log('Usuario eliminado exitosamente');
+          return res.status(200).json({ success: true });
       } else {
-          return res.json({ success: true, message: 'Usuario no encontrado.' });
+          console.log('No se encontró el usuario para eliminar');
+          return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
       }
   } catch (err) {
       console.error('Error al eliminar el usuario:', err);
-      res.status(500).json({ success: false, message: 'Error del servidor.' });
+      return res.status(500).json({ success: false, message: 'Error del servidor.' });
   }
 });
+
 
 router.get('/admin/books', async (req, res) => {
   const categories = await getAllCategories();
