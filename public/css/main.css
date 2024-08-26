@@ -93,13 +93,18 @@ body {
   padding: 0;
   overflow-x: hidden;
  overflow-y: hidden;  
-    width: 80%;
+    width: 87%;
     height: 500px;
 }
 
 /* titulo del contenedor de libros */
+.carrusel{
+    display: flex;
+    width: 100%;
+}
 #vista-de-libros #slider2 .carrusel .viewport{
     width: 100%;
+    scroll-behavior: smooth;
     height: auto;
     overflow-x: scroll;
     overflow-y: hidden;
@@ -217,5 +222,44 @@ select:active {
     background-size: 15px;
 }
 
-/* Cards section */
+/* carrusel buttons */
 
+.carrButton {
+    position: relative;
+    top: 0em;
+    width: 3em;
+    height: 10em;
+    /* transform: translateY(-10%); */
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 100;
+}
+.left{
+    left: 0;
+    border-radius: 20px 0 0px 20px;
+}
+
+.right{
+    right: 0em;
+    border-radius: 0px 20px 20px 0px;
+
+}
+
+.arrowL{
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-right: 25px solid rgb(167, 167, 167);
+    border-bottom: 15px solid transparent;
+}
+
+.arrowR{
+    width: 0;
+      height: 0;
+      border-top: 15px solid transparent;
+      border-left: 25px solid rgb(167, 167, 167);
+      border-bottom: 15px solid transparent;
+}

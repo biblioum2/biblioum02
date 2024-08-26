@@ -51,15 +51,18 @@ const getBookDetailsById = async (bookId) => {
 
 const getBooksByCategory = async (categoryId) => {
   const query = `
-      SELECT b.id, b.title, b.author, b.edition, b.isbn, b.summary, b.available, b.publication_year, b.available_copies, b.cover
-      FROM books b
-      JOIN book_categories bc ON b.id = bc.book_id
-      JOIN categories c ON bc.category_id = c.id
-      WHERE c.id = $1;
+      SELECT b.*
+FROM books b
+JOIN book_categories bc ON b.id = bc.book_id
+WHERE bc.category_id = $1;
+
+
   `;
 
   try {
       const res = await pool.query(query, [categoryId]);
+      console.log(`esto es lo obtenido`,res.rows);
+      
       return res.rows;
   } catch (err) {
       console.error('Error executing query', err.stack);

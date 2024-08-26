@@ -277,7 +277,12 @@ async function insertBookCategory(book_id, category_id) {
     console.error("Error creating book-category relationship", err);
   }
 }
-// insertBookCategory(7,9);
+function insertarVarios(){
+  for (let index = 1; index < 8; index++) {
+    insertBookCategory(index,8); 
+  }
+};
+// insertarVarios();
 async function getBooksByCategoryId(category_id) {
   const query = `
       SELECT * FROM book_categories WHERE category_id = $1;

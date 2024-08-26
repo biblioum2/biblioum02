@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cookieParser = require('cookie-parser');
-const { getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById} = require('../queries/getData');
+const { getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById, getBooksByCategory} = require('../queries/getData');
 const { deleteUser } = require('../queries/deleteData');
 router.use(cookieParser());
 
@@ -47,11 +47,27 @@ router.get('/', async (req, res) => {
   try {
     const books = await getBooks();
     const booksjson = JSON.stringify(books);
-    // console.log(`Esto es el resultado en main books: ${booksjson}`);
+    //  console.log(`Esto es el resultado en main books: ${booksjson}`);
     res.render('main', { categories: categories, title: 'Página de Inicio', sliderImgs: sliderImgs, books: books, authToken: authToken, isAdmin: isAdmin, user: user, });
   } catch (error) {
     console.log(`Error al consultar`, error);
     res.status(500).send('Error al obtener los libros main');
+  }
+});
+
+router.get('/:catId', async (req, res) => {
+  const categoryId = req.params.catId;
+
+  try {
+    console.log('Ejecutando la query', categoryId);
+    
+    const books = await getBooksByCategory(categoryId);
+    console.log(`esto hay en books desde route`, books);
+    
+    res.status(200).json({ books: books });
+  } catch (error) {
+    console.log('error al obtener libros por categorias', error);
+    
   }
 });
 
