@@ -1,5 +1,6 @@
 const { getRandomValues } = require("crypto");
 const pool = require("../config/database");
+const { parseCIDR } = require("ipaddr.js");
 
 // OBTENCION DE LIBROS GENERAL
 
@@ -23,6 +24,7 @@ FROM books
 
 //OBTENCION DE LIBRO PARA PAGINA INDIVIDUAL
 const getBookDetailsById = async (bookId) => {
+  const numerico = parseInt(bookId);
   const query = `
       SELECT 
           books.*,
@@ -40,7 +42,9 @@ const getBookDetailsById = async (bookId) => {
   `;
 
   try {
-      const res = await pool.query(query, [bookId]);
+    console.log('se ejecuta la query de libro por id');
+    
+      const res = await pool.query(query, [numerico]);
       return res.rows[0]; // Devuelve el primer (y único) resultado, ya que el ID es único
   } catch (error) {
       console.error('Error al ejecutar la consulta:', error);

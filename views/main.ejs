@@ -47,17 +47,17 @@
             <div class="carrusel">
               <button class="carrButton left" id="buttonL"><div class="arrowL"></div></button>
               <!-- Contenedor de carrusel -->
-              <div class="viewport" style="height: 339.8px; touch-action: pan-y;" id="books">
+              <div class="viewport" style="height: 339.8px; touch-action: pan-y;" id="bookss">
                 <!-- Contenedor de libros en fila -->
                 <div id="caruselContainer" class="sliderCarr" style="left: 0px; transform: translate();">
                   <!-- Funcion de slider dentro del contenedor de libros en fila -->
-                  <% books.forEach(element => { %>
+                  <% books.forEach(book => { %>
                   <div class="carrusel-cel" style="max-width: 258px; position: absolute left auto" aria-hidden="true">
-                    <a href="./book?id=<%=element.id%>" class="img-related" title="">
-                      <img src="<%= element.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
+                    <a href="./book?id=<%= book.id %>" class="img-related" title="<%= book.title %>">
+                      <img src="<%= book.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
                     </a> <!-- Portada de los libros -->
                     <h3>
-                      <a class="img-related" title="El lenguaje de programacion C" style="color: black; font-size: 17px; font-family:monospace;"><%= element.title %></a>
+                      <a class="img-related" title="El lenguaje de programacion C" style="color: black; font-size: 17px; font-family:monospace;"><%= book.title %></a>
                     </h3> <!-- Subtitulos de los libros, depende que libro sea sera su titulo -->
                   </div>
                   <% }); %>
@@ -70,6 +70,16 @@
             </div>
           </div>
           
+        </div>
+        <div id="cardContainer" class="card-container">
+          <% books.forEach(element => { %>
+            <div id="<%= element.id %>" class="card-Book">
+              <img src="<%= element.cover %>" alt="<%= element.title %>">
+              <h4 class="black"><%= element.title %></h4>
+              <p class="black"><%= element.author %></p>
+              <p class="black"><%= element.available == 'yes' ? 'Si' : 'No' %></p>
+            </div>
+          <% }); %>
         </div>
       </div>
     </div> <!-- Contenido central -->

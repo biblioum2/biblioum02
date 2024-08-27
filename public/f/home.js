@@ -39,7 +39,7 @@ setInterval(nextSlide, slideInterval);
 
 // CONTROL DE LOS BOTONES DE SCROLL EN LIBROS
 
-const $carousel = document.getElementById('books');
+const $carousel = document.getElementById('bookss');
 const $btnL = document.getElementById('buttonL');
 const $btnR = document.getElementById('buttonR');
 
@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log(`ejecutando category ${term}`);
     
     try {
-      const response = await fetch(`http://localhost:3000/${term}`);
+      const response = await fetch(`http://localhost:3000/category/${term}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
