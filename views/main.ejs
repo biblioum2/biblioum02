@@ -36,7 +36,7 @@
         <div id="vista-de-libros">
           <div id="slider2">
             <div class="content-title">
-              <h2 class="title-slider">Área de informática</h2>
+              <h2 class="title-slider">Área de interés</h2>
               <select id="selectCat" style="text-align: center;">
                 <% categories.forEach(category => { %>
                 <option value=<%= `${category.id}` %>> <%= category.name %> </option>
@@ -45,7 +45,9 @@
             </div>
 
             <div class="carrusel">
-              <button class="carrButton left" id="buttonL"><div class="arrowL"></div></button>
+              <button class="carrButton left" id="buttonL">
+                <div class="arrowL"></div>
+              </button>
               <!-- Contenedor de carrusel -->
               <div class="viewport" style="height: 339.8px; touch-action: pan-y;" id="bookss">
                 <!-- Contenedor de libros en fila -->
@@ -62,23 +64,26 @@
                   </div>
                   <% }); %>
                 </div>
-                
-
               </div>
-              
-                <button class="carrButton right" id="buttonR"><div class="arrowR"></div></button>
+              <button class="carrButton right" id="buttonR">
+                <div class="arrowR"></div>
+              </button>
             </div>
           </div>
-          
+
         </div>
         <div id="cardContainer" class="card-container">
           <% books.forEach(element => { %>
+          <a href="./book?id=<%= element.id %>" class="img-related" title="<%= element.title %>">
             <div id="<%= element.id %>" class="card-Book">
               <img src="<%= element.cover %>" alt="<%= element.title %>">
-              <h4 class="black"><%= element.title %></h4>
-              <p class="black"><%= element.author %></p>
-              <p class="black"><%= element.available == 'yes' ? 'Si' : 'No' %></p>
+              <div class="card-info">
+                <p class="black"><%= element.title %></p>
+                <p class="black"><%= element.author %></p>
+              </div>
+              <!-- <p class="black">Disponible: <%= element.available == 'yes' ? 'Si' : 'No' %></p> -->
             </div>
+          </a>
           <% }); %>
         </div>
       </div>

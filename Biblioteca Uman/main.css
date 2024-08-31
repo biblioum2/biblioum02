@@ -49,14 +49,13 @@ body {
     height: 100%;
     margin: 0;
  display: grid;
-    margin-bottom: 200px;
+    margin-bottom: 10px;
 }
 /* Configuracion de contenido sliders */
 #contenido{
     height: auto;
     display: grid;
-    grid-template-rows: 530px 300px;
-    grid-gap: 50px;
+    grid-template-rows: 400px 300px;
     width: 100%;
     justify-items: center;
 }

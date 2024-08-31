@@ -55,8 +55,7 @@ body {
 #contenido{
     height: auto;
     display: grid;
-    grid-template-rows: 530px 300px;
-    grid-gap: 50px;
+    grid-template-rows: 430px 300px;
     width: 100%;
     justify-items: center;
 }
@@ -154,12 +153,14 @@ body {
 .slider1 {
     width: 100%;
     /* max-width: 800px; */
+    height: 400px;
     overflow: hidden;
     position: relative;
 }
 
 .slides {
     display: flex;
+    height: 400px;
     transition: transform 0.5s ease-in-out;
 }
 
@@ -280,26 +281,33 @@ select:active {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 250px;
-    height: 440px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    width: 175px;
+    height: 270px;
     margin: 10px;
+    font-size: smaller  ;
     border: 1px solid #ddd;
     box-shadow: 0 4px 8px rgba( 0, 0, 0, 0.1);
 }
 
 .card-Book img {
-    width: 250px;
-    height: 350px;
+    width: 175px;
+    height: 225px;
 }
 
-.card-Book h4 {
-    height: 20px;
-    text-align: center;
-    white-space: nowrap;
-    margin-top: 15px;
-    margin-bottom: 5px;
+.card-info{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    word-wrap: break-word; /* Permite el ajuste de palabras largas */
+    overflow-wrap: break-word; /* Permite el ajuste de palabras largas */
+    white-space: normal; /* Permite que el texto se envuelva en líneas múltiples */
+    overflow: hidden; /* Oculta el texto que se desborda */
+    margin: 0; /* Ajusta los márgenes si es necesario */
 }
-
 
 .black {
     color: black;
