@@ -129,7 +129,7 @@ router.get('/book/name', async (req, res) => {
   const term = req.query.term || '';
   console.log(`Este es el term ${term}`);
   const book = await getBookLiveSearch(term);
-  res.json(book);
+  res.status(200).json(book);
 });
 
 router.delete('/admin/users/:id', async (req, res) => {
@@ -170,3 +170,4 @@ router.get('/admin/books/success', async (req, res) => {
 
 });
 module.exports = router;
+

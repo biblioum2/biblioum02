@@ -1,5 +1,4 @@
 require("dotenv").config();
-
 const express = require("express");
 const session = require("express-session");
 const cors = require("cors");
@@ -13,14 +12,13 @@ const {
   insertBook,
   insertBookCategory,
 } = require("./queries/inputData");
-
 const app = express();
 const port = 3000;
 
 // Configuración CORS
 app.use(
   cors({
-    origin: "http://localhost:3000", // Permite solicitudes desde tu dominio
+    origin: `http://localhost:${port}`, // Permite solicitudes desde tu dominio
   })
 );
 

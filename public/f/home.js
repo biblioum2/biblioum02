@@ -1,4 +1,4 @@
-import { searchBook } from "./searchBook";
+
 
 
 const $books = document.getElementById('books');
@@ -160,6 +160,7 @@ $contentBooks.appendChild(carruselCelDiv);
 
 /////////////////////////////////////////////////////////////////////////////////
 
+
 // TIMEOUT PARA LIVESEARCH
 const debounce = (func, delay) => {
   let timerId;
@@ -170,20 +171,37 @@ const debounce = (func, delay) => {
 };
 
 // FUNCION LIVESEARCH
-const handleSearch = () => {
+
+// SE OBTIENE EL CONTENEDOR QUE ALMACENA LAS SUGERENCIAS EN HTML
+const $suggestion = document.getElementById("autocomplete-list");
+
+// SE OBTIENE EL ELEMENTO INPUT DE BUSQUEDA 
+const $inputnav = document.getElementById('search-input');
+
+// SE CREA LA FUNCION DE BUSQUEDA
+const handleSearch = async () => {
+
+  // SE INICIALIZA UNA VARIABLE QUE SIMULA UN FRAGMENTO DEL DOM
   const $fragment = document.createDocumentFragment();
 
+  // SE OBTIENE EL VALOR INTRODUCIDO EN EL INPUT
   let term = $inputnav.value.trim();
+  
+  // SE ELIMINAN LOS ELEMENTOS HIJOS DEL CONTENEDOR DE SUGERENCIAS
   while ($suggestion.firstChild) {
     $suggestion.removeChild($suggestion.firstChild);
   }
 
+  // SE VERIFICA QUE EL INPUT TENGA CONTENIDO
   if (term.length > 0) {
+
+    // SE INICIALIZA LA VARIABLE QUERY CON EL VALOR FORMATEADO DEL INPUT
     const query = new URLSearchParams({ term });
 
+    // SE REALIZA LA PETICION A LA RUTA PASANDO EL QUERY
     fetch(`http://localhost:3000/book/name?${query}`)
-      .then(res => res.ok ? res.json() : Promise.reject(res))
-      .then(json => {
+      .then(res => res.ok ? res.json() : Promise.reject(res)) // MANEJO RESPUESTA EXITOSA O RECHAZADA
+      .then(json => { // MANEJA LA RESPUESTA
         json.forEach(el => {
           const $sugres = document.createElement('div');
           $sugres.textContent = el.title;
@@ -202,7 +220,7 @@ const handleSearch = () => {
         });
         $suggestion.appendChild($fragment);
       })
-      .catch(err => {
+      .catch(err => { // SE MANEJA EL ERROR
         console.error('Error desde fetch:', err);
       });
   } else {
@@ -210,18 +228,15 @@ const handleSearch = () => {
   }
 };
 
-// Inicialización de la búsqueda
-const $suggestion = document.getElementById('autocomplete-list');
-const $inputnav = document.getElementById('search-input');
-const debouncedSearch = debounce(handleSearch, 120);
-$inputnav.addEventListener('input', debouncedSearch);
+const debouncedSearch = debounce(handleSearch, 120); // INICIAMOS UNA VARIABLE QUE INCORPORA EL DELAY Y EL SEARCH
+$inputnav.addEventListener('input', debouncedSearch); //INICIA LA BUSQUEDA CUANDO EL SE ESCRIBE EN EL INPUT
 
-$inputnav.addEventListener('focusout', () => {
+$inputnav.addEventListener('focusout', () => {  //REMOVER LAS SUGERENCIAS CUANDO SE DEJA DE HACER FOCUS AL INPUT
   while ($suggestion.firstChild) {
     $suggestion.removeChild($suggestion.firstChild);
   }
 });
 
-$inputnav.addEventListener('focus', () => {
+$inputnav.addEventListener('focus', () => {  // INICIAR LA BUSQUEDA CUANDO SE HACE FOCUS AL INPUT
   debouncedSearch();
 });
