@@ -137,3 +137,25 @@ nav .secondary.mini{
     color: black;
   }
 } /*AJusta el tam de Mobile */
+
+.autocomplete-suggestions{
+    position: absolute;
+    background-color: white;
+    top: 40px;
+    z-index: 100;
+    width: 300px;
+}
+
+.autocomplete-suggestions :first-child{
+    margin-top: 2px;
+}
+
+.autocomplete-suggestions > div {
+    color: #000;
+    height: 26px;
+}
+
+.autocomplete-suggestions > div:hover{
+    background-color: #ddd9d9;
+    cursor: pointer;
+}

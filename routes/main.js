@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cookieParser = require('cookie-parser');
-const { getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById, getBooksByCategory} = require('../queries/getData');
+const { getBookLiveSearch, getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById, getBooksByCategory} = require('../queries/getData');
 const { deleteUser } = require('../queries/deleteData');
 router.use(cookieParser());
 
@@ -122,6 +122,14 @@ router.get('/admin/user/data', async (req, res) => {
   console.log(`Este es el term ${term}`);
   const users = await getUserLiveSearch(term);
   res.json(users);
+});
+
+// RUTA PARA BUSCADOR DE LIBROS POR NOMBRE
+router.get('/book/name', async (req, res) => {
+  const term = req.query.term || '';
+  console.log(`Este es el term ${term}`);
+  const book = await getBookLiveSearch(term);
+  res.json(book);
 });
 
 router.delete('/admin/users/:id', async (req, res) => {

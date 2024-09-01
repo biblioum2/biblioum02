@@ -138,6 +138,21 @@ const getUserLiveSearch = async (name) => {
   }
 };
 
+const getBookLiveSearch = async (name) => {
+  const query = `
+        SELECT * FROM books WHERE title ILIKE '%' || $1 || '%' LIMIT 10;
+    `;
+  const value = [name];
+  try {
+    const res = await pool.query(query, value);
+    console.log("El get book live es: ", res.rows[0]);
+    return res.rows;
+  } catch (error) {
+    console.log("Error al consultar usuario", error);
+    throw error;
+  }
+};
+
 // CATEGORIAS
 async function getAllCategories() {
   const query = `
@@ -191,6 +206,7 @@ module.exports = {
   getAllCategories,
   getBooksByCategory,
   getBookDetailsById,
+  getBookLiveSearch,
 };
 
 
