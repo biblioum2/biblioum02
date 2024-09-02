@@ -228,7 +228,7 @@ const handleSearch = async () => {
   }
 };
 
-const debouncedSearch = debounce(handleSearch, 120); // INICIAMOS UNA VARIABLE QUE INCORPORA EL DELAY Y EL SEARCH
+const debouncedSearch = debounce(handleSearch, 220); // INICIAMOS UNA VARIABLE QUE INCORPORA EL DELAY Y EL SEARCH
 $inputnav.addEventListener('input', debouncedSearch); //INICIA LA BUSQUEDA CUANDO EL SE ESCRIBE EN EL INPUT
 
 $inputnav.addEventListener('focusout', () => {  //REMOVER LAS SUGERENCIAS CUANDO SE DEJA DE HACER FOCUS AL INPUT
@@ -239,4 +239,11 @@ $inputnav.addEventListener('focusout', () => {  //REMOVER LAS SUGERENCIAS CUANDO
 
 $inputnav.addEventListener('focus', () => {  // INICIAR LA BUSQUEDA CUANDO SE HACE FOCUS AL INPUT
   debouncedSearch();
+});
+
+$inputnav.addEventListener('keydown', (event) => {
+  if (event.key === 'Enter') {
+    const $firstChild = $suggestion.firstChild;
+    window.location.href = `./book?id=${$firstChild.id}`;
+  }
 });

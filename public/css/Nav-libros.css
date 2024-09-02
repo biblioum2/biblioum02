@@ -7,6 +7,7 @@ nav{
 
 .primary {
     position: relative;
+    margin-left: 300px;
 }
 
 input{
@@ -46,6 +47,7 @@ nav .mobile{
 
 nav .Logo{
     min-width: 250px;
+    margin-left: 40px;
 }
 
 nav a {

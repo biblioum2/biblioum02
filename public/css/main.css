@@ -89,7 +89,7 @@ body {
 
 /* Configuracion de slider 2 area de libros*/
 #vista-de-libros {
-  padding: 0;
+  padding: 40px 0px;
   overflow-x: hidden;
  overflow-y: hidden;  
     width: 87%;
@@ -153,14 +153,15 @@ body {
 .slider1 {
     width: 100%;
     /* max-width: 800px; */
-    height: 400px;
+    height: 430px;
+    margin-bottom: 40px;
     overflow: hidden;
     position: relative;
 }
 
 .slides {
     display: flex;
-    height: 400px;
+    height: 430px;
     transition: transform 0.5s ease-in-out;
 }
 
@@ -270,7 +271,7 @@ select:active {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin-top:150px;
+    margin-top:270px;
     width: 85%;
     gap: 20px;
     height: max-content;

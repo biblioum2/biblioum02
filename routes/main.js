@@ -127,7 +127,7 @@ router.get('/admin/user/data', async (req, res) => {
 // RUTA PARA BUSCADOR DE LIBROS POR NOMBRE
 router.get('/book/name', async (req, res) => {
   const term = req.query.term || '';
-  console.log(`Este es el term ${term}`);
+  // console.log(`Este es el term ${term}`);
   const book = await getBookLiveSearch(term);
   res.status(200).json(book);
 });
