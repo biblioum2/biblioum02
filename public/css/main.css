@@ -325,18 +325,29 @@ select:active {
 
 }
 
+.pagination-container > button:hover,
+.pagination-page-btns > button:hover {
+    cursor: pointer;
+    background-color: #9c9c9c;
+}
+
 .pagination-btn {
     width: 40px;
     height: 40px;
     color: black;
 }
 
-.pagination-btn:hover {
-    cursor: pointer;
+.pagination-page-btns {
+    display: flex;
+    gap: 10px;
 }
 
 .pagination-btn-controller {
     width: 70px;
     height: 40px;
     color: black;
+}
+
+.pagination-btn-focus {
+    background-color: #9c9c9c;
 }

@@ -39,6 +39,7 @@ router.get('/', async (req, res) => {
   const categories = await getAllCategories();
   const totalBooks = await getBooksTotal();
   const pagination = totalBooks === 0 ? 1 : Math.round(totalBooks / 20);
+  const currentPage = 1;
   console.log(`Este es el numero de paginas: ${pagination}`);
   
   const sliderImgs = {
@@ -54,6 +55,7 @@ router.get('/', async (req, res) => {
     const booksjson = JSON.stringify(books);
     //  console.log(`Esto es el resultado en main books: ${booksjson}`);
     res.render('main', {
+        currentPage: currentPage,
         pagination: pagination,
         totalBooks: totalBooks,
         offset: offset,
