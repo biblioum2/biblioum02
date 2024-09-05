@@ -10,7 +10,7 @@ const insertUser = async (username, passwordHash, email, role) => {
 
   try {
     const res = await pool.query(query, values);
-    console.log("Usuario insertado:", res.rows);
+    // console.log("Usuario insertado:", res.rows);
     return res.rows[0]; // Opcional: devolver el usuario insertado
   } catch (error) {
     console.error("Error al insertar usuario:", error);
@@ -277,8 +277,9 @@ async function insertBookCategory(book_id, category_id) {
     console.error("Error creating book-category relationship", err);
   }
 }
+// INSERTA CATEGORIAS A LIBROS
 function insertarVarios(){
-  for (let index = 1; index < 8; index++) {
+  for (let index = 8; index < 81; index++) {
     insertBookCategory(index,8); 
   }
 };
@@ -452,7 +453,14 @@ return console.log('exito');
   // await pool.end();
 };
 
-// insertBooks();
+async function insertarLibrosCiclo () {
+  for (let index = 0; index < 40; index++) {
+    await insertBooks();
+  }
+}
+
+// insertarLibrosCiclo();
+
 
 
 

@@ -56,6 +56,15 @@ CREATE TABLE IF NOT EXISTS orders (
 );
 `;
 
+const createTableStatusOrder = `
+CREATE TABLE IF NOT EXISTS order_status (
+    order_id INT PRIMARY KEY,
+    status VARCHAR(50) NOT NULL CHECK (status IN ('Pendiente', 'Devuelta', 'No devuelta')),
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+);
+`
+
+
 const createTableBooksCategories = `
 CREATE TABLE IF NOT EXISTS book_categories (
     book_id INT,
@@ -90,6 +99,8 @@ const createTables = async () => {
         console.log('Tabla de favoritos creada');
         await pool.query(createTableOrders);
         console.log('Tabla de órdenes creada');
+        await pool.query(createTableStatusOrder);
+        console.log('Tabla status de órdenes creada');
         await pool.query(createTableActivityLog);
         console.log('Tabla de registros de actividad creada');
     } catch (error) {

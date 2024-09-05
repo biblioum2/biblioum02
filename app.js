@@ -1,17 +1,27 @@
 require("dotenv").config();
+// Carga las variables de entorno desde un archivo .env en process.env para que estén disponibles en la aplicación.
 const express = require("express");
+// Importa Express, un framework para Node.js que facilita la creación de aplicaciones web y APIs.
 const session = require("express-session");
+// Importa el middleware express-session, que permite la gestión de sesiones en la aplicación, almacenando y persistiendo datos de usuario entre peticiones.
 const cors = require("cors");
+// Importa el middleware CORS (Cross-Origin Resource Sharing), que permite o restringe las solicitudes de recursos en el servidor desde diferentes dominios.
 const bodyParser = require("body-parser");
+// Importa body-parser, un middleware para analizar el cuerpo de las solicitudes HTTP, permitiendo acceder a los datos enviados en formularios o en formato JSON.
 const path = require("path");
+// Importa el módulo path de Node.js, que proporciona utilidades para trabajar con rutas de archivos y directorios.
 const cookieParser = require("cookie-parser");
-const pool = require("./config/database"); // Importa la configuración de la base de datos
+// Importa cookie-parser, un middleware que permite analizar las cookies enviadas en las solicitudes HTTP y hacerlas accesibles en `req.cookies`.
+const pool = require("./config/database");
+// Importa la configuración de la base de datos desde el archivo `database.js` (o el nombre que corresponda), que típicamente configura y exporta un pool de conexiones para interactuar con la base de datos.
+
 const { getUser } = require("./queries/getData");
 const {
   insertUser,
   insertBook,
   insertBookCategory,
 } = require("./queries/inputData");
+
 const app = express();
 const port = 3000;
 
@@ -248,6 +258,10 @@ app.post("/login", async (req, res) => {
   } catch (error) {
     console.log("Error al validar usuario: ", error);
   }
+});
+
+app.post("/submit/order", (req, res) => {
+  alert('funciona');
 });
 
 app.post("/admin/books", async (req, res) => {

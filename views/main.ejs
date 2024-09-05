@@ -49,7 +49,7 @@
                 <div class="arrowL"></div>
               </button>
               <!-- Contenedor de carrusel -->
-              <div class="viewport" style="height: 339.8px; touch-action: pan-y;" id="bookss">
+              <div class="viewport" style="height: 356.8px; touch-action: pan-y;" id="bookss">
                 <!-- Contenedor de libros en fila -->
                 <div id="caruselContainer" class="sliderCarr" style="left: 0px; transform: translate();">
                   <!-- Funcion de slider dentro del contenedor de libros en fila -->
@@ -85,6 +85,13 @@
             </div>
           </a>
           <% }); %>
+          <div class="pagination-container">
+            <button class="pagination-btn-controller" >Anterior</button>
+            <% for (let i = 1; i <= Math.min(pagination, 10); i++ ) { %>
+              <button id="<%= i %>" data-offset = "<%= i  %>" class="pagination-btn" ><%= i %></button>
+            <% } %>
+              <button class="pagination-btn-controller" >Siguiente</button>
+          </div>
         </div>
       </div>
     </div> <!-- Contenido central -->
