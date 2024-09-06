@@ -4,14 +4,15 @@ const { parseCIDR } = require("ipaddr.js");
 
 // OBTENCION DE LIBROS GENERAL
 
-const getBooks = async () => {
+const getBooks = async (limit, offset) => {
   const query = `
 SELECT *
 FROM books
-
+LIMIT $1 OFFSET $2;
   `;
+  const values = [limit, offset];
   try {
-    const res = await pool.query(query);
+    const res = await pool.query(query, values);
     console.log(`LIBROS: ${res.rows}`);
     const data= JSON.stringify(res.rows);
     // console.log(data);
@@ -51,14 +52,43 @@ const getBookDetailsById = async (bookId) => {
       throw error;
   }
 };
+// OBTENER NUMERO DE LIBROS TOTALES - USADO EN PAGINA DE INICIO
+
+const getBooksTotal = async (category) => {
+  let query = `
+    SELECT COUNT(*) AS total
+    FROM books
+  `;
+  const queryParams = [];
+
+  if (category) {
+    query += `
+      LEFT JOIN book_categories ON books.id = book_categories.book_id
+      LEFT JOIN categories ON categories.id = book_categories.category_id
+      WHERE categories.name = $1
+    `;
+    queryParams.push(category);
+  }
+
+  try {
+    const res = await pool.query(query, queryParams);
+    return res.rows[0].total;
+  } catch (error) {
+    console.log("Error al obtener los libros", error);
+  }
+};
+
+// getBooksTotal()
+
+
 // OBTENCION DE LIBROS POR CATEGORIA
 
 const getBooksByCategory = async (categoryId) => {
   const query = `
       SELECT b.*
-FROM books b
-JOIN book_categories bc ON b.id = bc.book_id
-WHERE bc.category_id = $1;
+      FROM books b
+      JOIN book_categories bc ON b.id = bc.book_id
+      WHERE bc.category_id = $1;
 
 
   `;
@@ -207,6 +237,7 @@ module.exports = {
   getBooksByCategory,
   getBookDetailsById,
   getBookLiveSearch,
+  getBooksTotal,
 };
 
 

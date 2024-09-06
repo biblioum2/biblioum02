@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cookieParser = require('cookie-parser');
-const { getBookLiveSearch, getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById, getBooksByCategory} = require('../queries/getData');
+const { getBooksTotal, getBookLiveSearch, getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById, getBooksByCategory} = require('../queries/getData');
 const { deleteUser } = require('../queries/deleteData');
 router.use(cookieParser());
 
@@ -37,6 +37,11 @@ router.get('/', async (req, res) => {
   const username = req.cookies.username;
   const email = req.cookies.email;
   const categories = await getAllCategories();
+  const totalBooks = await getBooksTotal();
+  const pagination = totalBooks === 0 ? 1 : Math.round(totalBooks / 20);
+  const currentPage = 1;
+  console.log(`Este es el numero de paginas: ${pagination}`);
+  
   const sliderImgs = {
     slider1: 'img/sliders/imagen1.jpg',
     slider2: 'img/sliders/imagen2.jpg',
@@ -44,11 +49,24 @@ router.get('/', async (req, res) => {
     slider4: 'img/sliders/imagen4.jpg'
 
   }
+  let offset = 0;
   try {
-    const books = await getBooks();
+    const books = await getBooks(20, offset);
     const booksjson = JSON.stringify(books);
-     console.log(`Esto es el resultado en main books: ${booksjson}`);
-    res.render('main', { categories: categories, title: 'Página de Inicio', sliderImgs: sliderImgs, books: books, authToken: authToken, isAdmin: isAdmin, user: user, });
+    //  console.log(`Esto es el resultado en main books: ${booksjson}`);
+    res.render('main', {
+        currentPage: currentPage,
+        pagination: pagination,
+        totalBooks: totalBooks,
+        offset: offset,
+        categories: categories,
+        title: 'Página de Inicio',
+        sliderImgs: sliderImgs,
+        books: books,
+        authToken: authToken,
+        isAdmin: isAdmin,
+        user: user,
+      });
   } catch (error) {
     console.log(`Error al consultar`, error);
     res.status(500).send('Error al obtener los libros main');
@@ -65,6 +83,7 @@ router.get('/book', async (req, res) => {
  
  res.render('book', { bookData: data, title: data.title, currentPage: 'book', user: user, isAdmin: isAdmin, authToken: authToken });
 });
+// OBTENER LIBROS POR CATEGORIA
 
 router.get('/category/:catId', async (req, res) => {
   const categoryId = req.params.catId;
@@ -102,7 +121,6 @@ router.get('/admin/users', async (req, res) => {
 
 // Otras rutas básicas pueden ir aquí
 router.get('/admin/users/success', async (req, res) => {
-  const users = await getUsers(0);
   // res.render('users', { title: 'users', users: users, currentPage: 'users', success: true });
   res.redirect(`/admin/users?success=true`);
 });
@@ -127,7 +145,7 @@ router.get('/admin/user/data', async (req, res) => {
 // RUTA PARA BUSCADOR DE LIBROS POR NOMBRE
 router.get('/book/name', async (req, res) => {
   const term = req.query.term || '';
-  console.log(`Este es el term ${term}`);
+  // console.log(`Este es el term ${term}`);
   const book = await getBookLiveSearch(term);
   res.status(200).json(book);
 });

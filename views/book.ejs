@@ -16,6 +16,27 @@
     <body>
         <div class = "contenedor-principal">
           <%- include('./partials/header') %>
+          <!-- Modal -->
+<div id="requestBookModal" class="modal">
+    <div class="modal-content">
+        <span id="close-modal" class="close">&times;</span>
+        <h2>Solicitar Libro</h2>
+        <form id="requestBookForm" method="post" action="http://localhost:3000/submit/order">
+            <label for="bookTitle">Libro:</label>
+            <input type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
+
+            <label for="requestDate">Fecha de Solicitud:</label>
+            <input type="date" id="requestDate" name="requestDate"><br><br>
+
+            <label for="returnDate">Fecha de Entrega:</label>
+            <input type="date" id="returnDate" name="returnDate"><br><br>
+            <div class="submit-btn-container">
+                <button id="sub-btn-2" class="submit-modal-btn-2" type="button">Cancelar</button>
+                <button id="sub-btn-1" class="submit-modal-btn-1" type="submit">Enviar</button>
+            </div>
+        </form>
+    </div>
+</div>
         <div class="contenedor-libros">
             <div id="botones-lateral">
                 <div>
@@ -46,8 +67,8 @@
 
                 </div>
                 <div class="botones">
-                <div class="btn-1">
-                  <a href=""><span>SOLICITAR</span></a>
+                <div class="btn-1" id="solicitud-btn">
+                  <a><span>SOLICITAR</span></a>
                </div>
                    <!-- Created by   http://grohit.com/   -->
                <div class="btn-2">
@@ -73,7 +94,7 @@
           </div>
           <%- include(`./partials/footer`) %>
 
-        <script src="f/book.js">            
+        <script src="js/book.js">            
         </script>
     </body>
 </html>

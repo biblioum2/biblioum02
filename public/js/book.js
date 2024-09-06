@@ -1,3 +1,4 @@
+// logica para desplegar la descripcion
 const $showMore = document.getElementById("showMore");
 $showMore.addEventListener('click', () => {
     const $description = document.getElementById('t1');
@@ -78,3 +79,16 @@ const debounce = (func, delay) => {
     debouncedSearch();
   });
   
+// logica para solicitar libro
+
+const $solicitarBtn =  document.getElementById('solicitud-btn');
+const $solicitudModal = document.getElementById('requestBookModal');
+const $submitCancelBtn = document.getElementById('sub-btn-2');
+
+$submitCancelBtn.addEventListener('click', () => {
+  $solicitudModal.style.display = 'none';
+});
+
+$solicitarBtn.addEventListener('click', () => {
+  $solicitudModal.style.display = 'block';
+});

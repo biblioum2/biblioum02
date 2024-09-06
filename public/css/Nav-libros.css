@@ -1,161 +1,165 @@
-nav{
-    background-color: #000;
-    color: #FFFFFF;
-    width: 100%;
-    font-family: Sans-serif;
-}
-
-.primary {
-    position: relative;
-}
-
-input{
-    width: 300px;
-    padding: 10px;
-    padding-right: 35px;
-    border-radius: 5px;
-    border: 0;
-    outline: none;
-    font-size: 1rem;
-    color: #000000;
-    font-family: sans-serif;
-    
-}
-
-button{
-    background-color: crimson;
-    padding: 10px;
-    position: absolute;
-    border: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    border-radius: 0 5px 5px 0;
-    color: #FFFFFF;
-    cursor: pointer;
-}
-
-button:hover{
-    background-color: darkred;
-}
-
-nav .mobile{
-    display: none;
-}
-
-nav .Logo{
-    min-width: 250px;
-}
-
-nav a {
-    color: #FFFFFF;
-    text-decoration: none;
-    display: block;
-    padding: 20px 25px;
-}
-
-nav a:hover{
-    color: #000000;
-    background-color: #00c3ff;
-}
-
-nav .desktop{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 0 20px;   
-}
-
-nav .desktop .primary,
-nav .desktop .secondary
-{
-    display: flex;
-}
-
-nav .secondary.mini{
-    display: none;
-}
-
-@media screen and (max-width: 893px){
-    nav .Logo {
-        min-width: 100px;  /* Ajusta el logo */
+    nav{
+        position: sticky;
+        background-color: #000;
+        color: #FFFFFF;
+        width: 100%;
+        font-family: Sans-serif;
     }
-    nav .secondary.full{
-        display: none;   /*Esconde el menu del desktop */
+
+    .primary {
+        position: relative;
+        margin-left: 300px;
     }
-    
-    nav .secondary.mini{
-        display: block !important; /* trabaja el boton More */
+
+    input{
+        width: 300px;
+        padding: 10px;
+        padding-right: 35px;
+        border-radius: 5px;
+        border: 0;
+        outline: none;
+        font-size: 1rem;
+        color: #000000;
+        font-family: sans-serif;
+        
     }
-    
-    nav .secondary.mini .submenu{
-        background-color: #000000;
-        position: absolute;      /* Esconde el submenu dejando solo el more */
-        display: none;
-        width: 200px;
+
+    .search-nav-btn {
+        background-color: crimson;
+        padding: 10px;
+        position: absolute;
+        border: 0;
+        top: 0;
+        bottom: 0;
         right: 0;
+        margin: auto;
+        border-radius: 0 5px 5px 0;
+        color: #FFFFFF;
+        cursor: pointer;
     }
+
+    button:hover{
+        background-color: darkred;
+    }
+
+    nav .mobile{
+        display: none;
+    }
+
+    nav .Logo{
+        min-width: 250px;
+        margin-left: 40px;
+    }
+
+    nav a {
+        color: #FFFFFF;
+        text-decoration: none;
+        display: block;
+        padding: 20px 25px;
+    }
+
+    nav a:hover{
+        color: #000000;
+        background-color: #00c3ff;
+    }
+
+    nav .desktop{
+        position: sticky;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;   
+    }
+
+    nav .desktop .primary,
+    nav .desktop .secondary
+    {
+        display: flex;
+    }
+
+    nav .secondary.mini{
+        display: none;
+    }
+
+    @media screen and (max-width: 893px){
+        nav .Logo {
+            min-width: 100px;  /* Ajusta el logo */
+        }
+        nav .secondary.full{
+            display: none;   /*Esconde el menu del desktop */
+        }
+        
+        nav .secondary.mini{
+            display: block !important; /* trabaja el boton More */
+        }
+        
+        nav .secondary.mini .submenu{
+            background-color: #000000;
+            position: absolute;      /* Esconde el submenu dejando solo el more */
+            display: none;
+            width: 200px;
+            right: 0;
+        }
+        
+        nav .secondary.mini:hover .submenu{ /*Cuando te posicionas sobre More trabaja
+                                            con el submenu*/
+        display: block;
+        }
+    } /* Ajusta el tam de Desktop mini */
+    @media screen and (max-width: 516px){
     
-    nav .secondary.mini:hover .submenu{ /*Cuando te posicionas sobre More trabaja
-                                         con el submenu*/
-    display: block;
+    nav .desktop {
+        display: none;
+    } /* Se oculta */
+
+    nav .mobile {
+        display: block;
     }
-} /* Ajusta el tam de Desktop mini */
-@media screen and (max-width: 516px){
- 
-  nav .desktop {
-    display: none;
-  } /* Se oculta */
 
-   nav .mobile {
-    display: block;
-  }
+    nav .mobile .header {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
 
-  nav .mobile .header {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-between;
-  }
+    nav .mobile .header .logo {
+        flex: 1;
+        text-align: center;
+    }
 
-  nav .mobile .header .logo {
-    flex: 1;
-    text-align: center;
-  }
+    nav .mobile .header .more button {
+        padding: 20px;
+        cursor: pointer;
+        background-color: transparent;
+        border: none;
+        color: white;
+        font-size: 16px;
+    }
+    nav .mobile .header .more button:hover {
+        background-color: white;
+        color: black;
+    }
+    } /*AJusta el tam de Mobile */
 
-  nav .mobile .header .more button {
-    padding: 20px;
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    color: white;
-    font-size: 16px;
-  }
-  nav .mobile .header .more button:hover {
-    background-color: white;
-    color: black;
-  }
-} /*AJusta el tam de Mobile */
+    .autocomplete-suggestions{
+        position: absolute;
+        background-color: white;
+        top: 40px;
+        z-index: 100;
+        width: 300px;
+    }
 
-.autocomplete-suggestions{
-    position: absolute;
-    background-color: white;
-    top: 40px;
-    z-index: 100;
-    width: 300px;
-}
+    .autocomplete-suggestions :first-child{
+        margin-top: 2px;
+    }
 
-.autocomplete-suggestions :first-child{
-    margin-top: 2px;
-}
+    .autocomplete-suggestions > div {
+        color: #000;
+        height: 26px;
+    }
 
-.autocomplete-suggestions > div {
-    color: #000;
-    height: 26px;
-}
-
-.autocomplete-suggestions > div:hover{
-    background-color: #ddd9d9;
-    cursor: pointer;
-}
+    .autocomplete-suggestions > div:hover{
+        background-color: #ddd9d9;
+        cursor: pointer;
+    }
