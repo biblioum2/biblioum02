@@ -22,13 +22,43 @@ body {
 #Principal {
     background-color: #FFF;
 }
+
 .header {
     width: 100%;
     background-color: #00455d;
     color: #FFF;
-    height: auto;
-    padding: 2%;
-   }
+    height: 60px;
+    position: relative;
+  }
+  
+  .header .headerstyle {
+    display: flex;
+    margin: auto;
+    width: 100%; /* Ajustar al 100% del ancho del contenedor */
+    justify-content: space-between; /* Distribuye los divs horizontalmente */
+    align-items: center; /* Centra los elementos verticalmente */
+    position: relative; /* Cambiado de 'absolute' a 'relative' */
+    
+  }
+  
+  .headerstyle div {
+    color: #FFF;
+    background-color: #00455d; /* Ejemplo de estilo adicional para los divs */
+    flex: 1; /* Para que cada caja ocupe espacio proporcional */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 60px;
+  }
+
+  .headerstyle p{
+    display: flex;
+    width: 100%;
+    justify-content: center;
+  }
+  
+
+ 
 /* Imagen de Header (libreria) */
 #Cabecera {
     background: url(../img/barraNav.jpeg);
@@ -264,7 +294,6 @@ select:active {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    margin-top:270px;
     width: 85%;
     gap: 20px;
     height: max-content;
