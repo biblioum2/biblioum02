@@ -73,7 +73,7 @@
           </div>
 
         </div>
-        <div id="cardContainer" class="card-container">
+        <div id="cardContainer" class="card-container" data-totalpages="<%= pagination %>">
           <% books.forEach(element => { %>
           <a href="./book?id=<%= element.id %>" class="img-related" title="<%= element.title %>">
             <div id="<%= element.id %>" class="card-Book">
@@ -86,11 +86,11 @@
             </div>
           </a>
           <% }); %>
-          <div class="pagination-container">
+          <div id="pages-container" class="pagination-container">
             <button class="pagination-btn-controller">Anterior</button>
-            <div id="pagesContainer" class="pagination-page-btns" data-totalpages="<%= pagination %>">
+            <div id="pagesContainer" class="pagination-page-btns">
               <% for (let i = 1; i <= pagination; i++ ) { %>
-                <button id="pagination-btn-<%= i %>" data-page="<%= i %>" data-totalpages="<%= pagination %>" class="pagination-btn <%= currentPage == i ? 'pagination-btn-focus' : '' %>"><%= i %></button>
+                <button id="pagination-btn-<%= i %>" data-page="<%= i %>" class="pagination-btn <%= currentPage == i ? 'pagination-btn-focus' : '' %>"><%= i %></button>
               <% } %>
             </div>
             <button class="pagination-btn-controller">Siguiente</button>
