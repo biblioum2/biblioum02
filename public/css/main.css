@@ -22,6 +22,13 @@ body {
 #Principal {
     background-color: #FFF;
 }
+.header {
+    width: 100%;
+    background-color: #00455d;
+    color: #FFF;
+    height: auto;
+    padding: 2%;
+   }
 /* Imagen de Header (libreria) */
 #Cabecera {
     background: url(../img/barraNav.jpeg);
@@ -62,18 +69,16 @@ body {
 
 
 /* Configuracion de slider 1 promocion */
-#contenido #slider1{
+#contenido .slider1{
     width: 100%;
     height: 600px;
     display: block;
-    
 }
 
-
-#contenido #slider1 img{
+#contenido .slider1 .slides img{
     height: 100%;
-    
 }
+
 
 /* Configuracion de slider 2 area de libros*/
 #vista-de-libros {
@@ -142,15 +147,14 @@ body {
 .slider1 {
     width: 100%;
     /* max-width: 800px; */
-    height: 430px;
-    margin-bottom: 40px;
+    height: 400px;
     overflow: hidden;
     position: relative;
 }
 
 .slides {
     display: flex;
-    height: 430px;
+    height: 100%;
     transition: transform 0.5s ease-in-out;
 }
 
@@ -159,12 +163,12 @@ body {
     flex-shrink: 0;
 }
 
+
 .slides.img {
     width: 100%;
     height: auto;
     display: block;
 }
-
 /* Estilo general para el select */
 select {
     appearance: none; /* Elimina el estilo por defecto del navegador */
