@@ -13,7 +13,7 @@ LIMIT $1 OFFSET $2;
   const values = [limit, offset];
   try {
     const res = await pool.query(query, values);
-    console.log(`LIBROS: ${res.rows}`);
+    // console.log(`LIBROS: ${res.rows}`);
     const data= JSON.stringify(res.rows);
     // console.log(data);
     return res.rows;
