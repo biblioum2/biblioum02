@@ -10,6 +10,7 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     overflow-y: auto;
+    background-color: #ebebeb;
 }
 /*Configuracion de todo el contenido de la pagina*/ 
 .container-main{
@@ -273,10 +274,10 @@ select:active {
     justify-content: center;
     align-items: center;
     margin-top:270px;
+    background-color: white;
     width: 85%;
     gap: 20px;
     height: max-content;
-    
 }
 
 .card-Book{

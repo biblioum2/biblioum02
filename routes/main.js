@@ -83,6 +83,17 @@ router.get('/book', async (req, res) => {
  
  res.render('book', { bookData: data, title: data.title, currentPage: 'book', user: user, isAdmin: isAdmin, authToken: authToken });
 });
+
+router.get('/page/:id', async (req, res) => {
+  const booksOffset = req.params.id;
+  try {
+    const pageBooks = await getBooks(20, booksOffset);
+    res.status(200).json(pageBooks);
+  } catch (error) {
+    console.log('error en la ruta page/id', error);
+    
+  }
+});
 // OBTENER LIBROS POR CATEGORIA
 
 router.get('/category/:catId', async (req, res) => {
