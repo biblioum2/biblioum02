@@ -263,11 +263,9 @@ const uploadPaginationButtons = (currentPage, totalPages) => {
   $pagesContainer.appendChild($fragment);
 
   // Añadir eventos de clic después de añadir los botones al DOM
-  document.querySelectorAll(".pagination-btn").forEach((el) => {
-    el.addEventListener("click", (event) => {
-      const page = parseInt(event.target.dataset.page);
-      uploadPaginationButtons(page, totalPages);
-    });
+  document.querySelectorAll('.pagination-btn').forEach(el => {
+    el.removeEventListener('click', handlePaginationClick); // Remover el evento si ya existe
+    el.addEventListener('click', handlePaginationClick);
   });
 
   // Controlar visibilidad y funcionalidad de botones Anterior y Siguiente
@@ -286,30 +284,119 @@ const uploadPaginationButtons = (currentPage, totalPages) => {
 
   prevButton.addEventListener("click", handlePrevClick);
   nextButton.addEventListener("click", handleNextClick);
+  
+};
+
+const updateBookCards = async (page) => {
+  const booksOffset = page * 20 - 20;
+  console.log('esta es la pagina', page);
+  
+    try {
+      const totalBooks = await fetch(`http://localhost:3000/page/${booksOffset}`);
+      const data = await totalBooks.json();
+      const $fragment = document.createDocumentFragment();
+      const $bookContainer = document.getElementById('cardContainer');
+      const $paginationContainer = document.getElementById('pages-container');
+
+      const children = Array.from($bookContainer.children);
+
+      children.forEach(child => {
+        if (child !== $paginationContainer) {
+          $bookContainer.removeChild(child);
+        }
+      });
+
+      data.forEach(element => {
+        // Crea un nuevo elemento <a> y sus hijos
+        const a = document.createElement('a');
+        a.href = `./book?id=${element.id}`;
+        a.className = 'img-related';
+        a.title = element.title;
+    
+        const divCard = document.createElement('div');
+        divCard.id = element.id;
+        divCard.className = 'card-Book';
+    
+        const img = document.createElement('img');
+        img.src = element.cover;
+        img.alt = element.title;
+    
+        const divInfo = document.createElement('div');
+        divInfo.className = 'card-info';
+    
+        const pTitle = document.createElement('p');
+        pTitle.className = 'black';
+        pTitle.textContent = element.title;
+    
+        const pAuthor = document.createElement('p');
+        pAuthor.className = 'black';
+        pAuthor.textContent = element.author;
+    
+        // Ensambla los elementos
+        divInfo.appendChild(pTitle);
+        divInfo.appendChild(pAuthor);
+        divCard.appendChild(img);
+        divCard.appendChild(divInfo);
+        a.appendChild(divCard);
+    
+        // Agrega el elemento <a> al contenedor fragment
+        $fragment.appendChild(a);
+      });
+      $bookContainer.insertBefore($fragment, $paginationContainer);
+
+    } catch (error) {
+      console.log(error);
+      
+    }
+  };
+
+const handlePaginationClick = event => {
+  const page = parseInt(event.target.dataset.page);
+  const $totalPagesContainer = document.getElementById('cardContainer');
+  const totalPages = parseInt(
+    $totalPagesContainer.dataset.totalpages
+  );
+  console.log('page del handle', page);
+  uploadPaginationButtons(page, totalPages);
+  updateBookCards(page);
+  window.scrollTo({ top: 950, behavior: 'smooth' });
 };
 
 // Funciones para manejar los clics en los botones de navegación
 const handlePrevClick = () => {
+  const $totalPagesContainer = document.getElementById('cardContainer');
+  
+
   const currentPage = parseInt(
     document.querySelector(".pagination-btn-focus").dataset.page
   );
   const totalPages = parseInt(
-    document.getElementById("pagesContainer").dataset.totalpages
+    $totalPagesContainer.dataset.totalpages
   );
+  console.log('current page de click izquierdo', currentPage);
+  console.log('total pages de click izquierdo', totalPages);
+  
   if (currentPage > 1) {
     uploadPaginationButtons(currentPage - 1, totalPages);
+    updateBookCards(currentPage - 1);
+    window.scrollTo({ top: 950, behavior: 'smooth' });
   }
 };
 
 const handleNextClick = () => {
+  const $totalPagesContainer = document.getElementById('cardContainer');
   const currentPage = parseInt(
     document.querySelector(".pagination-btn-focus").dataset.page
   );
   const totalPages = parseInt(
-    document.getElementById("pagesContainer").dataset.totalpages
+    $totalPagesContainer.dataset.totalpages
   );
+  console.log('current page de click derecho', currentPage + 1);
+  console.log('total pages de click derecho', totalPages);
   if (currentPage < totalPages) {
     uploadPaginationButtons(currentPage + 1, totalPages);
+    updateBookCards(currentPage + 1);
+    window.scrollTo({ top: 950, behavior: 'smooth' });
   }
 };
 
@@ -320,6 +407,5 @@ document.addEventListener("DOMContentLoaded", () => {
   const totalPages = parseInt(
     $totalPagesContainer.getAttribute("data-totalPages")
   );
-
   uploadPaginationButtons(initialPage, totalPages);
 });
