@@ -1,6 +1,6 @@
     nav{
         position: sticky;
-        background-color: #000;
+        background-color: #FFF;
         color: #FFFFFF;
         width: 100%;
         font-family: Sans-serif;
@@ -8,11 +8,10 @@
 
     .primary {
         position: relative;
-        margin-left: 300px;
     }
 
     input{
-        width: 300px;
+        width: 500px;
         padding: 10px;
         padding-right: 35px;
         border-radius: 5px;
@@ -21,6 +20,7 @@
         font-size: 1rem;
         color: #000000;
         font-family: sans-serif;
+        box-shadow: 1px 1px 4px #000;
         
     }
 
@@ -46,13 +46,19 @@
         display: none;
     }
 
+ /* Letras de UMAN en Nav */   
     nav .Logo{
-        min-width: 250px;
+        font-weight: 700;
+        color: #f07a05;
+        font-size: 2.5rem;
+        font-family: "Jost", sans-serif;
+        line-height: 1.2;
+        cursor: pointer;
         margin-left: 40px;
     }
 
     nav a {
-        color: #FFFFFF;
+        color: #000;
         text-decoration: none;
         display: block;
         padding: 20px 25px;
