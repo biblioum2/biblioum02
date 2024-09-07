@@ -244,11 +244,7 @@ body {
     display: block;
 }
 /* Estilo general para el select */
-select {
-    -moz-appearance: none; /* Compatibilidad con Firefox */
-    border: 2px solid #000; /* Borde del select */
-    border-radius: 0px 5px 5px 0px; /* Esquinas redondeadas */
-    font-size: 16px; /* Tamaño de la fuente */
+.header-select {
     color: #000; /* Color del texto */
     box-sizing: border-box; /* Incluye el borde y el relleno en el tamaño total */
     cursor: pointer; /* Cambia el cursor al pasar sobre el select */
@@ -277,12 +273,18 @@ select:active {
 }
 
 /* Estilo del contenedor del select */
-.content-title select {
-    margin-top: 5px; /* Espaciado inferior */
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%23fff" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 15px;
+.content-books-select {
+    appearance: none; /* Elimina el estilo por defecto del navegador */
+    -webkit-appearance: none; /* Compatibilidad con Webkit */
+    -moz-appearance: none; /* Compatibilidad con Firefox */
+    background-color: #58181F; /* Fondo del select */
+    border: 2px solid #000; /* Borde del select */
+    border-radius: 0px 5px 5px 0px; /* Esquinas redondeadas */
+    padding: 10px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño de la fuente */
+    color: #FFF; /* Color del texto */
+    width: 13%; /* Ancho del select */
+    height: 45px;
 }
 
 /* carrusel buttons */
