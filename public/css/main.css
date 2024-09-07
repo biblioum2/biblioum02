@@ -94,6 +94,11 @@ body {
     transform: skew(40deg);
     left: -17px;
  }
+
+ #Naranja-fragil .correo-header{
+   
+ }
+
 /* Imagen de Header (libreria) */
 #Cabecera {
     background: url(../img/barraNav.jpeg);
