@@ -422,7 +422,5 @@ function cambiarIdioma() {
       document.getElementById("saludo").innerText = "Hola, bienvenido!";
   } else if (idiomaSeleccionado === "en") {
       document.getElementById("saludo").innerText = "Hello, welcome!";
-  } else if (idiomaSeleccionado === "fr") {
-      document.getElementById("saludo").innerText = "Bonjour, bienvenue!";
   }
 }
