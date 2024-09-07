@@ -409,3 +409,20 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   uploadPaginationButtons(initialPage, totalPages);
 });
+
+// Cambio de idioma en página
+function cambiarIdioma() {
+  const idiomaSeleccionado = document.getElementById('idioma').value;
+  
+  // Cambiar el atributo lang del elemento <html>
+  document.documentElement.lang = idiomaSeleccionado;
+
+  // Cambiar el contenido del saludo según el idioma seleccionado
+  if (idiomaSeleccionado === "es") {
+      document.getElementById("saludo").innerText = "Hola, bienvenido!";
+  } else if (idiomaSeleccionado === "en") {
+      document.getElementById("saludo").innerText = "Hello, welcome!";
+  } else if (idiomaSeleccionado === "fr") {
+      document.getElementById("saludo").innerText = "Bonjour, bienvenue!";
+  }
+}
