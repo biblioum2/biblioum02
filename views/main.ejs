@@ -50,12 +50,12 @@
                 <div class="arrowL"></div>
               </button>
               <!-- Contenedor de carrusel -->
-              <div class="viewport" style="height: 356.8px; touch-action: pan-y;" id="bookss">
+              <div class="viewport" style="touch-action: pan-y;" id="bookss">
                 <!-- Contenedor de libros en fila -->
-                <div id="caruselContainer" class="sliderCarr" style="left: 0px; transform: translate();">
+                <div id="caruselContainer" class="sliderCarr">
                   <!-- Funcion de slider dentro del contenedor de libros en fila -->
                   <% books.forEach(book => { %>
-                  <div class="carrusel-cel" style="max-width: 258px; position: absolute left auto" aria-hidden="true">
+                  <div class="carrusel-cel" style="max-width: 258px" aria-hidden="true">
                     <a href="./book?id=<%= book.id %>" class="img-related" title="<%= book.title %>">
                       <img src="<%= book.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
                     </a> <!-- Portada de los libros -->
