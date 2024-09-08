@@ -213,13 +213,14 @@ img {
     display: block;
     color: white;
     font-weight: 500;
-    margin-bottom: -1px;
     background: transparent;
-    border: 1px solid #000;
     padding: 5px 28px 1px;
-    border-bottom: none;
     height: 45px;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    align-content: center;
+    border-right: 2px solid #FFF;
+    border-left: 2px solid #FFF;
+    margin-right: 15px;
 }
 
 /* Estilo general para el select */
@@ -244,7 +245,8 @@ select option {
 
 /* Estilo para los select en diferentes estados (hover y activo) */
 select:hover {
-    border-color: #999; /* Color del borde al pasar el mouse */
+    border-color: #FFF; /* Color del borde al pasar el mouse */
+    background-color: #000; /* Color de fondo */
 }
 
 select:active {
@@ -257,13 +259,13 @@ select:active {
     -webkit-appearance: none; /* Compatibilidad con Webkit */
     -moz-appearance: none; /* Compatibilidad con Firefox */
     background-color: transparent; /* Fondo del select */
-    border: 1px solid #000; /* Borde del select */
-    border-radius: 0px 5px 5px 0px; /* Esquinas redondeadas */
     padding: 10px; /* Espaciado interno */
     font-size: 16px; /* Tamaño de la fuente */
     color: #FFF; /* Color del texto */
     width: 13%; /* Ancho del select */
     height: 45px;
+    border-right: 2px solid #FFF;
+    border-left: 2px solid #FFF;
 }
 
 /*Configurando los botones */
@@ -319,7 +321,7 @@ select:active {
     width: 0;
     height: 0;
     border-top: 15px solid transparent;
-    border-right: 25px solid rgb(167, 167, 167);
+    border-right: 25px solid #FFF;
     border-bottom: 15px solid transparent;
 }
 
@@ -327,7 +329,7 @@ select:active {
     width: 0;
       height: 0;
       border-top: 15px solid transparent;
-      border-left: 25px solid rgb(167, 167, 167);
+      border-left: 25px solid #FFF;
       border-bottom: 15px solid transparent;
 }
 
