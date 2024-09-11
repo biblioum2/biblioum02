@@ -1,6 +1,7 @@
 const { getRandomValues } = require("crypto");
 const pool = require("../config/database");
 const { parseCIDR } = require("ipaddr.js");
+const { log } = require("console");
 
 // OBTENCION DE LIBROS GENERAL
 
@@ -79,6 +80,62 @@ const getBooksTotal = async (category) => {
 };
 
 // getBooksTotal()
+
+
+const getBooksTotalFilter = async (filters) => {
+  const { category, title, author, year, limit, offset } = filters;
+  const values = [limit, offset];
+  let index = 3; // Starting index for the dynamic values
+  
+  let query = `
+      SELECT 
+          *
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      WHERE 
+          1=1
+  `;
+
+  if (category) {
+      query += ` AND c.name = $${index}`;
+      values.push(category);
+      index++;
+  }
+
+  if (title) {
+      query += ` AND b.title ILIKE $${index}`;
+      values.push(`%${title}%`);
+      index++;
+  }
+
+  if (author) {
+      query += ` AND b.author ILIKE $${index}`;
+      values.push(`%${author}%`);
+      index++;
+  }
+
+  if (year) {
+      query += ` AND EXTRACT(YEAR FROM b.publication_year) = $${index}`;
+      values.push(year);
+      index++;
+  }
+
+  query += ` LIMIT $1 OFFSET $2`;
+  
+  try {
+      console.log('valores desde query:', values);
+      const result = await pool.query(query, values);
+      return result.rows;
+  } catch (error) {
+      console.error('Error al obtener libros', error);
+      throw error;
+  }
+};
+// getBooksTotalFilter()
 
 
 // OBTENCION DE LIBROS POR CATEGORIA
@@ -238,6 +295,7 @@ module.exports = {
   getBookDetailsById,
   getBookLiveSearch,
   getBooksTotal,
+  getBooksTotalFilter,
 };
 
 

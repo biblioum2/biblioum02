@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const cookieParser = require('cookie-parser');
-const { getBooksTotal, getBookLiveSearch, getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById, getBooksByCategory} = require('../queries/getData');
+const { getBooksTotal, getBookLiveSearch, getBooks, getUsers, getUserLiveSearch, getAllCategories, getBookDetailsById, getBooksByCategory, getBooksTotalFilter} = require('../queries/getData');
 const { deleteUser } = require('../queries/deleteData');
 router.use(cookieParser());
 
@@ -17,6 +17,28 @@ router.get('/login', (req, res) => {
       authErrorPassword: false
     });
   
+});
+
+router.get('/test', async (req, res) => {
+  const { category, title, author, year, limit, offset } = req.query;
+  const filters = {
+    category: category,
+    title: title,
+    author: author,
+    year: year,
+    limit: limit,
+    offset: offset,
+  }
+  console.log('filtros desde ruta:', filters);
+  
+  try {
+    const data = await getBooksTotalFilter(filters);
+    // const json= JSON.stringify(data);
+    res.status(200).json(data);
+  } catch (error) {
+    res.status(400).json(error);
+  }
+
 });
 
 router.get('/logout', (req, res) => {
@@ -49,9 +71,17 @@ router.get('/', async (req, res) => {
     slider4: 'img/sliders/imagen4.jpg'
 
   }
-  let offset = 0;
+  let offset = 0
+  const filters = {
+    category: null,
+    title: null,
+    author: null,
+    year: null,
+    limit: 20,
+    offset: offset,
+  }
   try {
-    const books = await getBooks(20, offset);
+    const books = await getBooksTotalFilter(filters);
     const booksjson = JSON.stringify(books);
     //  console.log(`Esto es el resultado en main books: ${booksjson}`);
     res.render('main', {

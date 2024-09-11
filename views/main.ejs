@@ -13,7 +13,7 @@
   <script src="https://kit.fontawesome.com/b408879b64.js" crossorigin="anonymous"></script>
   <meta http-equiv="X-UA-Compatible" content="IE-edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <!--a href="https://www.flaticon.es/iconos-gratis/biblioteca" title="biblioteca iconos">Biblioteca iconos creados por Dighital Design - Flaticon</a>-->
 </head>
 
@@ -73,6 +73,40 @@
           </div>
 
         </div>
+        <div id="containerFilters" class="container-filters">
+          <ul class="filter-list">
+            <li>
+              <label for="title">Título</label>
+              <input name="title" id="filterTitle" type="text" class="filter-data">
+            </li>
+            <li>
+              <label for="author">Autor</label>
+              <input name="author" id="filterAuthor" type="text" class="filter-data">
+            </li>
+            <li>
+              <label for="category">Categoría</label>
+              <div class="custom-select" data-for="filterCategory">
+                <div id="filterCategory" class="select-selected">Seleccionar</div>
+                <div class="select-items select-hide">
+                  <% categories.forEach(category => { %>
+                  <div data-value="<%= `${category.id}` %>"><%= category.name %></div>
+                  <% }); %>
+                </div>
+              </div>
+            </li>
+            <li>
+              <label for="date">Año</label>
+              <div class="custom-select" data-for="filterDate">
+                <div id="filterYear" class="select-selected">Seleccionar</div>
+                <div class="select-items select-hide">
+                  <!-- Opciones de años aquí -->
+                </div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        
+
         <div id="cardContainer" class="card-container" data-totalpages="<%= pagination %>">
           <% books.forEach(element => { %>
           <a href="./book?id=<%= element.id %>" class="img-related" title="<%= element.title %>">
@@ -90,11 +124,11 @@
             <button class="pagination-btn-controller">Anterior</button>
             <div id="pagesContainer" class="pagination-page-btns">
               <% for (let i = 1; i <= pagination; i++ ) { %>
-                <button id="pagination-btn-<%= i %>" data-page="<%= i %>" class="pagination-btn <%= currentPage == i ? 'pagination-btn-focus' : '' %>"><%= i %></button>
+              <button id="pagination-btn-<%= i %>" data-page="<%= i %>" class="pagination-btn <%= currentPage == i ? 'pagination-btn-focus' : '' %>"><%= i %></button>
               <% } %>
             </div>
             <button class="pagination-btn-controller">Siguiente</button>
-          </div>          
+          </div>
         </div>
       </div>
     </div> <!-- Contenido central -->

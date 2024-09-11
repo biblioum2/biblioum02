@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       $booksFragmentOriginal.appendChild($contentBooks.firstChild);
     }
 
-    let term = $category.value - 1;
+    let term = $category.value;
     console.log(`ejecutando category ${term}`);
 
     try {
@@ -287,12 +287,12 @@ const uploadPaginationButtons = (currentPage, totalPages) => {
   
 };
 
-const updateBookCards = async (page) => {
+const updateBookCards = async (category, title, author, year, limit, page) => {
   const booksOffset = page * 20 - 20;
   console.log('esta es la pagina', page);
   
     try {
-      const totalBooks = await fetch(`http://localhost:3000/page/${booksOffset}`);
+      const totalBooks = await fetch(`http://localhost:3000/test?category=${category}&title=${title}&author=${author}&year=${year}&offset=${booksOffset}`);
       const data = await totalBooks.json();
       const $fragment = document.createDocumentFragment();
       const $bookContainer = document.getElementById('cardContainer');
@@ -351,6 +351,11 @@ const updateBookCards = async (page) => {
   };
 
 const handlePaginationClick = event => {
+  const $autorValue = document.getElementById('filterAuthor').value;
+  const $categoryValue = document.getElementById('filterCategory').value === 'Seleccionar' ? null : document.getElementById('filterCategory').value;
+  const $titleValue = document.getElementById('filterTitle').value;
+  const $yearValue = document.getElementById('filterYear').value === 'Seleccionar' ? null : document.getElementById('filterYear').value;
+
   const page = parseInt(event.target.dataset.page);
   const $totalPagesContainer = document.getElementById('cardContainer');
   const totalPages = parseInt(
@@ -358,12 +363,16 @@ const handlePaginationClick = event => {
   );
   console.log('page del handle', page);
   uploadPaginationButtons(page, totalPages);
-  updateBookCards(page);
-  window.scrollTo({ top: 950, behavior: 'smooth' });
+  updateBookCards($titleValue, $autorValue, $categoryValue, $yearValue, 20,page);
+  // window.scrollTo({ top: 950, behavior: 'smooth' });
 };
 
 // Funciones para manejar los clics en los botones de navegación
 const handlePrevClick = () => {
+  const $autorValue = document.getElementById('filterAuthor').value;
+  const $categoryValue = document.getElementById('filterCategory').value === 'Seleccionar' ? null : document.getElementById('filterCategory').value;
+  const $titleValue = document.getElementById('filterTitle').value;
+  const $yearValue = document.getElementById('filterYear').value === 'Seleccionar' ? null : document.getElementById('filterYear').value;
   const $totalPagesContainer = document.getElementById('cardContainer');
   
 
@@ -378,12 +387,16 @@ const handlePrevClick = () => {
   
   if (currentPage > 1) {
     uploadPaginationButtons(currentPage - 1, totalPages);
-    updateBookCards(currentPage - 1);
-    window.scrollTo({ top: 950, behavior: 'smooth' });
+    updateBookCards($titleValue, $autorValue, $categoryValue, $yearValue, 20, currentPage - 1);
+    // window.scrollTo({ top: 950, behavior: 'smooth' });
   }
 };
 
 const handleNextClick = () => {
+  const $autorValue = document.getElementById('filterAuthor').value;
+  const $categoryValue = document.getElementById('filterCategory').value === 'Seleccionar' ? null : document.getElementById('filterCategory').value;
+  const $titleValue = document.getElementById('filterTitle').value;
+  const $yearValue = document.getElementById('filterYear').value === 'Seleccionar' ? null : document.getElementById('filterYear').value;
   const $totalPagesContainer = document.getElementById('cardContainer');
   const currentPage = parseInt(
     document.querySelector(".pagination-btn-focus").dataset.page
@@ -395,8 +408,8 @@ const handleNextClick = () => {
   console.log('total pages de click derecho', totalPages);
   if (currentPage < totalPages) {
     uploadPaginationButtons(currentPage + 1, totalPages);
-    updateBookCards(currentPage + 1);
-    window.scrollTo({ top: 950, behavior: 'smooth' });
+    updateBookCards($titleValue, $autorValue, $categoryValue, $yearValue, 20, currentPage + 1);
+    // window.scrollTo({ top: 950, behavior: 'smooth' });
   }
 };
 
@@ -424,3 +437,5 @@ function cambiarIdioma() {
       document.getElementById("saludo").innerText = "Hello, welcome!";
   }
 }
+
+// MANEJO DE FILTROS PARA LOS LIBROS GENERALES DE MAIN //
