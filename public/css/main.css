@@ -162,6 +162,13 @@ body {
     height: 500px;
 }
 
+/* Configurando el ancho de imagenes de carrusel */
+
+.img-related img:hover {
+    width: 400px;
+    transition: img 1s ease 0s;
+}
+
 /* titulo del contenedor de libros */
 
 .carrusel {
@@ -205,7 +212,7 @@ img {
     display: inline-flex;
     width: 100%;
     margin-bottom: 2rem;
-    justify-content: center;
+    justify-content: left;
     background-color: #92000a;
 }
 
@@ -299,22 +306,24 @@ select:active {
     position: absolute;
     width: 3em;
     height: 10em;
-    background-color: #000;
+    background-color: #92000a;
     color: white;
     border: none;
     padding: 10px;
     cursor: pointer;
     z-index: 100;
 }
+
+.carrButton:hover{
+ background-color: #000;
+}
+
 .left{
     left: 0;
-    border-radius: 20px 0 0px 20px;
 }
 
 .right{
     right: 0em;
-    border-radius: 0px 20px 20px 0px;
-
 }
 
 .arrowL{

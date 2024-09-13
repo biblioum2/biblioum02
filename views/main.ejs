@@ -55,7 +55,7 @@
                 <div id="caruselContainer" class="sliderCarr">
                   <!-- Funcion de slider dentro del contenedor de libros en fila -->
                   <% books.forEach(book => { %>
-                  <div class="carrusel-cel" style="max-width: 258px" aria-hidden="true">
+                  <div class="carrusel-cel" aria-hidden="true">
                     <a href="./book?id=<%= book.id %>" class="img-related" title="<%= book.title %>">
                       <img src="<%= book.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
                     </a> <!-- Portada de los libros -->

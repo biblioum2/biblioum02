@@ -424,3 +424,4 @@ function cambiarIdioma() {
       document.getElementById("saludo").innerText = "Hello, welcome!";
   }
 }
+
