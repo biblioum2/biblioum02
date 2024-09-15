@@ -279,8 +279,8 @@ async function insertBookCategory(book_id, category_id) {
 }
 // INSERTA CATEGORIAS A LIBROS
 function insertarVarios(){
-  for (let index = 8; index < 81; index++) {
-    insertBookCategory(index,8); 
+  for (let index = 360; index >= 360 && index < 390; index++) {
+    insertBookCategory(index,10); 
   }
 };
 // insertarVarios();

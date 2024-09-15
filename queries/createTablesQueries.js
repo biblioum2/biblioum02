@@ -30,7 +30,8 @@ CREATE TABLE IF NOT EXISTS books (
     available VARCHAR(3) NOT NULL CHECK (available IN ('yes', 'no')),
     publication_year DATE,
     available_copies INT DEFAULT 1,
-    cover VARCHAR(255)
+    cover VARCHAR(255) NOT NULL,
+    languaje varchar(35) NOT NULL,
 );
 `;
 

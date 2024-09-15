@@ -349,8 +349,10 @@ select:active {
     justify-content: center;
     align-items: center;
     width: 85%;
-    gap: 20px;
     height: max-content;
+    margin-top: 5px;
+    gap: 20px;
+    background-color: white;
 }
 
 .card-Book{
@@ -424,4 +426,122 @@ select:active {
 
 .pagination-btn-focus {
     background-color: #9c9c9c;
+}
+
+/* STYLES FOR BOOK CARDS FILTER */
+
+.container-filters {
+    display: flex;
+    align-self: flex-end;
+    width: 85%;
+    height: 4em;
+    justify-content: center;
+    background-color: white;
+}
+
+.container-filters > ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 4em;
+}
+
+.container-filters > ul > li {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 3.5em;
+    list-style: none;
+    background-color: #FFF;
+    color: black;
+}
+
+.container-filters > ul > li > input {
+    width: 13em;
+    height: 3em;
+    margin-right: 1em;
+    background-color: #FFF;
+    color: black;
+}
+
+.container-filters > ul > li > label {
+    width: auto;
+    height: auto;
+    font-size: 16px;
+    margin-right: 10px;
+    color: black;
+}
+
+.container-filters > ul > li > select {
+    width: 6em;
+    height: auto;
+    font-size: 16px;
+    text-align: center;
+    margin-right: 10px;
+    color: black;
+}
+
+.custom-select {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 10em; /* Igual que el select original */
+    height: 4em; /* Igual que el select original */
+    color: black;
+}
+
+.select-selected {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    color: #000;
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 100%;
+    line-height: 2em; /* Alinea el texto verticalmente */
+    cursor: pointer;
+    font-size: 16px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.select-items {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: #000;
+    border-radius: 4px;
+    z-index: 99;
+    width: 100%;
+    max-height: 200px; /* Ajusta el alto máximo del dropdown */
+    overflow-y: auto; /* Agrega scroll si es necesario */
+    top: 100%;
+    left: 0;
+}
+
+.select-items div {
+    padding: 10px;
+    color: #000;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.select-items div:hover {
+    background-color: #f9f9f9;
+}
+
+.select-hide {
+    display: none;
+}
+
+.btn-apply-filter {
+    width: 5em;
+    height: 3em;
+    color: #000;
+    background-color: white;
+    
 }

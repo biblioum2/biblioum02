@@ -1,6 +1,7 @@
 const { getRandomValues } = require("crypto");
 const pool = require("../config/database");
 const { parseCIDR } = require("ipaddr.js");
+const { log } = require("console");
 
 // OBTENCION DE LIBROS GENERAL
 
@@ -16,12 +17,14 @@ LIMIT $1 OFFSET $2;
     // console.log(`LIBROS: ${res.rows}`);
     const data= JSON.stringify(res.rows);
     // console.log(data);
-    return res.rows;
+    console.log(res.rows);
+     res.rows;
   } catch (error) {
     console.log("Error al obtener los libros", error);
   }
 };
-// getBooks();
+// console.log( getBooks(100, 0));
+
 
 //OBTENCION DE LIBRO PARA PAGINA INDIVIDUAL
 const getBookDetailsById = async (bookId) => {
@@ -72,13 +75,116 @@ const getBooksTotal = async (category) => {
 
   try {
     const res = await pool.query(query, queryParams);
-    return res.rows[0].total;
+    const pagination = res.rows[0].total === 0 ? 1 : Math.round(res.rows[0].total / 20);
+    return { pagination:pagination, totalBooks: res.rows[0].total};
   } catch (error) {
     console.log("Error al obtener los libros", error);
   }
 };
 
 // getBooksTotal()
+
+// FUNCION EXITOSA
+const getBooksTotalFilter = async (filters) => {
+  const { category, author, year, limit, offset } = filters;
+  const values = [limit, offset];
+  let index = 3; // Starting index for the dynamic values
+  
+  let query = `
+      SELECT 
+          *
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      WHERE 
+          1=1
+  `;
+
+  if (category) {
+      query += ` AND c.name = $${index}`;
+      values.push(category);
+      index++;
+  }
+
+  if (author) {
+      query += ` AND b.author ILIKE $${index}`;
+      values.push(`%${author}%`);
+      index++;
+  }
+
+  if (year) {
+      query += ` AND EXTRACT(YEAR FROM b.publication_year) = $${index}`;
+      values.push(year);
+      index++;
+  }
+
+  query += ` LIMIT $1 OFFSET $2`;
+  
+  try {
+      console.log('valores desde query:', values);
+      const result = await pool.query(query, values);
+      return result.rows
+  } catch (error) {
+      console.error('Error al obtener libros', error);
+      throw error;
+  }
+};
+
+
+
+
+const getBooksCount = async (filters) => {
+  const { category, author, year } = filters; // Removemos limit y offset ya que no se usan para contar
+  const values = [];
+  let index = 1; // Starting index for the dynamic values
+
+  let query = `
+      SELECT 
+          COUNT(*)
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      WHERE 
+          1=1
+  `;
+
+  if (category !== '') {
+      query += ` AND c.name = $${index}`;
+      values.push(category);
+      index++;
+  }
+
+  if (author !== '') {
+      query += ` AND b.author ILIKE $${index}`;
+      values.push(`%${author}%`);
+      index++;
+  }
+
+  if (year !== '') {
+      query += ` AND EXTRACT(YEAR FROM b.publication_year) = $${index}`;
+      values.push(year);
+      index++;
+  }
+
+  try {
+      console.log('valores desde query:', values);
+      const result = await pool.query(query, values);
+      // console.log(result);
+      return result.rows[0].count; // Devolvemos el total de registros
+  } catch (error) {
+      console.error('Error al obtener el total de libros', error);
+      throw error;
+  }
+};
+
+// getBooksCount({ category: null, title: 'eloq', author: null, year: null});
+
 
 
 // OBTENCION DE LIBROS POR CATEGORIA
@@ -170,7 +276,7 @@ const getUserLiveSearch = async (name) => {
 
 const getBookLiveSearch = async (name) => {
   const query = `
-        SELECT * FROM books WHERE title ILIKE '%' || $1 || '%' LIMIT 10;
+        SELECT DISTINCT ON (title) * FROM books WHERE title ILIKE '%' || $1 || '%' LIMIT 10;
     `;
   const value = [name];
   try {
@@ -225,10 +331,38 @@ async function getCategoryById(id) {
   }
 }
 // CREAR
+async function getAuthors() {
+  const query = `
+      SELECT DISTINCT ON (author) author FROM books;
+  `;
+  try {
+      const res = await pool.query(query);
+      return res.rows;
+  } catch (err) {
+      console.error('Error fetching category', err);
+  }
+}
+
+async function getYears() {
+  const query = `
+      SELECT DISTINCT EXTRACT(YEAR FROM publication_year) AS year
+      FROM books
+      ORDER BY year;
+  `;
+  try {
+      const res = await pool.query(query);
+      return res.rows;
+  } catch (err) {
+      console.error('Error fetching category', err);
+  }
+}
 
   
 
 module.exports = {
+  getBooksCount,
+  getAuthors,
+  getYears,
   getBooks,
   getUser,
   getUsers,
@@ -238,6 +372,7 @@ module.exports = {
   getBookDetailsById,
   getBookLiveSearch,
   getBooksTotal,
+  getBooksTotalFilter,
 };
 
 
