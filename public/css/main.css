@@ -335,8 +335,10 @@ select:active {
     justify-content: center;
     align-items: center;
     width: 85%;
-    gap: 20px;
     height: max-content;
+    margin-top: 5px;
+    gap: 20px;
+    background-color: white;
 }
 
 .card-Book{
@@ -426,13 +428,14 @@ select:active {
 .container-filters > ul {
     display: flex;
     align-items: center;
-    justify-content: space-evenly;
+    justify-content: center;
     width: 100%;
     height: 4em;
 }
 
 .container-filters > ul > li {
     display: flex;
+    position: relative;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -444,8 +447,9 @@ select:active {
 }
 
 .container-filters > ul > li > input {
-    width: auto;
+    width: 13em;
     height: 3em;
+    margin-right: 1em;
     background-color: #FFF;
     color: black;
 }
@@ -454,6 +458,15 @@ select:active {
     width: auto;
     height: auto;
     font-size: 16px;
+    margin-right: 10px;
+    color: black;
+}
+
+.container-filters > ul > li > select {
+    width: 6em;
+    height: auto;
+    font-size: 16px;
+    text-align: center;
     margin-right: 10px;
     color: black;
 }
@@ -509,4 +522,12 @@ select:active {
 
 .select-hide {
     display: none;
+}
+
+.btn-apply-filter {
+    width: 5em;
+    height: 3em;
+    color: #000;
+    background-color: white;
+    
 }

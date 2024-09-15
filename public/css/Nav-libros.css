@@ -40,7 +40,7 @@
         cursor: pointer;
     }
 
-    button:hover{
+    .search-nav-btn:hover {
         background-color: darkred;
     }
 

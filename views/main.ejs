@@ -55,8 +55,9 @@
                 <div id="caruselContainer" class="sliderCarr" style="left: 0px; transform: translate();">
                   <!-- Funcion de slider dentro del contenedor de libros en fila -->
                   <% books.forEach(book => { %>
+                  <% console.log(book.book_id) %>
                   <div class="carrusel-cel" style="max-width: 258px; position: absolute left auto" aria-hidden="true">
-                    <a href="./book?id=<%= book.id %>" class="img-related" title="<%= book.title %>">
+                    <a href="./book?id=<%= book.book_id %>" class="img-related" title="<%= book.title %>">
                       <img src="<%= book.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
                     </a> <!-- Portada de los libros -->
                     <h3>
@@ -76,40 +77,42 @@
         <div id="containerFilters" class="container-filters">
           <ul class="filter-list">
             <li>
-              <label for="title">Título</label>
-              <input name="title" id="filterTitle" type="text" class="filter-data">
-            </li>
-            <li>
               <label for="author">Autor</label>
-              <input name="author" id="filterAuthor" type="text" class="filter-data">
+              <select name="author" id="authorFilter">
+                <option value="">-------</option>
+                <% authors.forEach(author => { %>
+                <option value=<%= `${author.author}` %>> <%= author.author %> </option>
+                <% }); %>
+              </select>
             </li>
             <li>
               <label for="category">Categoría</label>
-              <div class="custom-select" data-for="filterCategory">
-                <div id="filterCategory" class="select-selected">Seleccionar</div>
-                <div class="select-items select-hide">
-                  <% categories.forEach(category => { %>
-                  <div data-value="<%= `${category.id}` %>"><%= category.name %></div>
-                  <% }); %>
-                </div>
-              </div>
+              <select name="date" id="categoryFilter" class="category-filter">
+                <option value="">-------</option>
+                <% categories.forEach(category => { %>
+                <option value=<%= `${category.name}` %>> <%= category.name %> </option>
+                <% }); %>
+              </select>
             </li>
             <li>
               <label for="date">Año</label>
-              <div class="custom-select" data-for="filterDate">
-                <div id="filterYear" class="select-selected">Seleccionar</div>
-                <div class="select-items select-hide">
-                  <!-- Opciones de años aquí -->
-                </div>
-              </div>
+              <select name="date" id="yearFilter">
+                <option value="">-------</option>
+                <% years.forEach(year => { %>
+                <option value=<%= `${year.year}` %>> <%= year.year %> </option>
+                <% }); %>
+              </select>
+            </li>
+            <li>
+              <button id="btnSetFilter" class="btn-apply-filter" type="button">Aplicar</button>
             </li>
           </ul>
         </div>
-        
+
 
         <div id="cardContainer" class="card-container" data-totalpages="<%= pagination %>">
           <% books.forEach(element => { %>
-          <a href="./book?id=<%= element.id %>" class="img-related" title="<%= element.title %>">
+          <a href="./book?id=<%= element.book_id %>" class="img-related" title="<%= element.title %>">
             <div id="<%= element.id %>" class="card-Book">
               <img src="<%= element.cover %>" alt="<%= element.title %>">
               <div class="card-info">
