@@ -377,11 +377,10 @@ const updateBookCards = async (page) => {
   }
 };
 
-const handlePaginationClick = (event) => {
+const handlePaginationClick = async (event) => {
   const page = parseInt(event.target.dataset.page);
-  const $totalPagesContainer = document.getElementById("cardContainer");
-  const totalPages = parseInt($totalPagesContainer.dataset.totalpages);
-  console.log("page del handle", page);
+  const totalBooksPages = await totalBookPages();
+  const totalPages = parseInt(totalBooksPages);
   uploadPaginationButtons(page, totalPages);
   updateBookCards(page);
   // window.scrollTo({ top: 950, behavior: 'smooth' });
