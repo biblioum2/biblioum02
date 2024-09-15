@@ -1,4 +1,4 @@
-    nav{
+    nav {
         position: sticky;
         top: 0;
         z-index: 200;
@@ -44,7 +44,7 @@
         background-color: darkred;
     }
 
-    nav .mobile{
+    nav .mobile {
         display: none;
     }
 
@@ -64,6 +64,8 @@
         text-decoration: none;
         display: block;
         padding: 20px 25px;
+        height: 100%;
+        align-content: center;
     }
 
     nav a:hover{
@@ -83,6 +85,10 @@
     nav .desktop .secondary
     {
         display: flex;
+    }
+
+    .secondary{
+        height: 100%;
     }
 
     nav .secondary.mini{
