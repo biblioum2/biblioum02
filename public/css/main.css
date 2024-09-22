@@ -10,7 +10,6 @@
 body {
     font-family: Arial, Helvetica, sans-serif;
     overflow-y: auto;
-    background-color: #ebebeb;
 }
 /*Configuracion de todo el contenido de la pagina*/ 
 .container-main{
@@ -162,13 +161,6 @@ body {
     height: 500px;
 }
 
-/* Configurando el ancho de imagenes de carrusel */
-
-.img-related img:hover {
-    width: 400px;
-    transition: img 1s ease 0s;
-}
-
 /* titulo del contenedor de libros */
 
 .carrusel {
@@ -176,6 +168,10 @@ body {
     display: flex;
     align-items: center;
     width: 100%;
+}
+
+img:hover{
+    box-shadow: 0 3px 20px 6px #000;
 }
 
 img {
@@ -208,19 +204,20 @@ img {
 .carrusel-cel h3{
     margin-top: 8px;
 }
+
 .content-title{
     display: inline-flex;
     width: 100%;
     margin-bottom: 2rem;
     justify-content: left;
-    background-color: #92000a;
 }
 
+/* Etiqueta de sección de Carrusel de libros */
 .content-title h2{
     display: block;
     color: white;
     font-weight: 500;
-    background: transparent;
+    background: #000;
     padding: 5px 28px 1px;
     height: 45px;
     font-size: 1.2rem;
@@ -237,11 +234,17 @@ img {
     cursor: pointer; /* Cambia el cursor al pasar sobre el select */
 }
 
+/* Sombra de filtro de carrusel */
+select#selectCat {
+    box-shadow: 0 3px 3px 1px #000;
+    color: #FFF;
+    font-weight: bold;
+    background-color: #042964;
+}
+
 /* Estilo para cuando el select está en foco */
 select:focus {
     outline: none; /* Elimina el borde de enfoque por defecto */
-    border-color: #66afe9; /* Color del borde en foco */
-    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5); /* Sombra en foco */
 }
 
 /* Estilo para la opción seleccionada */
@@ -252,12 +255,12 @@ select option {
 
 /* Estilo para los select en diferentes estados (hover y activo) */
 select:hover {
-    border-color: #FFF; /* Color del borde al pasar el mouse */
-    background-color: #000; /* Color de fondo */
+    border-color: #FFA500; /* Color del borde al pasar el mouse */
+    cursor: pointer;
 }
 
 select:active {
-    border-color: #666; /* Color del borde al hacer clic */
+    border-color: #4d85d4; /* Color del borde al hacer clic */
 }
 
 /* Estilo del contenedor del select */
@@ -306,7 +309,7 @@ select:active {
     position: absolute;
     width: 3em;
     height: 10em;
-    background-color: #92000a;
+    background: linear-gradient(90deg, rgba(4, 41, 100, 1) 0%, rgba(6, 55, 157, 1) 50%, rgba(107, 165, 255, 1) 100%);
     color: white;
     border: none;
     padding: 10px;
