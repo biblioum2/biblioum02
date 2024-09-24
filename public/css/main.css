@@ -124,6 +124,38 @@ body {
     height: 52px;
     margin-left: 5px;
 }
+
+/* Diseño de div de prueba */
+#Contenido-titulo {
+    font-weight: bold;
+    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(184,25,25,1) 50%, rgba(252,176,69,1) 100%);
+    border: #000;
+    width: 100%;
+    height: 100px;
+    align-content: center;
+    margin-bottom: -80px;
+    justify-self: center;
+}
+
+#texto {
+  text-align: center;
+  letter-spacing: 8px;
+  font-family: copperplate gothic;
+}
+
+/* Efecto al hacer scroll en div */
+.Efecto {
+    margin: 50px auto;
+    opacity: 1;
+    transition: opacity 1s ease, transform 1s ease;
+  }
+
+.Efecto.hidden {
+    opacity: 0;
+    transform: translateY(50px);
+  }
+
+
 /* Configuracion de contenedor del contenido central */
 #Estanteria{
     height: 100%;
