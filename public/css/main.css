@@ -143,19 +143,6 @@ body {
   font-family: copperplate gothic;
 }
 
-/* Efecto al hacer scroll en div */
-.Efecto {
-    margin: 50px auto;
-    opacity: 1;
-    transition: opacity 1s ease, transform 1s ease;
-  }
-
-.Efecto.hidden {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-
-
 /* Configuracion de contenedor del contenido central */
 #Estanteria{
     height: 100%;

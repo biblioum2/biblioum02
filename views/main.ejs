@@ -72,7 +72,7 @@
           </div>
 
         </div>
-        <div id="Contenido-titulo" class="Efecto"> 
+        <div id="Contenido-titulo"> 
           <h1  id="texto">CONTENIDO TOTAL</h1>
         </div>
         <div id="containerFilters" class="container-filters">
@@ -140,14 +140,4 @@
   <%- include(`./partials/footer`) %>
 </body>
 <script src="/js/home.js"></script>
-<script>
-  window.addEventListener('scroll', function() {
-    const box = document.getElementById('Contenido-titulo');
-    if (window.scrollY > 150) {
-      box.classList.add('hidden');
-    } else {
-      box.classList.remove('hidden');
-    }
-  });
-</script>
 </html>
