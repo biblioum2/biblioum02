@@ -31,7 +31,7 @@ const port = 3000;
 // Configuración CORS
 app.use(
   cors({
-    origin: `http://localhost:${port}`, // Permite solicitudes desde tu dominio
+    origin: `https://biblioum02.onrender.com`, // Permite solicitudes desde tu dominio
   })
 );
 
@@ -343,6 +343,6 @@ app.post("/admin/books", async (req, res) => {
 
 // Iniciar servidor
 server.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log(`Servidor corriendo en https://biblioum02.onrender.com`);
 });
   
