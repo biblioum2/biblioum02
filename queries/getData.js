@@ -23,7 +23,7 @@ LIMIT $1 OFFSET $2;
     console.log("Error al obtener los libros", error);
   }
 };
-// console.log( getBooks(100, 0));
+// console.log( getBooks(100, 281));
 
 
 //OBTENCION DE LIBRO PARA PAGINA INDIVIDUAL

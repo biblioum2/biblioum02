@@ -279,8 +279,8 @@ async function insertBookCategory(book_id, category_id) {
 }
 // INSERTA CATEGORIAS A LIBROS
 function insertarVarios(){
-  for (let index = 360; index >= 360 && index < 390; index++) {
-    insertBookCategory(index,10); 
+  for (let index = 281; index >= 281 && index < 390; index++) {
+    insertBookCategory(index,9); 
   }
 };
 // insertarVarios();
@@ -349,7 +349,8 @@ const books = [
     "available": "yes",
     "publication_year": "2024-08-10",
     "available_copies": 1,
-    "cover": "https://i.imgur.com/prwImiQ.png"
+    "cover": "https://i.imgur.com/prwImiQ.png",
+    "languaje": "Español"
   },
   {
     "title": "Javascript the Good Parts",
@@ -360,7 +361,8 @@ const books = [
     "available": "yes",
     "publication_year": "2024-08-10",
     "available_copies": 3,
-    "cover": "https://i.imgur.com/vxJt2vG.png"
+    "cover": "https://i.imgur.com/vxJt2vG.png",
+    "languaje": "Español"
   },
   {
     "title": "Javascript Designs Patterns",
@@ -371,7 +373,8 @@ const books = [
     "available": "yes",
     "publication_year": "2024-08-10",
     "available_copies": 2,
-    "cover": "https://i.imgur.com/w23n6BK.png"
+    "cover": "https://i.imgur.com/w23n6BK.png",
+    "languaje": "Español"
   },
   {
     "title": "Codigo limpio",
@@ -382,7 +385,8 @@ const books = [
     "available": "yes",
     "publication_year": "2024-08-10",
     "available_copies": 2,
-    "cover": "https://i.imgur.com/LHM7ujw.png"
+    "cover": "https://i.imgur.com/LHM7ujw.png",
+    "languaje": "Español"
   },
   {
     "title": "Calculo de una variable",
@@ -393,7 +397,8 @@ const books = [
     "available": "yes",
     "publication_year": "2024-08-10",
     "available_copies": 1,
-    "cover": "https://i.imgur.com/iEYQP4u.png"
+    "cover": "https://i.imgur.com/iEYQP4u.png",
+    "languaje": "Español"
   },
   {
     "title": "El lenguaje de programacion C",
@@ -404,7 +409,8 @@ const books = [
     "available": "yes",
     "publication_year": "2024-08-10",
     "available_copies": 2,
-    "cover": "https://i.imgur.com/J9bntsu.png"
+    "cover": "https://i.imgur.com/J9bntsu.png",
+    "languaje": "Español"
   },
   {
     "title": "Linux Basics for Hackers",
@@ -415,7 +421,8 @@ const books = [
     "available": "yes",
     "publication_year": "2024-08-10",
     "available_copies": 3,
-    "cover": "https://i.imgur.com/jixA03i.png"
+    "cover": "https://i.imgur.com/jixA03i.png",
+    "languaje": "Español"
   }
 ];
 
@@ -425,8 +432,8 @@ const insertBooks = async () => {
 
   for (const book of books) {
     const query = `
-      INSERT INTO books (title, author, edition, isbn, summary, available, publication_year, available_copies, cover)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+      INSERT INTO books (title, author, edition, isbn, summary, available, publication_year, available_copies, cover, languaje)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `;
 
     const values = [
@@ -438,7 +445,8 @@ const insertBooks = async () => {
       book.available,
       book.publication_year,
       book.available_copies,
-      book.cover
+      book.cover,
+      book.languaje
     ];
 
     try {

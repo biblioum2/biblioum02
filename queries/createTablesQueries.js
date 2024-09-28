@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS books (
     publication_year DATE,
     available_copies INT DEFAULT 1,
     cover VARCHAR(255) NOT NULL,
-    languaje varchar(35) NOT NULL,
+    languaje varchar(35) NOT NULL
 );
 `;
 
@@ -63,8 +63,7 @@ CREATE TABLE IF NOT EXISTS order_status (
     status VARCHAR(50) NOT NULL CHECK (status IN ('Pendiente', 'Devuelta', 'No devuelta')),
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
-`
-
+`;
 
 const createTableBooksCategories = `
 CREATE TABLE IF NOT EXISTS book_categories (
@@ -112,7 +111,7 @@ const createTables = async () => {
 };
 
 // Llama a la función para crear todas las tablas
-createTables();
+// createTables();
 
 // module.exports = {
 //     createTableUsers,
