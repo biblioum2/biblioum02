@@ -21,9 +21,12 @@ const {
   insertBook,
   insertBookCategory,
 } = require("./queries/inputData");
-
+const WebSocket = require('ws');
+const http = require('http');
 const app = express();
 const port = 3000;
+
+
 
 // Configuración CORS
 app.use(
@@ -68,6 +71,43 @@ app.use(
 // Rutas
 const indexRouter = require("./routes/main");
 app.use("/", indexRouter);
+
+//Uso de websocket para manejar las ordenes en tiempo real
+
+const server = http.createServer(app);
+const wss = new WebSocket.Server({ server });
+
+const admins = [];
+
+wss.on('connection', (ws, req) => {
+  const params = new URLSearchParams(req.url.substring(1));
+  const role = params.get('role');
+
+  if (role === 'admin') {
+      admins.push(ws);
+  }
+
+  ws.on('message', (message) => {
+      console.log('Mensaje recibido:', message);
+      if (role === 'client') {
+          // Notificar a todos los administradores conectados
+          admins.forEach(admin => {
+              if (admin.readyState === WebSocket.OPEN) {
+                  admin.send(message);
+              }
+          });
+      }
+  });
+
+  ws.on('close', () => {
+      if (role === 'admin') {
+          const index = admins.indexOf(ws);
+          if (index !== -1) {
+              admins.splice(index, 1);
+          }
+      }
+  });
+});
 
 // Ruta POST para agregar un usuario con validación de datos
 app.post("/admin/users", async (req, res) => {
@@ -302,7 +342,7 @@ app.post("/admin/books", async (req, res) => {
 });
 
 // Iniciar servidor
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
   

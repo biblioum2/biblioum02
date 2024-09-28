@@ -67,11 +67,11 @@ router.get("/pages", async (req, res) => {
     year: year,
   };
 
-  console.log("valor de year desde servidor", filters);
+  // console.log("valor de year desde servidor", filters);
 
   try {
     const totalBooks = await getBooksCount(filters);
-    console.log(`enviando datos al cliente`, totalBooks);
+    // console.log(`enviando datos al cliente`, totalBooks);
 
     res.status(200).json(totalBooks);
   } catch (error) {
@@ -111,7 +111,7 @@ router.get("/", async (req, res) => {
   };
   try {
     const books = await getBooksTotalFilter(filters);
-    const booksjson = JSON.stringify(books);
+    // const booksjson = JSON.stringify(books);
     // console.log('libros desde ruta main', books);
 
     //  console.log(`Esto es el resultado en main books: ${booksjson}`);
@@ -284,4 +284,10 @@ router.get("/admin/books/success", async (req, res) => {
   // res.render('books', { title: 'books', categories: categories ,currentPage: 'books', success: true, postResponse: false });
   res.redirect(`/admin/books?success=true`);
 });
+
+
+router.get("/admin/orders", (req, res) => {
+  res.render("orders", { currentPage: 'orders' })
+})
+
 module.exports = router;
