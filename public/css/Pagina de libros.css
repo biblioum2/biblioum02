@@ -5,10 +5,86 @@
     box-sizing: border-box;
     text-decoration: none;
 }
-body{
 
-    
+.header {
+  width: 100%;
+  background-color: #00455d;
+  color: #FFF;
+  height: 40px;
+  position: relative;
 }
+
+.header .headerstyle {
+  display: flex;
+  margin: auto;
+  width: 100%; /* Ajustar al 100% del ancho del contenedor */
+  justify-content: space-between; /* Distribuye los divs horizontalmente */
+  align-items: center; /* Centra los elementos verticalmente */
+  position: relative; /* Cambiado de 'absolute' a 'relative' */
+  
+}
+
+.headerstyle div {
+  color: #FFF;
+  flex: 1; /* Para que cada caja ocupe espacio proporcional */
+  display: flex;
+  justify-content: left;
+  padding-left: 20px;
+  align-items: center;
+  height: 40px;
+}
+
+.headerstyle p{
+  display: flex;
+  width: 100%;
+  justify-content: right;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: large;
+  letter-spacing: 2px;
+}
+
+
+.headerstyle #idioma{
+  display: flex;
+  align-items: center;
+  justify-content: left;  /*estilos pendientes*/
+  background-color: #FFF;
+  height: 23px;
+  width: 50%;
+}
+
+.headerstyle b{
+  text-shadow: 1px 1px 5px #000;
+}
+
+#Horario p{
+  font-size: 15px;
+  padding-right: 40px;
+  text-shadow: 2px 2px 5px #000;
+}
+
+.headerstyle #Naranja-fragil{
+  position: relative;
+  width: 100%;
+  background-color: #fc4b08;
+}
+
+#Naranja-fragil #Naranja-fuerte{
+  position: absolute;
+  width: 35px;
+  background-color: #de2e03; 
+  transform: skew(40deg);
+  left: -17px;
+}
+
+.correo-header{
+  margin-right: 80px;
+}
+
+.me-2{
+ margin-right: 8px;
+}
+
 .contenedor-principal{
   display: grid;
   grid-template-rows: auto; 
