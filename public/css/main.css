@@ -191,13 +191,25 @@ body {
     width: 100%;
 }
 
-img:hover{
+/* Efectos en imagenes del carrusel de libros */
+.sliderCarr img:hover{
     box-shadow: 0 3px 20px 6px #000;
 }
 
 img {
  height: 100%;
 }
+
+/* Efectos en imagenes de 'Contenido Principal' */
+.card-Book img {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  
+  .card-Book img:hover {
+      opacity: 0.5;
+  }
+  
 
 .viewport{
     width: 100%;
