@@ -95,7 +95,6 @@
     grid-template-rows: 100%;
     grid-template-columns: 187px 1fr 1fr;
     height: 600px;
-    margin-top: 40px;
     margin-bottom: 90px;
     grid-template-areas: 
     "area1 area2 area3";

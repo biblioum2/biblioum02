@@ -392,7 +392,7 @@ const books = [
   },
   {
     "title": "Codigo limpio",
-    "author": "Robert Cecil Martin",
+    "author": "Robert Cecil ",
     "edition": "1ª",
     "isbn": "978-84-415-3210-6",
     "summary": "\"Código Limpio\" de Robert C. Martin ofrece una guía esencial para escribir código que sea claro y fácil de mantener. El libro \
@@ -411,16 +411,17 @@ const books = [
     "author": "Claudio Pita Ruiz",
     "edition": "1ª",
     "isbn": "970-17-0108-9",
-    "summary": "\"Cálculo de una Variable\" de James Stewart es un libro fundamental para aprender cálculo diferencial e integral de funciones de \
-    una sola variable. El texto cubre conceptos clave como límites, derivadas, integrales y sus aplicaciones. Con numerosos ejemplos y ejercicios\
-     prácticos, el libro ayuda a comprender y aplicar técnicas y teoremas importantes en cálculo. Es una excelente referencia tanto para estudiantes\
-     que comienzan en cálculo como para aquellos que buscan reforzar sus conocimientos en el tema. En este libro se tratan los temas que normalmente\
-    constituyen un primer curso de cálculo (Diferencial e Integral de funciones de una variable Real, o bien, simplemente Calculo de una Variable), como el que se imparte en el último año de la preparatoria o en los primeros semestres de una licenciatura.",
+    "summary": "\"Cálculo de una Variable\" de James Stewart es un libro fundamental para aprender cálculo diferencial e integral de funciones de" +
+    "una sola variable. El texto cubre conceptos clave como límites, derivadas, integrales y sus aplicaciones. Con numerosos ejemplos y ejercicios" +
+    "prácticos, el libro ayuda a comprender y aplicar técnicas y teoremas importantes en cálculo. Es una excelente referencia tanto para estudiantes"+
+    "que comienzan en cálculo como para aquellos que buscan reforzar sus conocimientos en el tema. En este libro se tratan los temas que normalmente"+
+    "constituyen un primer curso de cálculo (Diferencial e Integral de funciones de una variable Real, o bien, simplemente Calculo de una Variable),"+
+    "como el que se imparte en el último año de la preparatoria o en los primeros semestres de una licenciatura.",
     "available": "yes",
     "publication_year": "2024-08-10",
     "available_copies": 1,
     "cover": "https://i.imgur.com/iEYQP4u.png",
-    "languaje": "Español"
+    "language": "Español"
   },
   {
     "title": "El lenguaje de programacion C",
