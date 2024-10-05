@@ -85,6 +85,52 @@
  margin-right: 8px;
 }
 
+/* Diseño de las valoraciones */
+.stars {
+  width: 371px;
+  height: 20px;
+}
+
+.stars #form {
+  width: 250px;
+  margin: 0 auto;
+  height: 50px;
+}
+
+.stars #form p {
+  text-align: center;
+}
+
+.clasificacion {
+  text-align: left;
+}
+
+.stars #form label {
+  font-size: 20px;
+}
+
+.stars input[type="radio"] {
+  display: none;
+}
+
+.stars label {
+  color: grey;
+}
+
+.stars .clasificacion {
+  direction: rtl;
+  unicode-bidi: bidi-override;
+}
+
+.stars label:hover,
+.stars label:hover ~ label {
+  color: orange;
+}
+
+.stars input[type="radio"]:checked ~ label {
+  color: orange;
+}
+
 .contenedor-principal{
   display: grid;
   grid-template-rows: auto; 
@@ -263,7 +309,6 @@ span {
 
 #texto p:nth-child(1){
     font-size: 30px;
-    font: bold;
     font-family: sans-serif;
 }
 
