@@ -14,19 +14,19 @@ const cookieParser = require("cookie-parser");
 // Importa cookie-parser, un middleware que permite analizar las cookies enviadas en las solicitudes HTTP y hacerlas accesibles en `req.cookies`.
 const pool = require("./config/database");
 // Importa la configuración de la base de datos desde el archivo `database.js` (o el nombre que corresponda), que típicamente configura y exporta un pool de conexiones para interactuar con la base de datos.
-
+const { Server } = require("socket.io");
 const { getUser } = require("./queries/getData");
 const {
   insertUser,
   insertBook,
   insertBookCategory,
+  createOrder,
 } = require("./queries/inputData");
-const WebSocket = require('ws');
-const http = require('http');
+const http = require("http");
 const app = express();
 const port = 3000;
-
-
+const server = http.createServer(app);
+const io = new Server(server);
 
 // Configuración CORS
 app.use(
@@ -41,8 +41,8 @@ app.use((req, res, next) => {
     "Content-Security-Policy",
     "default-src 'self'; " +
       "img-src 'self' https://i.imgur.com https://drive.google.com; " +
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com; " +
-      "script-src 'self' https://kit.fontawesome.com; " +
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css; " +
+      "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://kit.fontawesome.com https://cdn.jsdelivr.net/npm/flatpickr; " + // Agregar Flatpickr
       "font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com; " +
       "connect-src 'self' https://kit.fontawesome.com https://ka-f.fontawesome.com; " +
       "object-src 'none';"
@@ -51,6 +51,7 @@ app.use((req, res, next) => {
 });
 
 // Middleware
+app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(cookieParser());
@@ -70,43 +71,42 @@ app.use(
 
 // Rutas
 const indexRouter = require("./routes/main");
+const { updateOrderStatus } = require("./queries/updateData");
 app.use("/", indexRouter);
 
 //Uso de websocket para manejar las ordenes en tiempo real
 
-const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
+io.on("connection", (socket) => {
+  console.log("Nuevo cliente conectado");
 
-const admins = [];
+  // ESCUCHAR Y REDIRIGIR LA ORDEN DEL CLIENTE AL ADMIN
+  socket.on("order", async (data, mensaje) => {
+    // console.log("Mensaje recibido:", mensaje);
+    const { userId, bookId, title, loanDate, returnDate } = data;
+    console.log('data desde el servidor book',data);
+    
+    await createOrder(userId, bookId, loanDate, returnDate);
+    io.emit("new order");
+  });
 
-wss.on('connection', (ws, req) => {
-  const params = new URLSearchParams(req.url.substring(1));
-  const role = params.get('role');
+  // Manejar la desconexión
+  socket.on("disconnect", () => {
+    console.log("Cliente desconectado");
+  });
+});
 
-  if (role === 'admin') {
-      admins.push(ws);
+app.patch("/updateOrderStatus1", async (req, res) => {
+  const {orderId, status} = req.body;
+  console.log('datos desde app: ', orderId, status);
+  
+  try {
+    const response = await updateOrderStatus(orderId, status);
+    console.log('antes de redireccionar');
+    res.status(200).json({success: true, response: response});
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({success: false});
   }
-
-  ws.on('message', (message) => {
-      console.log('Mensaje recibido:', message);
-      if (role === 'client') {
-          // Notificar a todos los administradores conectados
-          admins.forEach(admin => {
-              if (admin.readyState === WebSocket.OPEN) {
-                  admin.send(message);
-              }
-          });
-      }
-  });
-
-  ws.on('close', () => {
-      if (role === 'admin') {
-          const index = admins.indexOf(ws);
-          if (index !== -1) {
-              admins.splice(index, 1);
-          }
-      }
-  });
 });
 
 // Ruta POST para agregar un usuario con validación de datos
@@ -125,16 +125,20 @@ app.post("/admin/users", async (req, res) => {
     const validChars = /^[a-z0-9]+$/;
 
     if (username.length < minLength || username.length > maxLength) {
-      errors.push(`El nombre de usuario debe tener entre ${minLength} y ${maxLength} caracteres.`);
+      errors.push(
+        `El nombre de usuario debe tener entre ${minLength} y ${maxLength} caracteres.`
+      );
     }
 
     if (!validChars.test(username)) {
-      errors.push("El nombre de usuario contiene caracteres no válidos. Solo se permiten letras minúsculas y números.");
+      errors.push(
+        "El nombre de usuario contiene caracteres no válidos. Solo se permiten letras minúsculas y números."
+      );
     }
 
     return {
       valid: errors.length === 0,
-      error: errors
+      error: errors,
     };
   };
 
@@ -148,7 +152,7 @@ app.post("/admin/users", async (req, res) => {
 
     return {
       valid: errors.length === 0,
-      error: errors
+      error: errors,
     };
   };
 
@@ -162,7 +166,9 @@ app.post("/admin/users", async (req, res) => {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
 
     if (password.length < minLength || password.length > maxLength) {
-      errors.push(`La contraseña debe tener entre ${minLength} y ${maxLength} caracteres.`);
+      errors.push(
+        `La contraseña debe tener entre ${minLength} y ${maxLength} caracteres.`
+      );
     }
 
     if (!hasUpperCase.test(password)) {
@@ -183,7 +189,7 @@ app.post("/admin/users", async (req, res) => {
 
     return {
       valid: errors.length === 0,
-      error: errors
+      error: errors,
     };
   };
 
@@ -193,14 +199,31 @@ app.post("/admin/users", async (req, res) => {
   const passwordValidation = validatePassword(password);
 
   const errors = {
-    username: { exist: false, valid: usernameValidation.valid, error: usernameValidation.error },
-    password: { exist: false, valid: passwordValidation.valid, error: passwordValidation.error },
-    email: { exist: false, valid: emailValidation.valid, error: emailValidation.error },
+    username: {
+      exist: false,
+      valid: usernameValidation.valid,
+      error: usernameValidation.error,
+    },
+    password: {
+      exist: false,
+      valid: passwordValidation.valid,
+      error: passwordValidation.error,
+    },
+    email: {
+      exist: false,
+      valid: emailValidation.valid,
+      error: emailValidation.error,
+    },
   };
 
   // Consultas a la base de datos
-  const emailCheck = await pool.query("SELECT 1 FROM users WHERE email = $1", [email]);
-  const usernameCheck = await pool.query("SELECT 1 FROM users WHERE username = $1", [username]);
+  const emailCheck = await pool.query("SELECT 1 FROM users WHERE email = $1", [
+    email,
+  ]);
+  const usernameCheck = await pool.query(
+    "SELECT 1 FROM users WHERE username = $1",
+    [username]
+  );
 
   if (emailCheck.rowCount > 0) {
     errors.email.exist = true;
@@ -224,15 +247,15 @@ app.post("/admin/users", async (req, res) => {
         console.log(`Key: ${key}`);
         console.log(`Exist: ${errors[key].exist}`);
         console.log(`Valid: ${errors[key].valid}`);
-        console.log(`Errors: ${errors[key].error.join(', ')}`); // Si `error` es un array
+        console.log(`Errors: ${errors[key].error.join(", ")}`); // Si `error` es un array
       }
     }
-    
+
     errors.password.error.forEach((err, index) => {
       console.log(`Error de contraseña ${index + 1}: ${err}`);
     });
     return res.redirect("/admin/users/failed");
-  };
+  }
 
   // Continuar con la lógica de procesamiento
   try {
@@ -247,7 +270,6 @@ app.post("/admin/users", async (req, res) => {
     });
   }
 });
-
 
 app.post("/login", async (req, res) => {
   const { username, password, remember } = req.body;
@@ -271,12 +293,14 @@ app.post("/login", async (req, res) => {
         // Enviar los datos del usuario por cookies
         const username = user.username;
         const email = user.email;
+        const userId = user.user_id;
+        console.log("id del usuario desde inicio", userId);
 
         res.cookie("authToken", authToken, cookieOptions);
         res.cookie("isAdmin", isAdmin, cookieOptions);
         res.cookie("username", username, cookieOptions);
         res.cookie("email", email, cookieOptions);
-
+        res.cookie("userId", userId, cookieOptions);
         // Enviar los datos de usuario a la session
 
         req.session.user = user;
@@ -301,7 +325,7 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/submit/order", (req, res) => {
-  alert('funciona');
+  alert("funciona");
 });
 
 app.post("/admin/books", async (req, res) => {
@@ -345,4 +369,3 @@ app.post("/admin/books", async (req, res) => {
 server.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);
 });
-  

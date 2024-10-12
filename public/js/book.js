@@ -1,3 +1,76 @@
+
+const socket = io(); // Conectar al servidor Socket.IO
+// logica para solicitar libro
+
+
+document.addEventListener("DOMContentLoaded", function () {
+  flatpickr("#requestDate", {
+    dateFormat: "Y-m-d",
+    minDate: "today", // Establece la fecha mínima
+    maxDate: new Date().fp_incr(0), // Establece la fecha máxima (today)
+  });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  flatpickr("#returnDate", {
+    dateFormat: "Y-m-d",
+    minDate: "today", // Establece la fecha mínima
+    maxDate: new Date().fp_incr(7), // Establece la fecha máxima (una semana)
+  });
+});
+
+// SOLICITAR LOS ELEMENTOS PARA EJECUTAR LA ORDEN
+
+const $solicitarBtn =  document.getElementById('solicitud-btn');
+const $solicitudModal = document.getElementById('requestBookModal');
+const $submitCancelBtn = document.getElementById('sub-btn-2');
+const $closeModalBtn = document.getElementById('close-modal');
+const $orderForm = document.getElementById('requestBookForm');
+
+$closeModalBtn.addEventListener('click', () => {
+  $solicitudModal.style.display = 'none';
+});
+
+$submitCancelBtn.addEventListener('click', () => {
+  $solicitudModal.style.display = 'none';
+});
+
+$solicitarBtn.addEventListener('click', () => {
+  $solicitudModal.style.display = 'block';
+});
+
+const $userId = document.getElementById('userId');
+
+// EMITIR LA ORDEN AL SERVIDOR
+$orderForm.addEventListener('submit', (e) => {
+  e.preventDefault();  
+  
+  const $bookId = document.getElementById('bookId');
+  const $title = document.getElementById('bookTitle');
+  const $requestDate = document.getElementById('requestDate');
+  const $returnDate = document.getElementById('returnDate');
+  const data = {
+    userId: $userId.value,
+    bookId: $bookId.value,
+    title: $title.value,
+    loanDate: $requestDate.value,
+    returnDate: $returnDate.value
+  }
+console.log('data desde cliente book',data);
+
+
+  const mensaje = 'conexion funcionando';
+  socket.emit('order', data, mensaje);
+});
+
+
+
+
+
+
+
+
+
 // logica para desplegar la descripcion
 const $showMore = document.getElementById("showMore");
 $showMore.addEventListener('click', () => {
@@ -79,16 +152,3 @@ const debounce = (func, delay) => {
     debouncedSearch();
   });
   
-// logica para solicitar libro
-
-const $solicitarBtn =  document.getElementById('solicitud-btn');
-const $solicitudModal = document.getElementById('requestBookModal');
-const $submitCancelBtn = document.getElementById('sub-btn-2');
-
-$submitCancelBtn.addEventListener('click', () => {
-  $solicitudModal.style.display = 'none';
-});
-
-$solicitarBtn.addEventListener('click', () => {
-  $solicitudModal.style.display = 'block';
-});

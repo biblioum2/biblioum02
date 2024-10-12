@@ -8,6 +8,10 @@
   <link rel="stylesheet" href="/css/lstyles.css">
   <link rel="stylesheet" href="/css/nav-admin.css">
   <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">  
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/js/adminOrders.js"></script>
 
 </head>
 
@@ -15,41 +19,46 @@
   <%- include('./partials/adminHeader.ejs') %>
 
   <main>
-
-    <div class="container"></div>
-        <h1>Administrar Órdenes de Libros</h1>
-        <table class="orders-table">
+      <div id="notification" class="hidden ghost"></div>
+      <div class="container-mains">
+        <h1 style="margin-left: 4rem;">Ordenes de Libros</h1>
+        <table id="orders-table">
             <thead>
                 <tr>
                     <th>ID de Orden</th>
-                    <th>Libro</th>
+                    <th>Libro</div></th>
                     <th>Usuario</th>
-                    <th>Fecha de Pedido</th>
-                    <th>Fecha de Entrega</th>
-                    <th>Estado</th>
+                    <th><div class="th-cell">Fecha de Pedido<div class="triangle"></div></div></th>
+                    <th><div class="th-cell">Fecha de Entrega<div class="triangle"></div></div></th>
+                    <th><div class="th-cell">Estado<div class="triangle"></div></div></th>
                     <th>Acciones</th>
                 </tr>
             </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>El Quijote</td>
-                    <td>Juan Pérez</td>
-                    <td>2024-09-15</td>
-                    <td>2024-09-20</td>
-                    <td>Pendiente</td>
-                    <td>
-                        <button class="btn">Ver</button>
-                        <button class="btn">Editar</button>
-                        <button class="btn">Eliminar</button>
-                    </td>
-                </tr>
+            <tbody id="content">
+                <% data.forEach(element => { %>                    
+                    <tr>
+                        <td class="rowid"><%= element.id %></td>
+                        <td class="rowtitle"><%= element.title %></td>
+                        <td class="rowusername"><%= element.username %></td>
+                        <td class="rowloan_date"><%= element.loan_date %></td>
+                        <td class="rowreturn_date"><%= element.return_date %></td>
+                        <td class="rowstatus"><%= element.status %></td>
+                        <td>                    
+                            <button class="btn editBtn">Editar</button>
+                            <% if(element.status == 'Pendiente') { %>
+                                <button class="btn acceptBtn">Aprobar</button>
+                            <% } %>                            
+                            <button class="btn rejectBtn">Rechazar</button>
+                        </td>
+                    </tr>
+                <% }); %>
                 <!-- Más filas aquí -->
             </tbody>
         </table>
+    </div>
+        
 
   </main>
 
 </body>
-
 </html>

@@ -10,7 +10,10 @@
         <!-- <link rel="stylesheet" type="text/css" href="css/footer.css" /> -->
         <link rel="stylesheet" type="text/css" href="css/footer.css" />      
         <link rel="icon" href="img/libro.ico" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
         <script src="https://kit.fontawesome.com/caf315d017.js" crossorigin="anonymous"></script>
+        <script src="/socket.io/socket.io.js"></script>
         <!-- <a href="https://www.flaticon.es/iconos-gratis/biblioteca-en-linea" title="biblioteca en línea iconos">Biblioteca en línea iconos creados por Kalashnyk - Flaticon</a> -->
 </head>
     <body>
@@ -21,15 +24,17 @@
     <div class="modal-content">
         <span id="close-modal" class="close">&times;</span>
         <h2>Solicitar Libro</h2>
-        <form id="requestBookForm" method="post" action="http://localhost:3000/submit/order">
+        <form id="requestBookForm" method="post">
+            <input style="display: none;" type="number" id="userId" value="<%= userId %>" readonly>
+            <input style="display: none;" type="number" id="bookId" value="<%= bookData.id%>" readonly>
             <label for="bookTitle">Libro:</label>
             <input type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
 
             <label for="requestDate">Fecha de Solicitud:</label>
-            <input type="date" id="requestDate" name="requestDate"><br><br>
+            <input type="text" id="requestDate" name="requestDate" placeholder="Seleccione una fecha"><br><br>
 
             <label for="returnDate">Fecha de Entrega:</label>
-            <input type="date" id="returnDate" name="returnDate"><br><br>
+            <input type="text" id="returnDate" name="returnDate" placeholder="Seleccione una fecha"><br><br>
             <div class="submit-btn-container">
                 <button id="sub-btn-2" class="submit-modal-btn-2" type="button">Cancelar</button>
                 <button id="sub-btn-1" class="submit-modal-btn-1" type="submit">Enviar</button>
@@ -67,9 +72,11 @@
 
                 </div>
                 <div class="botones">
-                <div class="btn-1" id="solicitud-btn">
-                  <a><span>SOLICITAR</span></a>
-               </div>
+                    <% if (userId !== '0') { %>
+                        <div class="btn-1" id="solicitud-btn">
+                          <a><span>SOLICITAR</span></a>
+                       </div>                        
+                    <% } %>
                    <!-- Created by   http://grohit.com/   -->
                <div class="btn-2">
                  <a href="pdf/<%= bookData.title %>.pdf" download="<%= bookData.title %>.pdf"><span>DESCARGAR PDF</span></a>

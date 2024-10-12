@@ -470,6 +470,36 @@ async function insertarLibrosCiclo () {
 // insertarLibrosCiclo();
 
 
+const createOrder = async (userId, bookId, loanDate, returnDate) => {
+  try {
+      await pool.query('BEGIN');
+
+      // Insertar la orden
+      const insertOrderText = `
+          INSERT INTO orders (user_id, book_id, loan_date, return_date)
+          VALUES ($1, $2, $3, $4) RETURNING id;
+      `;
+      console.log('Valores insertados por el usuario: ', userId, bookId, loanDate, returnDate);
+      
+      const insertOrderValues = [userId, bookId, loanDate, returnDate];
+      const orderResult = await pool.query(insertOrderText, insertOrderValues);
+      const orderId = orderResult.rows[0].id;
+
+      // Insertar el estado de la orden
+      const insertOrderStatusText = `
+          INSERT INTO order_status (order_id, status)
+          VALUES ($1, 'Pendiente');
+      `;
+      const insertOrderStatusValues = [orderId];
+      await pool.query(insertOrderStatusText, insertOrderStatusValues);
+
+      await pool.query('COMMIT');
+      return orderId;
+  } catch (error) {
+      await pool.query('ROLLBACK');
+      throw error;
+  }
+};
 
 
 
@@ -477,9 +507,12 @@ async function insertarLibrosCiclo () {
 
 
 // insertUser('severo', 'password', 'enrrimarq2000@gmail.com', 'admin');
+// insertUser('cristian', 'password', 'adaksjdjkasdkja@gmail.com', 'admin');
+
 module.exports = {
   insertUser: insertUser,
   insertBook: insertBook,
+  createOrder,
   // insertCategory: insertCategory,
   // insertFavorite: insertFavorite,
   // insertOrder: insertOrder,

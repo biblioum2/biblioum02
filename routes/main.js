@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pool = require("../config/database");
 const cookieParser = require("cookie-parser");
 const {
   getAuthors,
@@ -14,8 +15,10 @@ const {
   getBooksByCategory,
   getBooksTotalFilter,
   getBooksCount,
+  getFilteredOrders,
 } = require("../queries/getData");
 const { deleteUser } = require("../queries/deleteData");
+const { updateOrder, updateOrderStatus } = require("../queries/updateData");
 router.use(cookieParser());
 
 // Ruta para formulario login
@@ -140,15 +143,16 @@ router.get("/book", async (req, res) => {
   const user = req.session.user;
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
+  const userId = req.cookies.userId == true ? req.cookies.userId : '0';
   const idBook = req.query.id;
   const data = await getBookDetailsById(idBook);
   //  console.log(data);
-
   res.render("book", {
     bookData: data,
     title: data.title,
     currentPage: "book",
     user: user,
+    userId: userId,
     isAdmin: isAdmin,
     authToken: authToken,
   });
@@ -163,6 +167,7 @@ router.get("/page/:id", async (req, res) => {
     console.log("error en la ruta page/id", error);
   }
 });
+
 // OBTENER LIBROS POR CATEGORIA
 
 router.get("/category/:catId", async (req, res) => {
@@ -177,15 +182,6 @@ router.get("/category/:catId", async (req, res) => {
     res.status(200).json({ books: books });
   } catch (error) {
     console.log("error al obtener libros por categorias", error);
-  }
-});
-
-router.get("/admin", (req, res) => {
-  const isAdmin = req.cookies.isAdmin;
-  if (isAdmin) {
-    res.render("admin", { title: "admin", currentPage: "admin" });
-  } else {
-    res.redirect("/");
   }
 });
 
@@ -285,9 +281,107 @@ router.get("/admin/books/success", async (req, res) => {
   res.redirect(`/admin/books?success=true`);
 });
 
+router.get("/updateOrders", async (req, res) => {
+  const isAdmin = req.cookies.isAdmin ? true : false;
 
-router.get("/admin/orders", (req, res) => {
-  res.render("orders", { currentPage: 'orders' })
-})
+  try {
+    const data = await getFilteredOrders({status: 'Pendiente'});
+    // console.table(data);
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      // Cambia el formato aquí según tus necesidades
+      return date.toLocaleDateString('es-MX', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+      });
+  };
+  const formattedData = data.map(item => ({
+    ...item, // Mantiene las demás propiedades del objeto
+    loan_date: formatDate(item.loan_date), // Formatea loan_date
+    return_date: formatDate(item.return_date) // Formatea return_date
+}));
+// console.log('asdkaskdaklakldakldaklkldasklda',formattedData);
+    if (isAdmin) {
+      res.status(200).json({ data: formattedData });
+    } else {
+      res.redirect("/");
+    }
+  } catch (error) {
+    console.log('Error en fetch orders',error);
+  }
+  
+});
 
+
+
+router.get("/admin/orders", async (req, res) => {
+  const isAdmin = req.cookies.isAdmin;
+  try {
+    const data = await getFilteredOrders({status: 'Pendiente'});
+    // console.table(data);
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      // Cambia el formato aquí según tus necesidades
+      return date.toLocaleDateString('es-MX', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+      });
+  };
+  const formattedData = data.map(item => ({
+    ...item, // Mantiene las demás propiedades del objeto
+    loan_date: formatDate(item.loan_date), // Formatea loan_date
+    return_date: formatDate(item.return_date) // Formatea return_date
+}));
+console.table(formattedData);
+    if (isAdmin) {
+      res.render("orders", { title: "orders", currentPage: "orders", data: formattedData });
+    } else {
+      res.redirect("/");
+    }
+  } catch (error) {
+    console.log('Error en fetch orders',error);
+  }
+});
+
+router.get("/updateOrderRow", async (req, res) => {
+  const { orderId, loanDate, returnDate, status } = req.query;
+  console.log('Fechas no formateadas: ', loanDate, returnDate);
+  
+  // // const formatedLoanDate = formatDate(loanDate);
+  // // const formatedReturnDate = formatDate(returnDate);
+  // console.log('Fechas formateadas: ', formatedLoanDate, formatedReturnDate);
+  
+console.log('Datos desde el servidor: ',orderId,loanDate,returnDate,status);
+
+  function convertDateFormat(dateString) {
+    // Asumimos que dateString está en formato 'DD MM YY'
+    const [day, month, year] = dateString.split(" ");
+
+    // Convertir 'YY' a 'YYYY'. Asumimos que 'YY' está en el rango de 00 a 99.
+    // Si necesitas trabajar con años más allá de 2099, ajusta esta lógica.
+    const fullYear = parseInt(year) < 50 ? `20${year}` : `19${year}`;
+
+    // Asegúrate de que el mes tenga dos dígitos
+    const formattedMonth = String(month).padStart(2, '0');
+
+    // Asegúrate de que el día tenga dos dígitos
+    const formattedDay = String(day).padStart(2, '0');
+
+    // Retorna la fecha en formato 'YYYY-MM-DD'
+    return `${fullYear}-${formattedMonth}-${formattedDay}`;
+}
+  try {
+    await pool.query('BEGIN');
+    await updateOrder(orderId, loanDate, returnDate, status);
+    await updateOrderStatus(orderId, status);
+    await pool.query('COMMIT');
+    res.status(200).json({success: true});
+  } catch (err) {
+    await pool.query('ROLLBACK');
+    console.log('Error al aztualizar registros en ordenes',err);
+    res.status(400).json({success: false});
+  }
+});
 module.exports = router;

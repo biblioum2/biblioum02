@@ -23,6 +23,25 @@ LIMIT $1 OFFSET $2;
     console.log("Error al obtener los libros", error);
   }
 };
+const getLastBook = async () => {
+  const query = `
+SELECT *
+FROM books
+ORDER BY id DESC
+LIMIT 1;
+  `;
+  try {
+    const res = await pool.query(query);
+    // console.log(`LIBROS: ${res.rows}`);
+    const data= JSON.stringify(res.rows);
+    // console.log(data);
+    console.log(res.rows);
+     res.rows;
+  } catch (error) {
+    console.log("Error al obtener los libros", error);
+  }
+};
+// getLastBook();
 // console.log( getBooks(100, 281));
 
 
@@ -356,8 +375,58 @@ async function getYears() {
       console.error('Error fetching category', err);
   }
 }
+//utilizado en el apartado admin/orders para mostrar ordenes por ser aceptadas
 
-  
+const getFilteredOrders = async (filters) => {
+    // Base query
+    let query = `
+        SELECT o.id, o.user_id, u.username, o.book_id, b.title, o.loan_date, o.return_date, s.status
+        FROM orders o
+        JOIN users u ON o.user_id = u.user_id
+        JOIN books b ON o.book_id = b.id
+        JOIN order_status s ON o.id = s.order_id
+        WHERE 1=1
+    `;
+    
+    // Array para almacenar los valores de los filtros
+    let values = [];
+
+    // Agregar condiciones según los filtros presentes
+    if (filters.user_id) {
+        query += ` AND o.user_id = $${values.length + 1}`;
+        values.push(filters.user_id);
+    }
+
+    if (filters.book_id) {
+        query += ` AND o.book_id = $${values.length + 1}`;
+        values.push(filters.book_id);
+    }
+
+    if (filters.loan_date) {
+        query += ` AND o.loan_date = $${values.length + 1}`;
+        values.push(filters.loan_date);
+    }
+
+    if (filters.return_date) {
+        query += ` AND o.return_date = $${values.length + 1}`;
+        values.push(filters.return_date);
+    }
+
+    if (filters.status) {
+        query += ` AND s.status = $${values.length + 1}`;
+        values.push(filters.status);
+    }
+    query += ` ORDER BY o.id ASC`;
+    
+    // Ejecución de la consulta
+    try {
+        const result = await pool.query(query, values);
+        return result.rows;
+    } catch (error) {
+        console.error('Error al consultar órdenes con filtros:', error);
+        throw error;
+    }
+};
 
 module.exports = {
   getBooksCount,
@@ -373,6 +442,7 @@ module.exports = {
   getBookLiveSearch,
   getBooksTotal,
   getBooksTotalFilter,
+  getFilteredOrders,
 };
 
 
