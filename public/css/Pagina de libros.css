@@ -101,10 +101,6 @@
   text-align: center;
 }
 
-.clasificacion {
-  text-align: left;
-}
-
 .stars #form label {
   font-size: 20px;
 }
@@ -120,6 +116,7 @@
 .stars .clasificacion {
   direction: rtl;
   unicode-bidi: bidi-override;
+  text-align: left;
 }
 
 .stars label:hover,
@@ -339,7 +336,6 @@ footer{
     margin-left: 5px;
 }
 .content-title{
-    margin-left: 220px;
     justify-content: center;
     display: inline-flex;
     width: 70%;
@@ -351,8 +347,12 @@ footer{
     margin-bottom: 10px;
 }
 
-.description{
-    margin-bottom: 10px;
+.description {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 50px;
 }
 .description p{
     color: #606569;
@@ -384,7 +384,6 @@ footer{
     border-top: 1px solid #e1e1e1;
     padding: 1px 20px 1px 16px;
     max-width: 200px;
-    margin: 10px 570px;
     line-height: 27px;
     vertical-align: baseline;
 }
