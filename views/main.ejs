@@ -42,6 +42,9 @@
                 <option value=<%= `${category.id}` %>> <%= category.name %> </option>
                 <% }); %>
               </select>
+              <div class="arrow-container">
+                <div class="neon-arrow"></div>
+            </div>
             </div>
 
             <div class="carrusel">
@@ -139,5 +142,46 @@
   </div> <!-- contenedor -->
   <%- include(`./partials/footer`) %>
 </body>
+<style>
+  .arrow-container {
+    position: relative;
+    width: 150px;
+    height: 50px;
+}
+
+.neon-arrow {
+  margin-left: 10px;
+    width: 0;
+    height: 0;
+    border-top: 25px solid transparent;
+    border-bottom: 25px solid transparent;
+    border-right: 50px solid #FFF; /* Neon color of the arrow */
+    position: absolute;
+    left: 0;
+    animation: blink 1s infinite;
+    filter:  drop-shadow(0 0 10px red);
+}
+
+/* Arrow tail line */
+.neon-arrow:before {
+    content: '';
+    position: absolute;
+    left: 50px;
+    top: -5px;
+    width: 70px;
+    height: 10px;
+    background-color: #FFF;
+    filter: drop-shadow(0 0 30px red);
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+    50% {
+        opacity: 0.5;
+    }
+}
+</style>
 <script src="/js/home.js"></script>
 </html>
