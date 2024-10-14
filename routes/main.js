@@ -84,9 +84,14 @@ router.get("/pages", async (req, res) => {
 
 router.get("/", async (req, res) => {
   const user = req.session.user;
+  console.log('datos del usuario desde main: ', user );
+  
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
-  const username = req.cookies.username;
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  console.log('id desde main con cookies',userId);
+  
+  const username = req.cookies.username;  
   const email = req.cookies.email;
   const categories = await getAllCategories();
   const pagination = await getBooksTotal();
@@ -141,9 +146,13 @@ router.get("/", async (req, res) => {
 
 router.get("/book", async (req, res) => {
   const user = req.session.user;
+  console.log('user desde servidor book: ', user);
+  
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
-  const userId = req.cookies.userId == true ? req.cookies.userId : '0';
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  console.log('id desde book: ', userId);
+  
   const idBook = req.query.id;
   const data = await getBookDetailsById(idBook);
   //  console.log(data);

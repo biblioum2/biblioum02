@@ -508,6 +508,7 @@ const createOrder = async (userId, bookId, loanDate, returnDate) => {
 
 // insertUser('severo', 'password', 'enrrimarq2000@gmail.com', 'admin');
 // insertUser('cristian', 'password', 'adaksjdjkasdkja@gmail.com', 'admin');
+// insertUser('varela', 'password', 'adaksjdja@gmail.com', 'admin');
 
 module.exports = {
   insertUser: insertUser,
