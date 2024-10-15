@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="/css/lstyles.css">
   <link rel="stylesheet" href="/css/nav-admin.css">
   <link rel="stylesheet" href="/css/footer.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">  
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
   <script src="/socket.io/socket.io.js"></script>
   <script src="/js/adminOrders.js"></script>
@@ -19,46 +19,80 @@
   <%- include('./partials/adminHeader.ejs') %>
 
   <main>
-      <div id="notification" class="hidden ghost"></div>
-      <div class="container-mains">
-        <h1 style="margin-left: 4rem;">Ordenes de Libros</h1>
-        <table id="orders-table">
-            <thead>
-                <tr>
-                    <th>ID de Orden</th>
-                    <th>Libro</div></th>
-                    <th>Usuario</th>
-                    <th><div class="th-cell">Fecha de Pedido<div class="triangle"></div></div></th>
-                    <th><div class="th-cell">Fecha de Entrega<div class="triangle"></div></div></th>
-                    <th><div class="th-cell">Estado<div class="triangle"></div></div></th>
-                    <th>Acciones</th>
-                </tr>
-            </thead>
-            <tbody id="content">
-                <% data.forEach(element => { %>                    
-                    <tr>
-                        <td class="rowid"><%= element.id %></td>
-                        <td class="rowtitle"><%= element.title %></td>
-                        <td class="rowusername"><%= element.username %></td>
-                        <td class="rowloan_date"><%= element.loan_date %></td>
-                        <td class="rowreturn_date"><%= element.return_date %></td>
-                        <td class="rowstatus"><%= element.status %></td>
-                        <td>                    
-                            <button class="btn editBtn">Editar</button>
-                            <% if(element.status == 'Pendiente') { %>
-                                <button class="btn acceptBtn">Aprobar</button>
-                            <% } %>                            
-                            <button class="btn rejectBtn">Rechazar</button>
-                        </td>
-                    </tr>
-                <% }); %>
-                <!-- Más filas aquí -->
-            </tbody>
-        </table>
+    <div id="notification" class="hidden ghost"></div>
+    <div class="container-mains">
+      <h1 style="margin-left: 4rem;">Ordenes de Libros</h1>
+      <table id="orders-table">
+        <thead>
+          <tr>
+            <th>ID de Orden</th>
+            <th>Libro
     </div>
-        
+    </th>
+    <th>Usuario</th>
+    <th class="">
+      <div class="th-cell t-loan-date">Fecha de Pedido
+      </div>
+    </th>
+    <th class="">
+      <div class="th-cell t-return-date">Fecha de Entrega
+      </div>
+    </th>
+    <th class="dropdown">
+      <div class="th-cell t-status">Estado
+        <div class="triangle"></div>
+        <div class="dropdown-content">
+          <a data-value="Pendiente">Pendiente</a>
+          <a data-value="Devuelta">Devuelta</a>
+          <a data-value="No devuelta">No devuelta</a>
+        </div>
+      </div>
+    </th>
+    <th>Acciones</th>
+    </tr>
+    </thead>
+    <tbody id="content">
+
+      <% data.forEach(element=> { %>
+      <tr>
+        <td class="rowid">
+          <%= element.id %>
+        </td>
+        <td class="rowtitle">
+          <%= element.title %>
+        </td>
+        <td class="rowusername">
+          <%= element.username %>
+        </td>
+        <td class="rowloan_date">
+          <%= element.loan_date %>
+        </td>
+        <td class="rowreturn_date">
+          <%= element.return_date %>
+        </td>
+        <td class="rowstatus">
+          <%= element.status %>
+        </td>
+        <td>
+          <button class="btn editBtn">Editar</button>
+          <% if(element.status=='Pendiente' ) { %>
+          <button class="btn acceptBtn">Aprobar</button>
+          <% } %>
+          <button class="btn rejectBtn">Rechazar</button>
+        </td>
+      </tr>
+      <% }); %>
+      <!-- Más filas aquí -->
+    </tbody>
+    </table>
+    </div>
+    <% if (data.length === 0) {%>
+    <div class="no-elements">No hay elementos para mostrar</div>
+
+    <% } %>
 
   </main>
 
 </body>
+
 </html>

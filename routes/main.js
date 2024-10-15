@@ -17,7 +17,7 @@ const {
   getBooksCount,
   getFilteredOrders,
 } = require("../queries/getData");
-const { deleteUser } = require("../queries/deleteData");
+const { deleteUser, deleteOrder } = require("../queries/deleteData");
 const { updateOrder, updateOrderStatus } = require("../queries/updateData");
 router.use(cookieParser());
 
@@ -291,10 +291,15 @@ router.get("/admin/books/success", async (req, res) => {
 });
 
 router.get("/updateOrders", async (req, res) => {
+  console.log('Ejecutando la ruta update orders');
+  
+  let {status} = req.query;
+  
+  status = status ? status : 'Pendiente';
   const isAdmin = req.cookies.isAdmin ? true : false;
 
   try {
-    const data = await getFilteredOrders({status: 'Pendiente'});
+    const data = await getFilteredOrders({status: status});
     // console.table(data);
     const formatDate = (dateString) => {
       const date = new Date(dateString);
@@ -325,6 +330,7 @@ router.get("/updateOrders", async (req, res) => {
 
 
 router.get("/admin/orders", async (req, res) => {
+  
   const isAdmin = req.cookies.isAdmin;
   try {
     const data = await getFilteredOrders({status: 'Pendiente'});
@@ -355,14 +361,14 @@ console.table(formattedData);
 });
 
 router.get("/updateOrderRow", async (req, res) => {
-  const { orderId, loanDate, returnDate, status } = req.query;
+  const { orderId, loanDate, returnDate } = req.query;
   console.log('Fechas no formateadas: ', loanDate, returnDate);
   
   // // const formatedLoanDate = formatDate(loanDate);
   // // const formatedReturnDate = formatDate(returnDate);
   // console.log('Fechas formateadas: ', formatedLoanDate, formatedReturnDate);
   
-console.log('Datos desde el servidor: ',orderId,loanDate,returnDate,status);
+console.log('Datos desde el servidor: ',orderId,loanDate,returnDate);
 
   function convertDateFormat(dateString) {
     // Asumimos que dateString está en formato 'DD MM YY'
@@ -383,13 +389,28 @@ console.log('Datos desde el servidor: ',orderId,loanDate,returnDate,status);
 }
   try {
     await pool.query('BEGIN');
-    await updateOrder(orderId, loanDate, returnDate, status);
-    await updateOrderStatus(orderId, status);
+    await updateOrder(orderId, loanDate, returnDate);
+    // await updateOrderStatus(orderId, status);
     await pool.query('COMMIT');
     res.status(200).json({success: true});
   } catch (err) {
     await pool.query('ROLLBACK');
     console.log('Error al aztualizar registros en ordenes',err);
+    res.status(400).json({success: false});
+  }
+});
+
+router.delete("/deleteOrder", async (req, res) => {
+  const {orderId} = req.body;
+  const formatOrderId = parseInt(orderId);
+  try {
+    await pool.query('BEGIN');
+    const response = await deleteOrder(formatOrderId);
+    await pool.query('COMMIT');
+    res.status(200).json({success: true, response: response});
+  } catch (error) {
+    await pool.query('ROLLBACK');
+    console.error('Error al borrar orden',error);
     res.status(400).json({success: false});
   }
 });

@@ -84,7 +84,6 @@ io.on("connection", (socket) => {
     // console.log("Mensaje recibido:", mensaje);
     const { userId, bookId, title, loanDate, returnDate } = data;
     console.log('data desde el servidor book',data);
-    
     await createOrder(userId, bookId, loanDate, returnDate);
     io.emit("new order");
   });

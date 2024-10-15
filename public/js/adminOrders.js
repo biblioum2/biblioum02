@@ -1,4 +1,8 @@
 const socket = io();
+const mensajes = {
+  success: 'Operación exítosa!',
+  failed: 'Operación fallida!',
+}
 function cambiarFormatoFecha(fecha) {
   // Dividir la fecha en partes
   const partes = fecha.split("/");
@@ -21,6 +25,81 @@ function cambiarFormatoFecha(fecha) {
   // Retornar la fecha en el nuevo formato
   return `${anio}-${mes}-${dia}`;
 }
+let isShowingStatus = false;
+document.addEventListener("DOMContentLoaded", () => {
+  const dropdowns = document.querySelectorAll('.dropdown');
+
+  dropdowns.forEach(dropdown => {
+      dropdown.addEventListener('click', (event) => {
+          // Evita el cierre del dropdown si se hace clic dentro de él
+          event.stopPropagation();
+          dropdown.querySelector('.dropdown-content').classList.toggle('show');
+      });
+
+      // Obtiene todas las opciones del dropdown
+      const options = dropdown.querySelectorAll('.dropdown-content a');
+
+      options.forEach(option => {
+          option.addEventListener('click', (event) => {
+              event.preventDefault(); // Evita que el enlace haga scroll a la parte superior
+
+              const value = option.getAttribute('data-value'); // Obtiene el valor de data-value
+              handleDropdownSelection(value); // Llama a la función con el valor seleccionado
+
+              // Cierra el dropdown
+              dropdown.querySelector('.dropdown-content').classList.remove('show');
+          });
+      });
+  });
+
+  window.addEventListener('click', () => {
+      dropdowns.forEach(dropdown => {
+          dropdown.querySelector('.dropdown-content').classList.remove('show');
+      });
+  });
+});
+
+// Función que maneja la selección del dropdown
+async function handleDropdownSelection(value) {
+  switch (value) {
+      case 'Pendiente':
+          // Acción para Opción 1
+          console.log('Seleccionaste Opción Pendiente');
+          try {
+            await updateContent('Pendiente');
+            console.info('Operacion exitosa: ');
+            
+          } catch (error) {
+            console.error('Error al actualizar ordenes: ',error);
+          }
+          break;
+      case 'Devuelta':
+          // Acción para Opción 2
+          console.log('Seleccionaste Opción Devuelta');
+          try {
+            await updateContent('Devuelta');
+            console.info('Operacion exitosa: ');
+            
+          } catch (error) {
+            console.error('Error al actualizar ordenes: ',error);
+          }
+          break;
+      case 'No devuelta':
+          // Acción para Opción 3
+          console.log('Seleccionaste Opción: ', value);
+          try {
+            await updateContent('No devuelta');
+            console.info('Operacion exitosa: ');
+            
+          } catch (error) {
+            console.error('Error al actualizar ordenes: ',error);
+          }
+          break;
+      default:
+          console.log('Opción no válida');
+          break;
+  }
+}
 
 document.addEventListener("DOMContentLoaded", function () {
   const table = document.getElementById("orders-table");
@@ -38,20 +117,24 @@ document.addEventListener("DOMContentLoaded", function () {
       }
     } else if ($target.classList.contains("applyBtn")) {
       try {
+        const $simpleReturnDate = $row.querySelector(".editable-input-2").value;
+        const $simpleLoanDate = $row.querySelector(".editable-input-1").value;
+        console.log('info de los inputs antes de formatear: ', $simpleLoanDate, $simpleReturnDate);
+        
         const orderId = parseInt($row.querySelector(".rowid").textContent);
-        const loanDate = $row.querySelector(".editable-input-1").value;
-        const returnDate = $row.querySelector(".editable-input-2").value;
-        const status = $row.querySelector(".editable-input-3").value;
+        const loanDate = cambiarFormatoFecha($simpleLoanDate);
+        const returnDate = cambiarFormatoFecha($simpleReturnDate);
+        console.log('info de los inputs despues de formatear: ', loanDate, returnDate);
+        
         console.log("se procede a ejecutar el fetch");
         console.log(
           "datos desde el cliente: ",
           orderId,
           loanDate,
           returnDate,
-          status
         );
         const result = await fetch(
-          `http://localhost:3000/updateOrderRow?orderId=${orderId}&loanDate=${loanDate}&returnDate=${returnDate}&status=${status}`
+          `http://localhost:3000/updateOrderRow?orderId=${orderId}&loanDate=${loanDate}&returnDate=${returnDate}`
         );
         console.log("se termino de ejecutar el fetch");
 
@@ -73,6 +156,71 @@ document.addEventListener("DOMContentLoaded", function () {
       acceptOrder($target);
     }
   });
+  async function rejectOrder(element){
+    const $row = element.closest('tr');
+    const $orderId = parseInt($row.querySelector(".rowid").textContent);
+    const $notification = document.getElementById("notification");
+
+    try {
+      const response = await fetch('http://localhost:3000/deleteOrder', {
+        method: 'DELETE',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId: $orderId,
+        }),
+      });
+      const data = await response.json();
+      $notification.textContent = data.success === true ? mensajes.success : mensajes.failed;
+      $notification.classList.remove("hidden");
+      $notification.classList.add("success");
+      setTimeout(() => {
+        // Eliminar la clase visible después de 500ms (coincide con la duración de la transición)
+        $notification.classList.remove("success");
+        $notification.textContent = '';
+        // Añadir la clase hidden después de que la transición termine para ocultar el elemento
+        setTimeout(() => {
+          $notification.classList.add("hidden");
+        }, 0); // 500ms para permitir que se complete la transición de opacidad a 0
+      }, 3000); // Mantener el mensaje visible por 3 segundos antes de empezar a ocultarlo
+      $row.innerHTML = "";
+    } catch (error) {
+      $notification.textContent = mensajes.failed;
+      $notification.classList.toggle("hidden");
+      $notification.classList.toggle("error");
+      console.error('Error al eliminar orden: ',error);
+      
+    }
+
+  };
+  // function showOptions(element) {
+  //   if (element.classList.contains('t-status')){
+  //     console.log('click en status');
+  //     const $optionsContainer = document.createElement('div');
+  //     const $fragment = document.createDocumentFragment();
+  //     const options = ['Pendiente', 'Devuelto', 'No-devuelto' ]
+  //     options.forEach((element) => {
+  //       const $option = document.createElement('div');
+  //       $option.textContent = element;
+  //       $option.classList.add(`option-${element}`);
+  //       $option.classList.add(`option`);
+  //       $fragment.appendChild($option);
+  //     });
+      
+  //     $optionsContainer.appendChild($fragment);
+  //     $optionsContainer.classList.add('options');
+  //     console.log('Regresando las opciones al dom:', $optionsContainer);
+  //     element.appendChild($optionsContainer);
+      
+  //   } else if (element.classList.contains('t-loan-date')){
+  //     console.log('click en loan date');
+      
+  //   } else if (element.classList.contains('t-return-date')){
+  //     console.log('click en return date');
+      
+  //   }
+  // };
   async function acceptOrder(button) {
     const row = button.closest("tr");
     const orderId = parseInt(row.querySelector(".rowid").textContent);
@@ -118,7 +266,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const cells = row.querySelectorAll("td");
     console.log(cells);
 
-    const classesToExtract = ["rowloan_date", "rowreturn_date", "rowstatus"];
+    const classesToExtract = ["rowloan_date", "rowreturn_date"];
     const filteredCells = Array.from(cells).filter((cell) => {
       return classesToExtract.some((className) =>
         cell.classList.contains(className)
@@ -127,8 +275,8 @@ document.addEventListener("DOMContentLoaded", function () {
     filteredCells.forEach((cell, index) => {
       console.log(cell, index);
 
-      if (index < filteredCells.length - 1) {
-        const originalValue = cambiarFormatoFecha(cell.textContent);
+      if (index < filteredCells.length) {
+        const originalValue = cell.textContent;
         console.log(originalValue);
 
         cell.setAttribute("data-original-value", originalValue);
@@ -153,21 +301,21 @@ document.addEventListener("DOMContentLoaded", function () {
                 : new Date().fp_incr(20),
           });
         }
-      } else if (index === filteredCells.length - 1) {
-        const originalValue = cell.textContent;
-        cell.setAttribute("data-original-value", originalValue);
-        const select = document.createElement("select");
-        select.classList.add("editable-input-3");
-        const options = ["Pendiente", "Devuelta", "No devuelta"];
-        options.forEach((optionText) => {
-          const option = document.createElement("option");
-          option.value = optionText;
-          option.textContent = optionText;
-          select.appendChild(option);
-        });
-        select.value = originalValue; // Mantener el valor original seleccionado
-        cell.innerHTML = "";
-        cell.appendChild(select);
+      // } else if (index === filteredCells.length - 1) {
+      //   const originalValue = cell.textContent;
+      //   cell.setAttribute("data-original-value", originalValue);
+      //   const select = document.createElement("select");
+      //   select.classList.add("editable-input-3");
+      //   const options = ["Pendiente", "Devuelta", "No devuelta"];
+      //   options.forEach((optionText) => {
+      //     const option = document.createElement("option");
+      //     option.value = optionText;
+      //     option.textContent = optionText;
+      //     select.appendChild(option);
+      //   });
+      //   select.value = originalValue; // Mantener el valor original seleccionado
+      //   cell.innerHTML = "";
+      //   cell.appendChild(select);
       }
     });
 
@@ -196,16 +344,24 @@ document.addEventListener("DOMContentLoaded", function () {
         const input = cell.querySelector("input");
         if (input) {
           const dateInput = input.value;
+          console.log('fecha para incrustar 1: ',dateInput);
+          
           const date = new Date(dateInput);
+          console.log('fecha para incrustar tipo date: ', date);
+          
           const localDate = new Date(
             date.getTime() + date.getTimezoneOffset() * 60000
           );
+          console.log('fecha local: ', localDate);
+          
           const formattedDate = localDate.toLocaleDateString("es-MX", {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
           });
-          cell.textContent = formattedDate;
+          console.log('fecha final: ', formattedDate);
+          
+          cell.textContent = dateInput;
         } else {
           const select = cell.querySelector("select");
           if (select) {
@@ -249,9 +405,12 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // websocket
-const getOrders = async () => {
+const getOrders = async (value) => {
+  let status = value.toString().trim();
+  console.log('status enviado al cliente: ', value);
+  
   try {
-    const response = await fetch(`http://localhost:3000/updateOrders`);
+    const response = await fetch(`http://localhost:3000/updateOrders?status=${status}`);
     const data = await response.json();
     console.log(data);
     console.table(data);
@@ -260,8 +419,10 @@ const getOrders = async () => {
     console.error("Error al obtener las ordenes", error);
   }
 };
-const updateContent = async () => {
-  const orders = await getOrders();
+const updateContent = async (value) => {
+  console.log('status enviado al cliente: ', value);
+  const $emptyResults = document.querySelector('.no-elements');
+  const orders = await getOrders(value);
   const $fragment = document.createDocumentFragment();
   const $contentOrders = document.getElementById("content");
   const orden = [];
@@ -275,7 +436,11 @@ const updateContent = async () => {
     "return_date",
     "status",
   ];
-
+// console.log("contenido de orders: ", orders);
+if (orders.data.length === 0){
+  $emptyResults.classList.remove('hidden');
+} else {
+  $emptyResults.classList.add('hidden');
   orders.data.forEach((order) => {
     const $row = document.createElement("tr");
 
@@ -319,9 +484,11 @@ const updateContent = async () => {
     $fragment.appendChild($row);
   });
   $contentOrders.appendChild($fragment);
+}
+  
 };
 
 socket.on("new order", () => {
   console.log("recibiendo el mensaje admin");
-  updateContent();
+  updateContent('Pendiente');
 });
