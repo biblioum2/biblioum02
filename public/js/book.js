@@ -63,6 +63,8 @@ console.log('data desde cliente book',data);
   socket.emit('order', data, mensaje);
 });
 
+// MANEJAR LA RESPUESTA AL CREAR UNA ORDEN
+
 
 
 

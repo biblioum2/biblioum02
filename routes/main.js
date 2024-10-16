@@ -334,7 +334,7 @@ router.get("/admin/orders", async (req, res) => {
   const isAdmin = req.cookies.isAdmin;
   try {
     const data = await getFilteredOrders({status: 'Pendiente'});
-    // console.table(data);
+    console.table(data);
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       // Cambia el formato aquí según tus necesidades

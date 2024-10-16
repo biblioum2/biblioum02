@@ -4,27 +4,44 @@ const mensajes = {
   failed: 'Operación fallida!',
 }
 function cambiarFormatoFecha(fecha) {
-  // Dividir la fecha en partes
-  const partes = fecha.split("/");
+  // Verificar si la fecha contiene "/"
+  if (fecha.includes("/")) {
+    // Dividir la fecha en partes
+    const partes = fecha.split("/");
+    
+    // Verificar si la fecha tiene el formato correcto
+    if (partes.length !== 3) {
+      throw new Error("Formato de fecha incorrecto. Use dd/mm/yyyy.");
+    }
 
-  // Verificar si la fecha tiene el formato correcto
-  if (partes.length !== 3) {
-  const partes = fecha.split("-");
-  const dia = partes[2];
-  const mes = partes[1];
-  const anio = partes[0];
-  return `${anio}-${mes}-${dia}`;
-    // throw new Error("Formato de fecha incorrecto. Use dd/mm/yyyy.");
+    // Extraer el día, mes y año
+    const dia = partes[0];
+    const mes = partes[1];
+    const anio = partes[2];
+
+    // Retornar la fecha en el nuevo formato
+    return `${anio}-${mes}-${dia}`;
+  } else if (fecha.includes("-")) {
+    // Dividir la fecha en partes
+    const partes = fecha.split("-");
+    
+    // Verificar si la fecha tiene el formato correcto
+    if (partes.length !== 3) {
+      throw new Error("Formato de fecha incorrecto. Use yyyy-mm-dd.");
+    }
+
+    // Extraer el año, mes y día
+    const anio = partes[0];
+    const mes = partes[1];
+    const dia = partes[2];
+
+    // Retornar la fecha en el nuevo formato
+    return `${anio}-${mes}-${dia}`;
+  } else {
+    throw new Error("Formato de fecha incorrecto. Use dd/mm/yyyy o yyyy-mm-dd.");
   }
-
-  // Extraer el día, mes y año
-  const dia = partes[0];
-  const mes = partes[1];
-  const anio = partes[2];
-
-  // Retornar la fecha en el nuevo formato
-  return `${anio}-${mes}-${dia}`;
 }
+
 let isShowingStatus = false;
 document.addEventListener("DOMContentLoaded", () => {
   const dropdowns = document.querySelectorAll('.dropdown');
@@ -153,7 +170,9 @@ document.addEventListener("DOMContentLoaded", function () {
     } else if ($target.classList.contains("rejectBtn")) {
       rejectOrder($target);
     } else if ($target.classList.contains("acceptBtn")) {
-      acceptOrder($target);
+      acceptOrder($target, "No devuelta");
+    } else if ($target.classList.contains("receivedBtn")) {
+      acceptOrder($target, "Devuelta");
     }
   });
   async function rejectOrder(element){
@@ -221,10 +240,10 @@ document.addEventListener("DOMContentLoaded", function () {
       
   //   }
   // };
-  async function acceptOrder(button) {
+  async function acceptOrder(button,value) {
     const row = button.closest("tr");
     const orderId = parseInt(row.querySelector(".rowid").textContent);
-    const status = "No devuelta";
+    const status = value.trim();
     const $notification = document.getElementById("notification");
     console.log("datos desde el cliente: ", orderId, status);
 
@@ -291,7 +310,7 @@ document.addEventListener("DOMContentLoaded", function () {
         cell.appendChild(input);
         if (input.id === "input-0" || input.id === "input-1") {
           flatpickr(input, {
-            dateFormat: "Y-m-d",
+            dateFormat: "d/m/Y",
             // altInput: true,
             altFormat: "d/m/Y",
             minDate: "today",
@@ -450,36 +469,54 @@ if (orders.data.length === 0){
         $cell.className = `row${key}`;
         $cell.textContent = order[key];
         $row.appendChild($cell);
-
-        // Si la clave es 'status', añade los botones
+    
+        // Si la clave es 'status', añade los botones según el valor del status
         if (key === "status") {
-            const $cellButtons = document.createElement('td');
-          const $acceptBtn = document.createElement("button");
-          const $rejectBtn = document.createElement("button");
-          const $editBtn = document.createElement("button");
-
-        //   $acceptBtn.type = "button";
-          $acceptBtn.classList.add("btn");
-          $acceptBtn.classList.add("acceptBtn");
-        //   $rejectBtn.type = "button";
-          $rejectBtn.classList.add("btn");
-          $rejectBtn.classList.add("rejectBtn");
-        //   $editBtn.type = "button";
-          $editBtn.classList.add("btn");
-          $editBtn.classList.add("editBtn");
-
-          $acceptBtn.textContent = "Aprobar";
-          $rejectBtn.textContent = "Rechazar";
-          $editBtn.textContent = "Editar";
-
-          // Añade los botones a la fila
-          $cellButtons.appendChild($editBtn);
-          $cellButtons.appendChild($acceptBtn);
-          $cellButtons.appendChild($rejectBtn);
+          const $cellButtons = document.createElement('td');
+          const statusValue = order[key];
+    
+          // Función para crear botones con clase y texto
+          const createButton = (className, textContent, disabled = false) => {
+            const $btn = document.createElement("button");
+            $btn.classList.add("btn", className);
+            $btn.textContent = textContent;
+            $btn.disabled = disabled;
+            if (disabled) {
+              $btn.classList.add("btn-disabled");
+              $btn.classList.remove("btn");
+            }
+            return $btn;
+          };
+    
+          if (statusValue === "Pendiente") {
+            const $acceptBtn = createButton("acceptBtn", "Aprobar");
+            const $rejectBtn = createButton("rejectBtn", "Rechazar");
+            const $editBtn = createButton("editBtn", "Editar");
+    
+            $cellButtons.appendChild($editBtn);
+            $cellButtons.appendChild($acceptBtn);
+            $cellButtons.appendChild($rejectBtn);
+          } else if (statusValue === "No devuelta") {
+            const $receivedBtn = createButton("receivedBtn", "Recibido");
+            const $editBtn = createButton("editBtn", "Editar");
+    
+            $cellButtons.appendChild($receivedBtn);
+            $cellButtons.appendChild($editBtn);
+          } else if (statusValue === "Devuelta") {
+            const $acceptBtn = createButton("acceptBtn", "Aprobar", true);
+            const $rejectBtn = createButton("rejectBtn", "Rechazar", true);
+            const $editBtn = createButton("editBtn", "Editar", true);
+    
+            $cellButtons.appendChild($editBtn);
+            $cellButtons.appendChild($acceptBtn);
+            $cellButtons.appendChild($rejectBtn);
+          }
+    
           $row.appendChild($cellButtons);
         }
       }
     });
+    
 
     $fragment.appendChild($row);
   });

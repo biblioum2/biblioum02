@@ -163,11 +163,12 @@ tr:nth-child(even) {
     display: inline-block;
     font-size: 14px;
     margin: 4px 2px;
-    cursor: pointer;
+    /* cursor: pointer; */
     border-radius: 4px;
   }
   
-  button:hover {
+  button.btn:hover {
+    cursor: pointer;
     background-color: #45a049;
   }
   
@@ -271,4 +272,12 @@ tr:nth-child(even) {
     align-items: center;
     justify-content: center;
     color: #333;
+}
+
+.btn-disabled{
+    background-color: #979696;
+}
+.btn-disabled:hover{
+    cursor: default;
+    background-color: #979696;
 }

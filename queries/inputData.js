@@ -279,7 +279,7 @@ async function insertBookCategory(book_id, category_id) {
 }
 // INSERTA CATEGORIAS A LIBROS
 function insertarVarios(){
-  for (let index = 281; index >= 281 && index < 390; index++) {
+  for (let index = 320; index >= 320 && index < 351; index++) {
     insertBookCategory(index,9); 
   }
 };
@@ -462,7 +462,7 @@ return console.log('exito');
 };
 
 async function insertarLibrosCiclo () {
-  for (let index = 0; index < 40; index++) {
+  for (let index = 0; index < 50; index++) {
     await insertBooks();
   }
 }
