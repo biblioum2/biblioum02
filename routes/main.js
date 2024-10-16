@@ -84,13 +84,13 @@ router.get("/pages", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const user = req.session.user;
-  console.log('datos del usuario desde main: ', user );
   
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   console.log('id desde main con cookies',userId);
+  const user = await getUser(undefined,userId);
+  console.log('datos del usuario desde main: ', user );
   
   const username = req.cookies.username;  
   const email = req.cookies.email;
