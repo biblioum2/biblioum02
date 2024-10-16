@@ -261,15 +261,15 @@ const getUsers = async (offset) => {
   
   // OBTENER EL USUARIO PARA VALIDAR INICIO
 
-const getUser = async (name) => {
+const getUser = async (name, user_id) => {
   const query = `
         SELECT * FROM users
-        WHERE username = $1;
+        WHERE username = $1 OR user_id = $2;
     `;
-  const value = [name];
+  const values = [name, user_id];
   try {
-    const res = await pool.query(query, value);
-    // console.log("El get user usuario es: ", res.rows);
+    const res = await pool.query(query, values);
+    console.log("El get user usuario es: ", res.rows);
     return res.rows;
   } catch (error) {
     console.log("Error al consultar usuario", error);

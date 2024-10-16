@@ -72,12 +72,23 @@ app.use(
 // Rutas
 const indexRouter = require("./routes/main");
 const { updateOrderStatus } = require("./queries/updateData");
+const { sendMessageToUser } = require("./utilities/deleteCookies");
 app.use("/", indexRouter);
 
 //Uso de websocket para manejar las ordenes en tiempo real
 
-io.on("connection", (socket) => {
+io.on("connection", async (socket) => {
   console.log("Nuevo cliente conectado");
+  const userIdFromSocket = socket.handshake.query.userId;
+  console.log(userIdFromSocket);
+
+   pool.query('UPDATE users SET socket_id = $1 WHERE user_id = $2', [socket.id, userIdFromSocket], (err) => {
+    if (err) {
+        console.error(err);
+        return;
+    }
+    console.log(`Usuario con ID ${userIdFromSocket} conectado con socket ID ${socket.id}`);
+});
 
   // ESCUCHAR Y REDIRIGIR LA ORDEN DEL CLIENTE AL ADMIN
   socket.on("order", async (data, mensaje) => {
@@ -94,10 +105,33 @@ io.on("connection", (socket) => {
       io.emit("create order result", {success: false});
     }
   });
-
+  // ESCUCHAR LA RESPUESTA DEL ADMIN Y ACTUALIZAR LA INFORMACION
+  socket.on("admin response", (userId) => {
+    pool.query('SELECT socket_id FROM users WHERE user_id = $1',[userId],(error, result) => {
+      if (error){
+        console.log(error);
+        return;
+      } else if (result.rows.length > 0){
+        const socketId = result.rows[0].socket_id;
+        console.log(socketId);        
+      } else {
+        console.log(`Usuario ${userId} no encontrado.`);        
+      }
+    });
+  })
+socket.on("message", async () =>{
+  sendMessageToUser();
+})
   // Manejar la desconexión
   socket.on("disconnect", () => {
     console.log("Cliente desconectado");
+    pool.query('UPDATE users SET socket_id = NULL WHERE user_id = $1', [userIdFromSocket], (err) => {
+      if (err) {
+          console.error(err);
+          return;
+      }
+      console.log(`Usuario con ID ${userIdFromSocket} desconectado`);
+  });
   });
 });
 
@@ -280,7 +314,7 @@ app.post("/admin/users", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password, remember } = req.body;
   try {
-    const data = await getUser(username, password);
+    const data = await getUser(username);
     if (data.length > 0) {
       const user = data[0];
       if (user.password_hash == password) {

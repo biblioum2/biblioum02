@@ -1,5 +1,10 @@
 
-const socket = io(); // Conectar al servidor Socket.IO
+const $userId = document.getElementById('userId');
+const socket = io('http://localhost:3000', {
+  query: {
+    userId: parseInt($userId.value),
+  }
+}); // Conectar al servidor Socket.IO
 // logica para solicitar libro
 
 
@@ -39,7 +44,6 @@ $solicitarBtn.addEventListener('click', () => {
   $solicitudModal.style.display = 'block';
 });
 
-const $userId = document.getElementById('userId');
 
 // EMITIR LA ORDEN AL SERVIDOR
 $orderForm.addEventListener('submit', (e) => {

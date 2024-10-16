@@ -502,7 +502,20 @@ const createOrder = async (userId, bookId, loanDate, returnDate) => {
 };
 
 
+const incrementBookViews = async (bookId) => {
+  const query = `
+      UPDATE books
+      SET views = views + 1
+      WHERE id = $1;
+  `;
 
+  try {
+      await pool.query(query, [bookId]);
+  } catch (error) {
+      console.error('Error al incrementar las vistas del libro:', error);
+      return error;  // Lanzar el error para manejarlo en otro lugar
+  }
+};
 
 
 
@@ -519,4 +532,5 @@ module.exports = {
   // insertOrder: insertOrder,
   insertBookCategory: insertBookCategory,
   // insertActivityLog: insertActivityLog,
+  incrementBookViews,
 };

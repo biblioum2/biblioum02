@@ -16,6 +16,7 @@ const {
   getBooksTotalFilter,
   getBooksCount,
   getFilteredOrders,
+  getUser,
 } = require("../queries/getData");
 const { deleteUser, deleteOrder } = require("../queries/deleteData");
 const { updateOrder, updateOrderStatus } = require("../queries/updateData");
@@ -145,12 +146,12 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/book", async (req, res) => {
-  const user = req.session.user;
-  console.log('user desde servidor book: ', user);
   
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
-  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  const userId = req.cookies.userId ? parseInt(req.cookies.userId) : 0;
+  const user = await getUser('null', parseInt(userId));
+  console.log('user desde servidor book: ', user);
   console.log('id desde book: ', userId);
   
   const idBook = req.query.id;
@@ -414,4 +415,5 @@ router.delete("/deleteOrder", async (req, res) => {
     res.status(400).json({success: false});
   }
 });
+
 module.exports = router;
