@@ -128,7 +128,7 @@ body {
 /* Diseño de div de prueba */
 #Contenido-titulo {
     font-weight: bold;
-    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(184,25,25,1) 50%, rgba(252,176,69,1) 100%);
+    background: linear-gradient(90deg, rgba(12,27,133,1) 4%, rgba(255,255,255,1) 51%, rgba(249,129,9,1) 86%);
     border: #000;
     width: 100%;
     height: 100px;
@@ -141,6 +141,8 @@ body {
   text-align: center;
   letter-spacing: 8px;
   font-family: copperplate gothic;
+  color: #000;
+  font-weight: bold;
 }
 
 /* Configuracion de contenedor del contenido central */
@@ -189,13 +191,25 @@ body {
     width: 100%;
 }
 
-img:hover{
+/* Efectos en imagenes del carrusel de libros */
+.sliderCarr img:hover{
     box-shadow: 0 3px 20px 6px #000;
 }
 
 img {
  height: 100%;
 }
+
+/* Efectos en imagenes de 'Contenido Principal' */
+.card-Book img {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  
+  .card-Book img:hover {
+      opacity: 0.5;
+  }
+  
 
 .viewport{
     width: 100%;
@@ -274,8 +288,8 @@ select option {
 
 /* Estilo para los select en diferentes estados (hover y activo) */
 select:hover {
-    border-color: #FFA500; /* Color del borde al pasar el mouse */
     cursor: pointer;
+    background-color: orangered;
 }
 
 select:active {
@@ -467,6 +481,7 @@ select:active {
     justify-content: center;
     width: 100%;
     height: 4em;
+    margin-bottom: 20px;
 }
 
 .container-filters > ul > li {
@@ -505,6 +520,7 @@ select:active {
     text-align: center;
     margin-right: 10px;
     color: black;
+    border: 2px solid;
 }
 
 .custom-select {
@@ -564,6 +580,5 @@ select:active {
     width: 5em;
     height: 3em;
     color: #000;
-    background-color: white;
-    
+    cursor: pointer;
 }

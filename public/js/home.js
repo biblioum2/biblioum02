@@ -426,12 +426,7 @@ function cambiarIdioma() {
   // Cambiar el atributo lang del elemento <html>
   document.documentElement.lang = idiomaSeleccionado;
 
-  // Cambiar el contenido del saludo según el idioma seleccionado
-  if (idiomaSeleccionado === "es") {
-    document.getElementById("saludo").innerText = "Hola, bienvenido!";
-  } else if (idiomaSeleccionado === "en") {
-    document.getElementById("saludo").innerText = "Hello, welcome!";
-  }
+  // Funcion para cambiar pagina - pendiente
 }
 
 // MANEJO DE FILTROS PARA LOS LIBROS GENERALES DE MAIN //
