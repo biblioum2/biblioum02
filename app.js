@@ -87,8 +87,9 @@ io.on("connection", async (socket) => {
         console.error(err);
         return;
     }
+    
     console.log(`Usuario con ID ${userIdFromSocket} conectado con socket ID ${socket.id}`);
-});
+  });
 
   // ESCUCHAR Y REDIRIGIR LA ORDEN DEL CLIENTE AL ADMIN
   socket.on("order", async (data, mensaje) => {
@@ -327,7 +328,7 @@ app.post("/login", async (req, res) => {
         // Establecer cookie de autenticación
         const cookieOptions = {
           maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000, // 30 días si se selecciona "Remember Me", 1 día si no
-          httpOnly: true, // La cookie solo es accesible mediante HTTP
+          httpOnly: false, // La cookie solo es accesible mediante HTTP
           sameSite: "strict", // Limita el alcance de la cookie a la misma origin
         };
         // Enviar los datos del usuario por cookies

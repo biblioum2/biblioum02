@@ -331,11 +331,11 @@ router.get("/updateOrders", async (req, res) => {
 
 
 router.get("/admin/orders", async (req, res) => {
-  
+  const idUser = req.cookies.userId;
   const isAdmin = req.cookies.isAdmin;
   try {
     const data = await getFilteredOrders({status: 'Pendiente'});
-    console.table(data);
+    // console.table(data);
     const formatDate = (dateString) => {
       const date = new Date(dateString);
       // Cambia el formato aquí según tus necesidades
@@ -350,9 +350,9 @@ router.get("/admin/orders", async (req, res) => {
     loan_date: formatDate(item.loan_date), // Formatea loan_date
     return_date: formatDate(item.return_date) // Formatea return_date
 }));
-console.table(formattedData);
+// console.table(formattedData);
     if (isAdmin) {
-      res.render("orders", { title: "orders", currentPage: "orders", data: formattedData });
+      res.render("orders", { title: "orders", currentPage: "orders", data: formattedData, userId: idUser });
     } else {
       res.redirect("/");
     }

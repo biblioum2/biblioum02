@@ -74,6 +74,7 @@
     }
 
     nav .desktop{
+        position: relative;
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -176,4 +177,28 @@
     .autocomplete-suggestions > div:hover{
         background-color: #ddd9d9;
         cursor: pointer;
+    }
+
+    .userIcon {
+        margin-left: 10px;
+        background-color: red;
+        width: 42px;
+        height: 42px;
+        align-self: center;
+        border-radius: 40px;
+    }
+
+    .userIcon:hover {
+        cursor: pointer;
+    }
+
+    .profile-info{
+        display: none;
+        position: absolute;
+        top: 2rem;
+        right: 5rem;
+        width: 20rem;
+        height: 30rem;
+        border-radius: 3%;
+        background-color: gray;
     }
