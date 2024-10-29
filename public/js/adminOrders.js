@@ -1,44 +1,60 @@
-const socket = io();
+
+function getCookie(nombre) {
+  // Divide las cookies en un array usando el delimitador "; "
+  const cookies = document.cookie.split('; ');
+
+  // Busca la cookie deseada
+  for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i];
+
+      // Verifica si la cookie comienza con el nombre deseado
+      if (cookie.startsWith(nombre + '=')) {
+          // Devuelve el valor de la cookie (parte después del "=")
+          return cookie.substring(nombre.length + 1);
+      }
+  }
+
+  // Si la cookie no se encuentra, devuelve null
+  return null;
+}
+const idUser = getCookie('userId');
+console.log('ID USER DESDE ADMIN ORDERS',idUser);
+
+const socket = io('http://localhost:3000',{
+  query: {
+    userId: parseInt(idUser),
+  }
+});
 const mensajes = {
   success: 'Operación exítosa!',
   failed: 'Operación fallida!',
 }
-function cambiarFormatoFecha(fecha) {
-  // Verificar si la fecha contiene "/"
-  if (fecha.includes("/")) {
-    // Dividir la fecha en partes
-    const partes = fecha.split("/");
-    
-    // Verificar si la fecha tiene el formato correcto
-    if (partes.length !== 3) {
-      throw new Error("Formato de fecha incorrecto. Use dd/mm/yyyy.");
-    }
-
-    // Extraer el día, mes y año
-    const dia = partes[0];
-    const mes = partes[1];
-    const anio = partes[2];
-
-    // Retornar la fecha en el nuevo formato
-    return `${anio}-${mes}-${dia}`;
-  } else if (fecha.includes("-")) {
-    // Dividir la fecha en partes
-    const partes = fecha.split("-");
-    
-    // Verificar si la fecha tiene el formato correcto
-    if (partes.length !== 3) {
-      throw new Error("Formato de fecha incorrecto. Use yyyy-mm-dd.");
-    }
-
-    // Extraer el año, mes y día
-    const anio = partes[0];
-    const mes = partes[1];
-    const dia = partes[2];
-
-    // Retornar la fecha en el nuevo formato
-    return `${anio}-${mes}-${dia}`;
+function formatDate(dateInput) {
+  // Verificar si el formato de entrada es dd/mm/yyyy
+  const ddmmyyyyRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+  
+  if (ddmmyyyyRegex.test(dateInput)) {
+      // Si es en formato dd/mm/yyyy, convertir a Date
+      const [day, month, year] = dateInput.split('/').map(Number);
+      const date = new Date(year, month - 1, day); // Meses en JS son 0-indexed
+      
+      // Retornar en formato ISO (yyyy-mm-ddTHH:mm:ss.sssZ)
+      return date.toISOString();
   } else {
-    throw new Error("Formato de fecha incorrecto. Use dd/mm/yyyy o yyyy-mm-dd.");
+      // Si no es un formato dd/mm/yyyy, se asume que es una fecha ISO
+      const date = new Date(dateInput);
+      
+      // Verificar si la fecha es válida
+      if (isNaN(date)) {
+          throw new Error('Formato de fecha no válido');
+      }
+      
+      // Retornar en formato dd/mm/yyyy
+      const day = String(date.getUTCDate()).padStart(2, '0');
+      const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Meses en JS son 0-indexed
+      const year = date.getUTCFullYear();
+      
+      return `${day}/${month}/${year}`;
   }
 }
 
@@ -139,8 +155,8 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log('info de los inputs antes de formatear: ', $simpleLoanDate, $simpleReturnDate);
         
         const orderId = parseInt($row.querySelector(".rowid").textContent);
-        const loanDate = cambiarFormatoFecha($simpleLoanDate);
-        const returnDate = cambiarFormatoFecha($simpleReturnDate);
+        const loanDate = $simpleLoanDate.trim();
+        const returnDate = $simpleReturnDate.trim();
         console.log('info de los inputs despues de formatear: ', loanDate, returnDate);
         
         console.log("se procede a ejecutar el fetch");
@@ -363,22 +379,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const input = cell.querySelector("input");
         if (input) {
           const dateInput = input.value;
-          console.log('fecha para incrustar 1: ',dateInput);
-          
-          const date = new Date(dateInput);
-          console.log('fecha para incrustar tipo date: ', date);
-          
-          const localDate = new Date(
-            date.getTime() + date.getTimezoneOffset() * 60000
-          );
-          console.log('fecha local: ', localDate);
-          
-          const formattedDate = localDate.toLocaleDateString("es-MX", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          });
-          console.log('fecha final: ', formattedDate);
+          console.log('fecha final: ', dateInput);
           
           cell.textContent = dateInput;
         } else {
@@ -442,6 +443,7 @@ const updateContent = async (value) => {
   console.log('status enviado al cliente: ', value);
   const $emptyResults = document.querySelector('.no-elements');
   const orders = await getOrders(value);
+  console.log(orders);
   const $fragment = document.createDocumentFragment();
   const $contentOrders = document.getElementById("content");
   const orden = [];

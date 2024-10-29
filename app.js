@@ -77,61 +77,127 @@ app.use("/", indexRouter);
 
 //Uso de websocket para manejar las ordenes en tiempo real
 
+// io.on("connection", async (socket) => {
+//   console.log("Nuevo cliente conectado");
+//   const userIdFromSocket = socket.handshake.query.userId;
+//   console.log(userIdFromSocket);
+
+//    pool.query('UPDATE users SET socket_id = $1 WHERE user_id = $2', [socket.id, userIdFromSocket], (err) => {
+//     if (err) {
+//         console.error(err);
+//         return;
+//     }
+    
+//     console.log(`Usuario con ID ${userIdFromSocket} conectado con socket ID ${socket.id}`);
+//   });
+
+//   // ESCUCHAR Y REDIRIGIR LA ORDEN DEL CLIENTE AL ADMIN
+//   socket.on("order", async (data, mensaje) => {
+//     // console.log("Mensaje recibido:", mensaje);
+//     const { userId, bookId, title, loanDate, returnDate } = data;
+//     console.log('data desde el servidor book',data);
+//     try {
+//       const response = await createOrder(userId, bookId, loanDate, returnDate);
+//       if(response){
+//         io.emit("new order");
+//       }
+//     } catch (error) {
+//       console.error('Error al crear la orden: ',error);
+//       io.emit("create order result", {success: false});
+//     }
+//   });
+//   // ESCUCHAR LA RESPUESTA DEL ADMIN Y ACTUALIZAR LA INFORMACION
+//   socket.on("admin response", (userId) => {
+//     pool.query('SELECT socket_id FROM users WHERE user_id = $1',[userId],(error, result) => {
+//       if (error){
+//         console.log(error);
+//         return;
+//       } else if (result.rows.length > 0){
+//         const socketId = result.rows[0].socket_id;
+//         console.log(socketId);        
+//       } else {
+//         console.log(`Usuario ${userId} no encontrado.`);        
+//       }
+//     });
+//   })
+// socket.on("message", async () =>{
+//   sendMessageToUser();
+// })
+//   // Manejar la desconexión
+//   socket.on("disconnect", () => {
+//     console.log("Cliente desconectado");
+//     pool.query('UPDATE users SET socket_id = NULL WHERE user_id = $1', [userIdFromSocket], (err) => {
+//       if (err) {
+//           console.error(err);
+//           return;
+//       }
+//       console.log(`Usuario con ID ${userIdFromSocket} desconectado`);
+//   });
+//   });
+// });
+const io = require('socket.io')(server);
+const pool = require('./db'); // Asegúrate de importar tu configuración de base de datos
+
 io.on("connection", async (socket) => {
   console.log("Nuevo cliente conectado");
   const userIdFromSocket = socket.handshake.query.userId;
   console.log(userIdFromSocket);
 
-   pool.query('UPDATE users SET socket_id = $1 WHERE user_id = $2', [socket.id, userIdFromSocket], (err) => {
+  // Actualizar el socket_id del usuario en la base de datos
+  pool.query('UPDATE users SET socket_id = $1 WHERE user_id = $2', [socket.id, userIdFromSocket], (err) => {
     if (err) {
         console.error(err);
         return;
     }
     console.log(`Usuario con ID ${userIdFromSocket} conectado con socket ID ${socket.id}`);
-});
+  });
 
   // ESCUCHAR Y REDIRIGIR LA ORDEN DEL CLIENTE AL ADMIN
   socket.on("order", async (data, mensaje) => {
-    // console.log("Mensaje recibido:", mensaje);
     const { userId, bookId, title, loanDate, returnDate } = data;
-    console.log('data desde el servidor book',data);
+    console.log('data desde el servidor book', data);
     try {
       const response = await createOrder(userId, bookId, loanDate, returnDate);
-      if(response){
+      if (response) {
         io.emit("new order");
       }
     } catch (error) {
-      console.error('Error al crear la orden: ',error);
-      io.emit("create order result", {success: false});
+      console.error('Error al crear la orden: ', error);
+      io.emit("create order result", { success: false });
     }
   });
+
   // ESCUCHAR LA RESPUESTA DEL ADMIN Y ACTUALIZAR LA INFORMACION
   socket.on("admin response", (userId) => {
-    pool.query('SELECT socket_id FROM users WHERE user_id = $1',[userId],(error, result) => {
-      if (error){
+    pool.query('SELECT socket_id FROM users WHERE user_id = $1', [userId], (error, result) => {
+      if (error) {
         console.log(error);
         return;
-      } else if (result.rows.length > 0){
+      } else if (result.rows.length > 0) {
         const socketId = result.rows[0].socket_id;
-        console.log(socketId);        
+        console.log(socketId);
+        // Enviar la respuesta del admin al usuario correspondiente
+        io.to(socketId).emit("admin response", { userId });
       } else {
-        console.log(`Usuario ${userId} no encontrado.`);        
+        console.log(`Usuario ${userId} no encontrado.`);
       }
     });
-  })
-socket.on("message", async () =>{
-  sendMessageToUser();
-})
+  });
+
+  socket.on("message", async () => {
+    sendMessageToUser();
+  });
+
   // Manejar la desconexión
   socket.on("disconnect", () => {
     console.log("Cliente desconectado");
     pool.query('UPDATE users SET socket_id = NULL WHERE user_id = $1', [userIdFromSocket], (err) => {
       if (err) {
-          console.error(err);
-          return;
+        console.error(err);
+        return;
       }
       console.log(`Usuario con ID ${userIdFromSocket} desconectado`);
-  });
+    });
   });
 });
 
@@ -327,7 +393,7 @@ app.post("/login", async (req, res) => {
         // Establecer cookie de autenticación
         const cookieOptions = {
           maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000, // 30 días si se selecciona "Remember Me", 1 día si no
-          httpOnly: true, // La cookie solo es accesible mediante HTTP
+          httpOnly: false, // La cookie solo es accesible mediante HTTP
           sameSite: "strict", // Limita el alcance de la cookie a la misma origin
         };
         // Enviar los datos del usuario por cookies

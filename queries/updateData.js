@@ -47,7 +47,7 @@ async function updateBook(
   const updateOrder = async (orderId, loanDate, returnDate) => {
     const query = `
         UPDATE orders
-        SET  loan_date = $2, return_date = $3
+        SET  loan_date = TO_DATE($2, 'DD/MM/YY'), return_date = TO_DATE($3, 'DD/MM/YYYY')
         WHERE id = $1;
     `;
     console.log('datos desde update order: ', orderId, loanDate, returnDate);
