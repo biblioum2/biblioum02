@@ -278,12 +278,20 @@ async function insertBookCategory(book_id, category_id) {
   }
 }
 // INSERTA CATEGORIAS A LIBROS
-function insertarVarios(){
-  for (let index = 320; index >= 320 && index < 351; index++) {
-    insertBookCategory(index,9); 
+function insertarVarios(totalElements) {
+  const categories = 9;
+  let category = 1;
+  
+  for (let index = 1; index < totalElements; index++) {
+    insertBookCategory(index, category);
+    category++;
+    if (category > categories) {
+      category = 1;
+    }
   }
-};
-// insertarVarios();
+}
+
+// insertarVarios(500);
 async function getBooksByCategoryId(category_id) {
   const query = `
       SELECT * FROM book_categories WHERE category_id = $1;
@@ -421,7 +429,7 @@ const books = [
     "publication_year": "2024-08-10",
     "available_copies": 1,
     "cover": "https://i.imgur.com/iEYQP4u.png",
-    "language": "Español"
+    "languaje": "Español"
   },
   {
     "title": "El lenguaje de programacion C",
@@ -492,7 +500,7 @@ return console.log('exito');
 };
 
 async function insertarLibrosCiclo () {
-  for (let index = 0; index < 50; index++) {
+  for (let index = 0; index < 30; index++) {
     await insertBooks();
   }
 }

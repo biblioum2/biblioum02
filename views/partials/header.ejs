@@ -1,21 +1,23 @@
-  <div class="header">
-    <!-- First box -->
-     <div class="headerstyle">
-     <div id="box1"><p>Seleccionar lenguaje:</p></div>
-     <div>
+<div class="header">
+  <!-- First box -->
+  <div class="headerstyle">
+    <div id="box1">
+      <p>Seleccionar lenguaje:</p>
+    </div>
+    <div>
       <select id="idioma" class="header-select" onchange="cambiarIdioma()">
-      <option value="en" >English</option>
-      <option value="es" selected = "selected">Español</option>
+        <option value="en">English</option>
+        <option value="es" selected="selected">Español</option>
       </select>
       <div>
-          <b>Horario de atención:</b>
+        <b>Horario de atención:</b>
       </div>
-     </div>
-     <div id="Horario">
+    </div>
+    <div id="Horario">
       <p id="semana">Lunes - Viernes, 09:00am - 19:00pm.</p>
-     </div>
-     <div>
-      
+    </div>
+    <div>
+
       <div id="Naranja-fragil">
         <div id="Naranja-fuerte">
         </div>
@@ -24,66 +26,118 @@
           info@uman.edu.mx
         </p>
       </div>
-     </div>
-     </div>
+    </div>
   </div>
-    <nav>
-      <div class="mobile">
-        <!-- Caja responsive -->
-        <div class="header">
-          <!-- Header y nav -->
-          <div class="more"><button>More</button></div> <!-- Boton More -->
-        </div>
-        <div class="links">
-          <!-- vinculos -->
-          <a href="#">Services</a>
-          <a href="#">About</a>
-          <a href="#">Contact</a>
-          <a href="#">Search</a>
-          <a href="#">Sign up</a>
-          <% if (authToken) {%>
-          <a href="./login">Estas logueado</a>
-          <% } else { %>
-          <a href="./login">Inicia Sesión</a>
-          <% } %>
-        </div>
+</div>
+<nav>
+  <div class="mobile">
+    <!-- Caja responsive -->
+    <div class="header">
+      <!-- Header y nav -->
+      <div class="more"><button>More</button></div> <!-- Boton More -->
+    </div>
+    <div class="links">
+      <!-- vinculos -->
+      <a href="#">Services</a>
+      <a href="#">About</a>
+      <a href="#">Contact</a>
+      <a href="#">Search</a>
+      <a href="#">Sign up</a>
+      <% if (authToken) {%>
+      <a href="./login">Estas logueado</a>
+      <% } else { %>
+      <a href="./login">Inicia Sesión</a>
+      <% } %>
+    </div>
+  </div>
+  <div class="desktop">
+    <!-- Diseño escritorio -->
+    <div class="Logo">UMAN</div> <!-- Palabra logo en nav -->
+    <div class="primary">
+      <!-- Buscador -->
+      <input id="search-input" type="text" autocomplete="off" placeholder="Buscar..." /> <!-- Buscador -->
+      <button class="search-nav-btn"><i class="fa-solid fa-magnifying-glass"></i></button> <!-- Buscador -->
+      <!-- ⬇ CONTENEDOR PARA ALMACENAR LAS SUGERENCIAS ⬇ -->
+      <div id="autocomplete-list" class="autocomplete-suggestions"></div>
+    </div>
+    <div class="secondary full">
+      <!-- Links escritorio en nav -->
+      <a href="/">Inicio</a>
+      <% if (isAdmin) {%>
+      <a href="./admin/orders">Admin</a>
+      <% } %>
+      <% if (authToken) {%>
+      <a href="./logout">Cerrar sesion</a>
+      <% } else { %>
+      <a href="./login">Inicia Sesión</a>
+      <% } %>
+      <div class="userIcon" id="profile-button">
+        <img style="width: 42px; height: 42px;" src="/img/user/userIcon.png" alt="">
       </div>
-      <div class="desktop">
-        <!-- Diseño escritorio -->
-        <div class="Logo">UMAN</div> <!-- Palabra logo en nav -->
-        <div class="primary">
-          <!-- Buscador -->
-          <input id="search-input" type="text" autocomplete="off" placeholder="Buscar..." /> <!-- Buscador -->
-          <button class="search-nav-btn"><i class="fa-solid fa-magnifying-glass"></i></button> <!-- Buscador -->
-          <!-- ⬇ CONTENEDOR PARA ALMACENAR LAS SUGERENCIAS ⬇ -->
-          <div id="autocomplete-list" class="autocomplete-suggestions"></div>
-        </div>
-        <div class="secondary full">
-          <!-- Links escritorio en nav -->
-          <a href="/">Inicio</a>
-          <% if (isAdmin) {%>
-            <a href="./admin/orders">Admin</a>
-            <% } %>
-          <% if (authToken) {%>
-          <a href="./logout">Cerrar sesion</a>
-          <% } else { %>
-          <a href="./login">Inicia Sesión</a>
-          <% } %>
-          <div class="userIcon">
-            <img style="width: 42px; height: 42px;" src="/img/user/userIcon.png" alt="">
-          </div>
-        </div>
-        <div class="secondary mini">
-          <!-- Links en movil -->
-          <a href="#" class="more">Más</a> <!-- Boton desplegable -->
-          <div class="submenu">
-            <!-- Submenu -->
-            <a href="#">Regístrate</a>
-            <a href="./login">Inicia Sesión</a>
-          </div>
-        </div>
-        <div class="profile-info">
+    </div>
+    <div class="secondary mini">
+      <!-- Links en movil -->
+      <a href="#" class="more">Más</a> <!-- Boton desplegable -->
+      <div class="submenu">
+        <!-- Submenu -->
+        <a href="#">Regístrate</a>
+        <a href="./login">Inicia Sesión</a>
       </div>
+    </div>
+    <% if (user) { %>
+      <div class="profile-info ghost" id="user-info">
+        <div class="profile-info-content">
+            <section class="profile-info-personal-data">
+              <div class="profile-info-personal-data-contents">
+                <p><b><%= user.username %></b></p>
+                <p><%= user.email %></p>
+              </div>
+              <div class="grupo"><img src="" alt="">305-SAB</div>
+            </section>
+            <hr style="width: 90%; align-self: center; border: none; height: 0.1rem; background-color: rgb(173, 173, 173); margin-top: 0.5rem;">
+            <div class="profile-info-buttons">
+              <div class="user-option">
+                Prestamos
+              <!-- <div class="triangle-user"></div> -->
+              </div>            
+                <div class="user-options-container">
+                  <div class="option ghost">
+                    Prestamos
+                  </div>
+                  <div class="option ghost">
+                    Favoritos
+                  </div>
+                </div>
+                <div class="sub-options">
+                  <button type="button" id="btn-waiting" class="sub-options-btn">En aprobacion</button>
+                  <button type="button" id="btn-pending" class="sub-options-btn">Por entregar</button>
+                  <button type="button" id="btn-history" class="sub-options-btn">Historial</button>
+                </div>
+            </div>
+            <hr style="width: 90%; align-self: center; border: none; height: 0.1rem; background-color: rgb(173, 173, 173); margin-top: 0.5rem;">
+            <section class="profile-info-responses">
+              <% if (orders.length > 0) { %>
+                <% orders.forEach(element => { %>
+                  <div class="prestamo-element" data-id="<%= element.id %>">
+                    <p><%= element.title %></p>
+                    <p><%= element.loan_date %></p>
+                    <p><%= element.return_date %></p>
+                    <div class="prestamo-buttons">
+                      <!-- <button type="button" title="Editar" data-action="edit"><i class="fa-solid fa-pen-to-square" ></i></button> -->
+                      <button type="button" title="Borrar" data-action="delete"><i class="fa-solid fa-trash"></i></button>
+                    </div>              
+                  </div>              
+                <% }); %>  
+              <% } else { %>
+                <div style="width: 100%; height: 10rem; display: flex; align-items: center; justify-content: center;">
+                  <p style="color: rgb(168, 168, 168);">Sin elementos</p>
+                </div>
+              <% } %>
+            </section>
+        </div>
+    <% } %>
+  </div>
+  </div>
 
-      </div>
-    </nav> <!-- Caja nav -->
+  </div>
+</nav> <!-- Caja nav -->

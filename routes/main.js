@@ -89,8 +89,9 @@ router.get("/", async (req, res) => {
   const isAdmin = req.cookies.isAdmin ? true : false;
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   console.log('id desde main con cookies',userId);
-  const user = await getUser(undefined,userId);
-  console.log('datos del usuario desde main: ', user );
+  const user = userId !== 0 ? await getUser('null', parseInt(userId)) : null;
+  const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
+  // console.log('datos del usuario desde main: ', user );
   
   const username = req.cookies.username;  
   const email = req.cookies.email;
@@ -137,7 +138,8 @@ router.get("/", async (req, res) => {
       books: books,
       authToken: authToken,
       isAdmin: isAdmin,
-      user: user,
+      user: user[0],
+      orders: orders,
     });
   } catch (error) {
     console.log(`Error al consultar`, error);
@@ -146,6 +148,7 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/book", async (req, res) => {
+  // console.log('datos de req book', req);
   
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
@@ -153,18 +156,23 @@ router.get("/book", async (req, res) => {
   const user = await getUser('null', parseInt(userId));
   console.log('user desde servidor book: ', user);
   console.log('id desde book: ', userId);
+  const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
+  console.table(orders);
   
   const idBook = req.query.id;
   const data = await getBookDetailsById(idBook);
+  
+
   //  console.log(data);
   res.render("book", {
     bookData: data,
     title: data.title,
     currentPage: "book",
-    user: user,
+    user: user[0],
     userId: userId,
     isAdmin: isAdmin,
     authToken: authToken,
+    orders: orders,
   });
 });
 
@@ -336,19 +344,19 @@ router.get("/admin/orders", async (req, res) => {
   try {
     const data = await getFilteredOrders({status: 'Pendiente'});
     // console.table(data);
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      // Cambia el formato aquí según tus necesidades
-      return date.toLocaleDateString('es-MX', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-      });
-  };
+  //   const formatDate = (dateString) => {
+  //     const date = new Date(dateString);
+  //     // Cambia el formato aquí según tus necesidades
+  //     return date.toLocaleDateString('es-MX', {
+  //         day: '2-digit',
+  //         month: '2-digit',
+  //         year: 'numeric'
+  //     });
+  // };
   const formattedData = data.map(item => ({
     ...item, // Mantiene las demás propiedades del objeto
-    loan_date: formatDate(item.loan_date), // Formatea loan_date
-    return_date: formatDate(item.return_date) // Formatea return_date
+    loan_date: item.loan_date, // Formatea loan_date
+    return_date: item.return_date// Formatea return_date
 }));
 // console.table(formattedData);
     if (isAdmin) {
@@ -371,23 +379,7 @@ router.get("/updateOrderRow", async (req, res) => {
   
 console.log('Datos desde el servidor: ',orderId,loanDate,returnDate);
 
-  function convertDateFormat(dateString) {
-    // Asumimos que dateString está en formato 'DD MM YY'
-    const [day, month, year] = dateString.split(" ");
 
-    // Convertir 'YY' a 'YYYY'. Asumimos que 'YY' está en el rango de 00 a 99.
-    // Si necesitas trabajar con años más allá de 2099, ajusta esta lógica.
-    const fullYear = parseInt(year) < 50 ? `20${year}` : `19${year}`;
-
-    // Asegúrate de que el mes tenga dos dígitos
-    const formattedMonth = String(month).padStart(2, '0');
-
-    // Asegúrate de que el día tenga dos dígitos
-    const formattedDay = String(day).padStart(2, '0');
-
-    // Retorna la fecha en formato 'YYYY-MM-DD'
-    return `${fullYear}-${formattedMonth}-${formattedDay}`;
-}
   try {
     await pool.query('BEGIN');
     await updateOrder(orderId, loanDate, returnDate);
@@ -412,6 +404,27 @@ router.delete("/deleteOrder", async (req, res) => {
   } catch (error) {
     await pool.query('ROLLBACK');
     console.error('Error al borrar orden',error);
+    res.status(400).json({success: false});
+  }
+});
+
+router.get("/getorders", async (req, res) => {
+  const { 
+    user_id = undefined,
+    book_id = undefined,
+    loan_date = undefined,
+    return_date = undefined,
+    status = undefined
+  } = req.query;
+  try {
+    const result = await getFilteredOrders({user_id, book_id, loan_date, return_date, status});
+    const data = await JSON.stringify(result);
+    console.log(data);
+    
+    
+    res.status(200).json({response: result, success: true});
+  } catch (error) {
+    console.log('Error al obtener ordenes /getorders', error);
     res.status(400).json({success: false});
   }
 });

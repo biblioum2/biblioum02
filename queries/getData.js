@@ -378,9 +378,11 @@ async function getYears() {
 //utilizado en el apartado admin/orders para mostrar ordenes por ser aceptadas
 
 const getFilteredOrders = async (filters) => {
+  // console.log('filtros', filters);
+  
     // Base query
     let query = `
-        SELECT o.id, o.user_id, u.username, o.book_id, b.title, o.loan_date, o.return_date, s.status
+        SELECT o.id, o.user_id, u.username, o.book_id, b.title, TO_CHAR(o.loan_date, 'DD/MM/YYYY') AS loan_date, TO_CHAR(o.return_date, 'DD/MM/YYYY') AS return_date, s.status
         FROM orders o
         JOIN users u ON o.user_id = u.user_id
         JOIN books b ON o.book_id = b.id
@@ -420,7 +422,11 @@ const getFilteredOrders = async (filters) => {
     
     // Ejecución de la consulta
     try {
+      console.log(values);
+      
         const result = await pool.query(query, values);
+        console.log('resultado',result.rows);
+        
         return result.rows;
     } catch (error) {
         console.error('Error al consultar órdenes con filtros:', error);
