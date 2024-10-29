@@ -1,6 +1,7 @@
 const { getRandomValues } = require("crypto");
 const pool = require("../config/database");
 const { parseCIDR } = require("ipaddr.js");
+const { log } = require("console");
 
 // OBTENCION DE LIBROS GENERAL
 
@@ -16,12 +17,33 @@ LIMIT $1 OFFSET $2;
     // console.log(`LIBROS: ${res.rows}`);
     const data= JSON.stringify(res.rows);
     // console.log(data);
-    return res.rows;
+    console.log(res.rows);
+     res.rows;
   } catch (error) {
     console.log("Error al obtener los libros", error);
   }
 };
-// getBooks();
+const getLastBook = async () => {
+  const query = `
+SELECT *
+FROM books
+ORDER BY id DESC
+LIMIT 1;
+  `;
+  try {
+    const res = await pool.query(query);
+    // console.log(`LIBROS: ${res.rows}`);
+    const data= JSON.stringify(res.rows);
+    // console.log(data);
+    console.log(res.rows);
+     res.rows;
+  } catch (error) {
+    console.log("Error al obtener los libros", error);
+  }
+};
+// getLastBook();
+// console.log( getBooks(100, 281));
+
 
 //OBTENCION DE LIBRO PARA PAGINA INDIVIDUAL
 const getBookDetailsById = async (bookId) => {
@@ -72,13 +94,116 @@ const getBooksTotal = async (category) => {
 
   try {
     const res = await pool.query(query, queryParams);
-    return res.rows[0].total;
+    const pagination = res.rows[0].total === 0 ? 1 : Math.round(res.rows[0].total / 20);
+    return { pagination:pagination, totalBooks: res.rows[0].total};
   } catch (error) {
     console.log("Error al obtener los libros", error);
   }
 };
 
 // getBooksTotal()
+
+// FUNCION EXITOSA
+const getBooksTotalFilter = async (filters) => {
+  const { category, author, year, limit, offset } = filters;
+  const values = [limit, offset];
+  let index = 3; // Starting index for the dynamic values
+  
+  let query = `
+      SELECT 
+          *
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      WHERE 
+          1=1
+  `;
+
+  if (category) {
+      query += ` AND c.name = $${index}`;
+      values.push(category);
+      index++;
+  }
+
+  if (author) {
+      query += ` AND b.author ILIKE $${index}`;
+      values.push(`%${author}%`);
+      index++;
+  }
+
+  if (year) {
+      query += ` AND EXTRACT(YEAR FROM b.publication_year) = $${index}`;
+      values.push(year);
+      index++;
+  }
+
+  query += ` LIMIT $1 OFFSET $2`;
+  
+  try {
+      console.log('valores desde query:', values);
+      const result = await pool.query(query, values);
+      return result.rows
+  } catch (error) {
+      console.error('Error al obtener libros', error);
+      throw error;
+  }
+};
+
+
+
+
+const getBooksCount = async (filters) => {
+  const { category, author, year } = filters; // Removemos limit y offset ya que no se usan para contar
+  const values = [];
+  let index = 1; // Starting index for the dynamic values
+
+  let query = `
+      SELECT 
+          COUNT(*)
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      WHERE 
+          1=1
+  `;
+
+  if (category !== '') {
+      query += ` AND c.name = $${index}`;
+      values.push(category);
+      index++;
+  }
+
+  if (author !== '') {
+      query += ` AND b.author ILIKE $${index}`;
+      values.push(`%${author}%`);
+      index++;
+  }
+
+  if (year !== '') {
+      query += ` AND EXTRACT(YEAR FROM b.publication_year) = $${index}`;
+      values.push(year);
+      index++;
+  }
+
+  try {
+      console.log('valores desde query:', values);
+      const result = await pool.query(query, values);
+      // console.log(result);
+      return result.rows[0].count; // Devolvemos el total de registros
+  } catch (error) {
+      console.error('Error al obtener el total de libros', error);
+      throw error;
+  }
+};
+
+// getBooksCount({ category: null, title: 'eloq', author: null, year: null});
+
 
 
 // OBTENCION DE LIBROS POR CATEGORIA
@@ -136,15 +261,15 @@ const getUsers = async (offset) => {
   
   // OBTENER EL USUARIO PARA VALIDAR INICIO
 
-const getUser = async (name) => {
+const getUser = async (name, user_id) => {
   const query = `
         SELECT * FROM users
-        WHERE username = $1;
+        WHERE username = $1 OR user_id = $2;
     `;
-  const value = [name];
+  const values = [name, user_id];
   try {
-    const res = await pool.query(query, value);
-    // console.log("El get user usuario es: ", res.rows);
+    const res = await pool.query(query, values);
+    console.log("El get user usuario es: ", res.rows);
     return res.rows;
   } catch (error) {
     console.log("Error al consultar usuario", error);
@@ -170,7 +295,7 @@ const getUserLiveSearch = async (name) => {
 
 const getBookLiveSearch = async (name) => {
   const query = `
-        SELECT * FROM books WHERE title ILIKE '%' || $1 || '%' LIMIT 10;
+        SELECT DISTINCT ON (title) * FROM books WHERE title ILIKE '%' || $1 || '%' LIMIT 10;
     `;
   const value = [name];
   try {
@@ -225,10 +350,94 @@ async function getCategoryById(id) {
   }
 }
 // CREAR
+async function getAuthors() {
+  const query = `
+      SELECT DISTINCT ON (author) author FROM books;
+  `;
+  try {
+      const res = await pool.query(query);
+      return res.rows;
+  } catch (err) {
+      console.error('Error fetching category', err);
+  }
+}
 
+async function getYears() {
+  const query = `
+      SELECT DISTINCT EXTRACT(YEAR FROM publication_year) AS year
+      FROM books
+      ORDER BY year;
+  `;
+  try {
+      const res = await pool.query(query);
+      return res.rows;
+  } catch (err) {
+      console.error('Error fetching category', err);
+  }
+}
+//utilizado en el apartado admin/orders para mostrar ordenes por ser aceptadas
+
+const getFilteredOrders = async (filters) => {
+  // console.log('filtros', filters);
   
+    // Base query
+    let query = `
+        SELECT o.id, o.user_id, u.username, o.book_id, b.title, TO_CHAR(o.loan_date, 'DD/MM/YYYY') AS loan_date, TO_CHAR(o.return_date, 'DD/MM/YYYY') AS return_date, s.status
+        FROM orders o
+        JOIN users u ON o.user_id = u.user_id
+        JOIN books b ON o.book_id = b.id
+        JOIN order_status s ON o.id = s.order_id
+        WHERE 1=1
+    `;
+    
+    // Array para almacenar los valores de los filtros
+    let values = [];
+
+    // Agregar condiciones según los filtros presentes
+    if (filters.user_id) {
+        query += ` AND o.user_id = $${values.length + 1}`;
+        values.push(filters.user_id);
+    }
+
+    if (filters.book_id) {
+        query += ` AND o.book_id = $${values.length + 1}`;
+        values.push(filters.book_id);
+    }
+
+    if (filters.loan_date) {
+        query += ` AND o.loan_date = $${values.length + 1}`;
+        values.push(filters.loan_date);
+    }
+
+    if (filters.return_date) {
+        query += ` AND o.return_date = $${values.length + 1}`;
+        values.push(filters.return_date);
+    }
+
+    if (filters.status) {
+        query += ` AND s.status = $${values.length + 1}`;
+        values.push(filters.status);
+    }
+    query += ` ORDER BY o.id ASC`;
+    
+    // Ejecución de la consulta
+    try {
+      console.log(values);
+      
+        const result = await pool.query(query, values);
+        console.log('resultado',result.rows);
+        
+        return result.rows;
+    } catch (error) {
+        console.error('Error al consultar órdenes con filtros:', error);
+        throw error;
+    }
+};
 
 module.exports = {
+  getBooksCount,
+  getAuthors,
+  getYears,
   getBooks,
   getUser,
   getUsers,
@@ -238,6 +447,8 @@ module.exports = {
   getBookDetailsById,
   getBookLiveSearch,
   getBooksTotal,
+  getBooksTotalFilter,
+  getFilteredOrders,
 };
 
 

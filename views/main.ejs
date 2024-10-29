@@ -4,22 +4,23 @@
 <head>
   <meta charset="utf-8" />
   <title>Catálogo UMAN</title>
-  <link rel=icon href="img/biblioteca.ico" />
+  <link rel=icon href="img/uman.ico" />
   <link rel="stylesheet" type="text/css" href="css/main.css" />
   <link rel="stylesheet" type="text/css" href="css/footer.css" />
   <!-- <link rel="stylesheet" type="text/css" href="css/Nav.css" /> -->
   <link rel="stylesheet" type="text/css" href="css/Nav-libros.css" />
-
-  <script src="https://kit.fontawesome.com/b408879b64.js" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://kit.fontawesome.com/caf315d017.js" crossorigin="anonymous"></script>
   <meta http-equiv="X-UA-Compatible" content="IE-edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
+
   <!--a href="https://www.flaticon.es/iconos-gratis/biblioteca" title="biblioteca iconos">Biblioteca iconos creados por Dighital Design - Flaticon</a>-->
 </head>
 
 <body>
   <div class="container-main">
-    <%- include('./partials/header') %>
+    <%- include('./partials/header') %> 
     <div id="Estanteria">
       <!-- cuerpo -->
       <div id="contenido">
@@ -38,7 +39,7 @@
           <div id="slider2">
             <div class="content-title">
               <h2 class="title-slider">Área de interés</h2>
-              <select id="selectCat" style="text-align: center;">
+              <select id="selectCat" class="content-books-select" style="text-align: center;">
                 <% categories.forEach(category => { %>
                 <option value=<%= `${category.id}` %>> <%= category.name %> </option>
                 <% }); %>
@@ -50,13 +51,13 @@
                 <div class="arrowL"></div>
               </button>
               <!-- Contenedor de carrusel -->
-              <div class="viewport" style="height: 356.8px; touch-action: pan-y;" id="bookss">
+              <div class="viewport" style="touch-action: pan-y;" id="bookss">
                 <!-- Contenedor de libros en fila -->
-                <div id="caruselContainer" class="sliderCarr" style="left: 0px; transform: translate();">
+                <div id="caruselContainer" class="sliderCarr">
                   <!-- Funcion de slider dentro del contenedor de libros en fila -->
-                  <% books.forEach(book => { %>
+                  <% books.forEach(book => { %>              
                   <div class="carrusel-cel" style="max-width: 258px; position: absolute left auto" aria-hidden="true">
-                    <a href="./book?id=<%= book.id %>" class="img-related" title="<%= book.title %>">
+                    <a href="./book?id=<%= book.book_id %>" class="img-related" title="<%= book.title %>">
                       <img src="<%= book.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
                     </a> <!-- Portada de los libros -->
                     <h3>
@@ -73,9 +74,48 @@
           </div>
 
         </div>
+        <div id="Contenido-titulo"> 
+          <h1  id="texto">CONTENIDO PRINCIPAL</h1>
+        </div>
+        <div id="containerFilters" class="container-filters">
+          <ul class="filter-list">
+            <li>
+              <label for="author">Autor</label>
+              <select name="author" id="authorFilter">
+                <option value="">-------</option>
+                <% authors.forEach(author => { %>
+                <option value=<%= `${author.author}` %>> <%= author.author %> </option>
+                <% }); %>
+              </select>
+            </li>
+            <li>
+              <label for="category">Categoría</label>
+              <select name="date" id="categoryFilter" class="category-filter">
+                <option value="">-------</option>
+                <% categories.forEach(category => { %>
+                <option value=<%= `${category.name}` %>> <%= category.name %> </option>
+                <% }); %>
+              </select>
+            </li>
+            <li>
+              <label for="date">Año</label>
+              <select name="date" id="yearFilter">
+                <option value="">-------</option>
+                <% years.forEach(year => { %>
+                <option value=<%= `${year.year}` %>> <%= year.year %> </option>
+                <% }); %>
+              </select>
+            </li>
+            <li>
+              <button id="btnSetFilter" class="btn-apply-filter" type="button">Aplicar</button>
+            </li>
+          </ul>
+        </div>
+
+
         <div id="cardContainer" class="card-container" data-totalpages="<%= pagination %>">
           <% books.forEach(element => { %>
-          <a href="./book?id=<%= element.id %>" class="img-related" title="<%= element.title %>">
+          <a href="./book?id=<%= element.book_id %>" class="img-related" title="<%= element.title %>">
             <div id="<%= element.id %>" class="card-Book">
               <img src="<%= element.cover %>" alt="<%= element.title %>">
               <div class="card-info">
@@ -90,11 +130,11 @@
             <button class="pagination-btn-controller">Anterior</button>
             <div id="pagesContainer" class="pagination-page-btns">
               <% for (let i = 1; i <= pagination; i++ ) { %>
-                <button id="pagination-btn-<%= i %>" data-page="<%= i %>" class="pagination-btn <%= currentPage == i ? 'pagination-btn-focus' : '' %>"><%= i %></button>
+              <button id="pagination-btn-<%= i %>" data-page="<%= i %>" class="pagination-btn <%= currentPage == i ? 'pagination-btn-focus' : '' %>"><%= i %></button>
               <% } %>
             </div>
             <button class="pagination-btn-controller">Siguiente</button>
-          </div>          
+          </div>
         </div>
       </div>
     </div> <!-- Contenido central -->
@@ -102,5 +142,6 @@
   <%- include(`./partials/footer`) %>
 </body>
 <script src="/js/home.js"></script>
+<script src="js/header.js"></script>
 
 </html>

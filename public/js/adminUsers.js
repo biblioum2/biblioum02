@@ -149,5 +149,9 @@ document.addEventListener('click', (event) => {
 });
 
 
-//Funcion para validar los datos del formulario
+// Funcion para manejar la logica de la edicion de registros
 
+document.addEventListener("DOMContentLoaded", () => {
+const table = getElementById('');
+
+});

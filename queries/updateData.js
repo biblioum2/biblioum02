@@ -1,5 +1,6 @@
 const { getRandomValues } = require("crypto");
 const pool = require("../config/database");
+const { Pool } = require("pg");
 
 // Category
 async function updateCategory(id, name) {
@@ -42,5 +43,43 @@ async function updateBook(
     }
   }
 
+
+  const updateOrder = async (orderId, loanDate, returnDate) => {
+    const query = `
+        UPDATE orders
+        SET  loan_date = TO_DATE($2, 'DD/MM/YY'), return_date = TO_DATE($3, 'DD/MM/YYYY')
+        WHERE id = $1;
+    `;
+    console.log('datos desde update order: ', orderId, loanDate, returnDate);
+
+    try {
+        await pool.query('BEGIN');
+        await pool.query(query, [orderId, loanDate, returnDate]);
+        await pool.query('COMMIT');
+        console.log(`Orden con ID ${orderId} actualizada correctamente.`);
+    } catch (error) {
+      await pool.query('ROLLBACK');
+        console.error(`Error al actualizar la orden:`, error);
+    }
+};
+
+const updateOrderStatus = async (orderId, status) => {
+  const query = `
+            UPDATE order_status
+            SET status = $1
+            WHERE order_id = $2;
+        `;
+        console.log('datos desde update status', orderId, status);
+        
+  try {
+      await pool.query(query, [status, orderId]);
+      console.log(`Orden con ID ${orderId} actualizada correctamente.`);
+  } catch (error) {
+      console.error(`Error al actualizar la orden:`, error);
+  }
+};
+
 module.exports = {
+  updateOrder,
+  updateOrderStatus,
 };

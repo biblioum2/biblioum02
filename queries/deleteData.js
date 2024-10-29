@@ -117,9 +117,21 @@ const deleteUser = async (userId) => {
     }
 }
 
-
+const deleteOrder = async (orderId) => {
+    const query = `
+        DELETE FROM orders WHERE id = $1;
+    `;
+    const values = [orderId];
+    try {
+        const result = await pool.query(query, values);
+        return result; // Devuelve el objeto completo result
+    } catch (err) {
+        console.error('Error al eliminar el usuario', err);
+    }
+}
 module.exports = {
     deleteUser,
+    deleteOrder,
 };
 
 // deleteTableFavorites();

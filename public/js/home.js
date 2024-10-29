@@ -64,7 +64,7 @@ document.addEventListener("DOMContentLoaded", () => {
       $booksFragmentOriginal.appendChild($contentBooks.firstChild);
     }
 
-    let term = $category.value - 1;
+    let term = $category.value;
     console.log(`ejecutando category ${term}`);
 
     try {
@@ -152,87 +152,111 @@ const debounce = (func, delay) => {
   };
 };
 
-// FUNCION LIVESEARCH
+// FUNCION PARA INICIALIZAR LA BÚSQUEDA
+const initializeLiveSearch = ({
+  inputSelector,
+  suggestionSelector,
+  fetchUrl,
+  onItemSelect,
+}) => {
+  console.log("funcon live search ejecutandose");
 
-// SE OBTIENE EL CONTENEDOR QUE ALMACENA LAS SUGERENCIAS EN HTML
-const $suggestion = document.getElementById("autocomplete-list");
+  const $suggestion = document.querySelector(suggestionSelector);
+  const $inputnav = document.querySelector(inputSelector);
 
-// SE OBTIENE EL ELEMENTO INPUT DE BUSQUEDA
-const $inputnav = document.getElementById("search-input");
+  // SE CREA LA FUNCION DE BUSQUEDA
+  const handleSearch = async () => {
+    console.log("busqueda funcionando");
 
-// SE CREA LA FUNCION DE BUSQUEDA
-const handleSearch = async () => {
-  // SE INICIALIZA UNA VARIABLE QUE SIMULA UN FRAGMENTO DEL DOM
-  const $fragment = document.createDocumentFragment();
+    const $fragment = document.createDocumentFragment();
+    let term = $inputnav.value.trim();
 
-  // SE OBTIENE EL VALOR INTRODUCIDO EN EL INPUT
-  let term = $inputnav.value.trim();
+    while ($suggestion.firstChild) {
+      $suggestion.removeChild($suggestion.firstChild);
+    }
 
-  // SE ELIMINAN LOS ELEMENTOS HIJOS DEL CONTENEDOR DE SUGERENCIAS
-  while ($suggestion.firstChild) {
-    $suggestion.removeChild($suggestion.firstChild);
-  }
+    if (term.length > 0) {
+      const query = new URLSearchParams({ term });
+      console.log("esto es la query", term);
 
-  // SE VERIFICA QUE EL INPUT TENGA CONTENIDO
-  if (term.length > 0) {
-    // SE INICIALIZA LA VARIABLE QUERY CON EL VALOR FORMATEADO DEL INPUT
-    const query = new URLSearchParams({ term });
+      try {
+        const res = await fetch(`${fetchUrl}?${query}`);
+        if (!res.ok) throw new Error("Error en la respuesta de la petición");
 
-    // SE REALIZA LA PETICION A LA RUTA PASANDO EL QUERY
-    fetch(`http://localhost:3000/book/name?${query}`)
-      .then((res) => (res.ok ? res.json() : Promise.reject(res))) // MANEJO RESPUESTA EXITOSA O RECHAZADA
-      .then((json) => {
-        // MANEJA LA RESPUESTA
+        const json = await res.json();
         json.forEach((el) => {
           const $sugres = document.createElement("div");
           $sugres.textContent = el.title;
           $sugres.id = el.id;
           $sugres.classList.add("sugestitem");
-
-          // Establecer el atributo data-id con el ID del libro
           $sugres.setAttribute("data-id", el.id);
-
-          // Añadir el evento click para redirigir a la URL
-          $sugres.addEventListener("mousedown", () => {
-            window.location.href = `./book?id=${el.id}`;
-          });
+          $sugres.addEventListener("mousedown", () => onItemSelect(el));
 
           $fragment.appendChild($sugres);
         });
         $suggestion.appendChild($fragment);
-      })
-      .catch((err) => {
-        // SE MANEJA EL ERROR
+      } catch (err) {
         console.error("Error desde fetch:", err);
-      });
-  } else {
-    console.log("");
-  }
+      }
+    }
+  };
+
+  const debouncedSearch = debounce(handleSearch, 220);
+
+  $inputnav.addEventListener("input", debouncedSearch);
+  $inputnav.addEventListener("focusout", () => {
+    while ($suggestion.firstChild) {
+      $suggestion.removeChild($suggestion.firstChild);
+    }
+  });
+
+  $inputnav.addEventListener("focus", () => {
+    debouncedSearch();
+  });
+
+  $inputnav.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+      const $firstChild = $suggestion.firstChild;
+      if ($firstChild) {
+        window.location.href = `./book?id=${$firstChild.id}`;
+      }
+    }
+  });
 };
 
-const debouncedSearch = debounce(handleSearch, 220); // INICIAMOS UNA VARIABLE QUE INCORPORA EL DELAY Y EL SEARCH
-$inputnav.addEventListener("input", debouncedSearch); //INICIA LA BUSQUEDA CUANDO EL SE ESCRIBE EN EL INPUT
-
-$inputnav.addEventListener("focusout", () => {
-  //REMOVER LAS SUGERENCIAS CUANDO SE DEJA DE HACER FOCUS AL INPUT
-  while ($suggestion.firstChild) {
-    $suggestion.removeChild($suggestion.firstChild);
-  }
-});
-
-$inputnav.addEventListener("focus", () => {
-  // INICIAR LA BUSQUEDA CUANDO SE HACE FOCUS AL INPUT
-  debouncedSearch();
-});
-
-$inputnav.addEventListener("keydown", (event) => {
-  if (event.key === "Enter") {
-    const $firstChild = $suggestion.firstChild;
-    window.location.href = `./book?id=${$firstChild.id}`;
-  }
+// USAR LA FUNCION CON DISTINTOS INPUTS
+initializeLiveSearch({
+  inputSelector: "#search-input",
+  suggestionSelector: "#autocomplete-list",
+  fetchUrl: "http://localhost:3000/book/name",
+  onItemSelect: (item) => {
+    window.location.href = `./book?id=${item.id}`;
+  },
 });
 
 // CODIGO PARA LA FUNCIONALIDAD DEL PAGINATION
+
+async function totalBookPages() {
+  const $autorValue = document.getElementById("authorFilter").value;
+  const $categoryValue = document.getElementById("categoryFilter").value;
+  const $yearValue = document.getElementById("yearFilter").value;
+  const category = $categoryValue ? $categoryValue : "";
+  const author = $autorValue ? $autorValue : "";
+  const year = $yearValue ? $yearValue : "";
+  try {
+    const response = await fetch(
+      `http://localhost:3000/pages?category=${category}&author=${author}&year=${year}`
+    );
+    const totalBooks = await response.json();
+    const pages =
+      Math.round(parseInt(totalBooks) / 20) < 1
+        ? 1
+        : Math.round(parseInt(totalBooks) / 20);
+    return pages;
+  } catch (error) {
+    console.log(error);
+  }
+}
 
 const uploadPaginationButtons = (currentPage, totalPages) => {
   const $fragment = document.createDocumentFragment();
@@ -263,9 +287,9 @@ const uploadPaginationButtons = (currentPage, totalPages) => {
   $pagesContainer.appendChild($fragment);
 
   // Añadir eventos de clic después de añadir los botones al DOM
-  document.querySelectorAll('.pagination-btn').forEach(el => {
-    el.removeEventListener('click', handlePaginationClick); // Remover el evento si ya existe
-    el.addEventListener('click', handlePaginationClick);
+  document.querySelectorAll(".pagination-btn").forEach((el) => {
+    el.removeEventListener("click", handlePaginationClick); // Remover el evento si ya existe
+    el.addEventListener("click", handlePaginationClick);
   });
 
   // Controlar visibilidad y funcionalidad de botones Anterior y Siguiente
@@ -284,128 +308,143 @@ const uploadPaginationButtons = (currentPage, totalPages) => {
 
   prevButton.addEventListener("click", handlePrevClick);
   nextButton.addEventListener("click", handleNextClick);
-  
 };
-
 const updateBookCards = async (page) => {
-  const booksOffset = page * 20 - 20;
-  console.log('esta es la pagina', page);
-  
-    try {
-      const totalBooks = await fetch(`http://localhost:3000/page/${booksOffset}`);
-      const data = await totalBooks.json();
-      const $fragment = document.createDocumentFragment();
-      const $bookContainer = document.getElementById('cardContainer');
-      const $paginationContainer = document.getElementById('pages-container');
+  const offset = page * 20 - 20;
+  console.log("esta es la pagina", page);
+  const $autorValue = document.getElementById("authorFilter").value;
+  const $categoryValue = document.getElementById("categoryFilter").value;
+  const $yearValue = document.getElementById("yearFilter").value;
+  const category = $categoryValue ? $categoryValue : null;
+  const author = $autorValue ? $autorValue : null;
+  const year = $yearValue ? $yearValue : null;
 
-      const children = Array.from($bookContainer.children);
+  try {
+    const totalBooks = await fetch(
+      `http://localhost:3000/test?category=${category}&author=${author}&year=${year}&offset=${offset}`
+    );
+    const data = await totalBooks.json();
+    const $fragment = document.createDocumentFragment();
+    const $bookContainer = document.getElementById("cardContainer");
+    const $paginationContainer = document.getElementById("pages-container");
+    const children = Array.from($bookContainer.children);
 
-      children.forEach(child => {
-        if (child !== $paginationContainer) {
-          $bookContainer.removeChild(child);
-        }
-      });
+    children.forEach((child) => {
+      if (child !== $paginationContainer) {
+        $bookContainer.removeChild(child);
+      }
+    });
 
-      data.forEach(element => {
-        // Crea un nuevo elemento <a> y sus hijos
-        const a = document.createElement('a');
-        a.href = `./book?id=${element.id}`;
-        a.className = 'img-related';
-        a.title = element.title;
-    
-        const divCard = document.createElement('div');
-        divCard.id = element.id;
-        divCard.className = 'card-Book';
-    
-        const img = document.createElement('img');
-        img.src = element.cover;
-        img.alt = element.title;
-    
-        const divInfo = document.createElement('div');
-        divInfo.className = 'card-info';
-    
-        const pTitle = document.createElement('p');
-        pTitle.className = 'black';
-        pTitle.textContent = element.title;
-    
-        const pAuthor = document.createElement('p');
-        pAuthor.className = 'black';
-        pAuthor.textContent = element.author;
-    
-        // Ensambla los elementos
-        divInfo.appendChild(pTitle);
-        divInfo.appendChild(pAuthor);
-        divCard.appendChild(img);
-        divCard.appendChild(divInfo);
-        a.appendChild(divCard);
-    
-        // Agrega el elemento <a> al contenedor fragment
-        $fragment.appendChild(a);
-      });
-      $bookContainer.insertBefore($fragment, $paginationContainer);
+    data.forEach((element) => {
+      // Crea un nuevo elemento <a> y sus hijos
+      const a = document.createElement("a");
+      a.href = `./book?id=${element.book_id}`;
+      a.className = "img-related";
+      a.title = element.title;
 
-    } catch (error) {
-      console.log(error);
-      
-    }
-  };
+      const divCard = document.createElement("div");
+      divCard.id = element.id;
+      divCard.className = "card-Book";
 
-const handlePaginationClick = event => {
-  const page = parseInt(event.target.dataset.page);
-  const $totalPagesContainer = document.getElementById('cardContainer');
-  const totalPages = parseInt(
-    $totalPagesContainer.dataset.totalpages
-  );
-  console.log('page del handle', page);
-  uploadPaginationButtons(page, totalPages);
-  updateBookCards(page);
-  window.scrollTo({ top: 950, behavior: 'smooth' });
-};
+      const img = document.createElement("img");
+      img.src = element.cover;
+      img.alt = element.title;
 
-// Funciones para manejar los clics en los botones de navegación
-const handlePrevClick = () => {
-  const $totalPagesContainer = document.getElementById('cardContainer');
-  
+      const divInfo = document.createElement("div");
+      divInfo.className = "card-info";
 
-  const currentPage = parseInt(
-    document.querySelector(".pagination-btn-focus").dataset.page
-  );
-  const totalPages = parseInt(
-    $totalPagesContainer.dataset.totalpages
-  );
-  console.log('current page de click izquierdo', currentPage);
-  console.log('total pages de click izquierdo', totalPages);
-  
-  if (currentPage > 1) {
-    uploadPaginationButtons(currentPage - 1, totalPages);
-    updateBookCards(currentPage - 1);
-    window.scrollTo({ top: 950, behavior: 'smooth' });
+      const pTitle = document.createElement("p");
+      pTitle.className = "black";
+      pTitle.textContent = element.title;
+
+      const pAuthor = document.createElement("p");
+      pAuthor.className = "black";
+      pAuthor.textContent = element.author;
+
+      // Ensambla los elementos
+      divInfo.appendChild(pTitle);
+      divInfo.appendChild(pAuthor);
+      divCard.appendChild(img);
+      divCard.appendChild(divInfo);
+      a.appendChild(divCard);
+
+      // Agrega el elemento <a> al contenedor fragment
+      $fragment.appendChild(a);
+    });
+    $bookContainer.insertBefore($fragment, $paginationContainer);
+  } catch (error) {
+    console.log(error);
   }
 };
 
-const handleNextClick = () => {
-  const $totalPagesContainer = document.getElementById('cardContainer');
+const handlePaginationClick = async (event) => {
+  const page = parseInt(event.target.dataset.page);
+  const totalBooksPages = await totalBookPages();
+  const totalPages = parseInt(totalBooksPages);
+  uploadPaginationButtons(page, totalPages);
+  updateBookCards(page);
+  // window.scrollTo({ top: 950, behavior: 'smooth' });
+};
+
+// Funciones para manejar los clics en los botones de navegación
+const handlePrevClick = async () => {
+  const totalBooksPages = await totalBookPages();
   const currentPage = parseInt(
     document.querySelector(".pagination-btn-focus").dataset.page
   );
-  const totalPages = parseInt(
-    $totalPagesContainer.dataset.totalpages
+  const totalPages = parseInt(totalBooksPages);
+  if (currentPage > 1) {
+    uploadPaginationButtons(currentPage - 1, totalPages);
+    updateBookCards(currentPage - 1);
+    // window.scrollTo({ top: 950, behavior: 'smooth' });
+  }
+};
+
+const handleNextClick = async () => {
+  const totalBooksPages = await totalBookPages();
+  const currentPage = parseInt(
+    document.querySelector(".pagination-btn-focus").dataset.page
   );
-  console.log('current page de click derecho', currentPage + 1);
-  console.log('total pages de click derecho', totalPages);
+  const totalPages = parseInt(totalBooksPages);
   if (currentPage < totalPages) {
     uploadPaginationButtons(currentPage + 1, totalPages);
     updateBookCards(currentPage + 1);
-    window.scrollTo({ top: 950, behavior: 'smooth' });
+    // window.scrollTo({ top: 950, behavior: 'smooth' });
   }
 };
 
 // Inicializa la paginación con valores predeterminados
-document.addEventListener("DOMContentLoaded", () => {
-  const $totalPagesContainer = document.getElementById("pagesContainer");
+document.addEventListener("DOMContentLoaded", async () => {
   const initialPage = 1; // Puedes ajustar esto según tus necesidades
-  const totalPages = parseInt(
-    $totalPagesContainer.getAttribute("data-totalPages")
-  );
-  uploadPaginationButtons(initialPage, totalPages);
+  uploadPaginationButtons(initialPage, await totalBookPages());
+});
+
+// Cambio de idioma en página
+function cambiarIdioma() {
+  const idiomaSeleccionado = document.getElementById("idioma").value;
+
+  // Cambiar el atributo lang del elemento <html>
+  document.documentElement.lang = idiomaSeleccionado;
+
+  // Funcion para cambiar pagina - pendiente
+}
+
+// MANEJO DE FILTROS PARA LOS LIBROS GENERALES DE MAIN //
+
+const $btnFilters = document.getElementById("btnSetFilter");
+
+$btnFilters.addEventListener("click", async () => {
+  const totalBooksPages = await totalBookPages();
+  const currentPageNumber = document.querySelector(".pagination-btn-focus")
+    ? parseInt(document.querySelector(".pagination-btn-focus").dataset.page)
+    : 1;
+  const currentPage = currentPageNumber ? currentPageNumber : 1;
+
+  const totalPages = parseInt(totalBooksPages);
+  try {
+    uploadPaginationButtons(currentPage, totalPages);
+    updateBookCards(1);
+  } catch (error) {
+    console.log(error);
+  }
 });

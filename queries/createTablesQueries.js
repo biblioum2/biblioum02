@@ -8,7 +8,8 @@ CREATE TABLE IF NOT EXISTS users (
     password_hash VARCHAR(120) NOT NULL,
     phone VARCHAR(10),
     role VARCHAR(7) NOT NULL CHECK (role IN ('admin', 'student')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    socket_id VARCHAR(255) NULL
 );
 `;
 
@@ -30,7 +31,8 @@ CREATE TABLE IF NOT EXISTS books (
     available VARCHAR(3) NOT NULL CHECK (available IN ('yes', 'no')),
     publication_year DATE,
     available_copies INT DEFAULT 1,
-    cover VARCHAR(255)
+    cover VARCHAR(255) NOT NULL,
+    languaje VARCHAR(35) NOT NULL
 );
 `;
 
@@ -62,8 +64,7 @@ CREATE TABLE IF NOT EXISTS order_status (
     status VARCHAR(50) NOT NULL CHECK (status IN ('Pendiente', 'Devuelta', 'No devuelta')),
     FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
 );
-`
-
+`;
 
 const createTableBooksCategories = `
 CREATE TABLE IF NOT EXISTS book_categories (
@@ -85,6 +86,17 @@ CREATE TABLE IF NOT EXISTS activity_log (
 );
 `;
 
+const createTableRatings = `
+CREATE TABLE IF NOT EXISTS ratings (
+    user_id INT,
+    book_id INT,
+    score INT CHECK (score >= 1 AND score <= 5), -- Suponiendo que la puntuación va de 1 a 5
+    PRIMARY KEY (user_id, book_id),
+    FOREIGN KEY (user_id) REFERENCES users(user_id),
+    FOREIGN KEY (book_id) REFERENCES books(id) ON DELETE CASCADE
+);
+`;
+
 const createTables = async () => {
     try {
         await pool.query(createTableUsers);
@@ -103,6 +115,8 @@ const createTables = async () => {
         console.log('Tabla status de órdenes creada');
         await pool.query(createTableActivityLog);
         console.log('Tabla de registros de actividad creada');
+        await pool.query(createTableRatings);
+        console.log('Tabla de puntuaciones creada');
     } catch (error) {
         console.log(`Error al crear tablas.`, error);
     } finally {
@@ -111,7 +125,7 @@ const createTables = async () => {
 };
 
 // Llama a la función para crear todas las tablas
-createTables();
+// createTables();
 
 // module.exports = {
 //     createTableUsers,
@@ -120,5 +134,6 @@ createTables();
 //     createTableFavorites,
 //     createTableOrders,
 //     createTableBooksCategories,
-//     createTableActivityLog
+//     createTableActivityLog,
+//     createTableRatings
 // };

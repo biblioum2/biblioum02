@@ -4,13 +4,11 @@
     padding: 0;
     box-sizing: border-box;
     text-decoration: none;
-    color: white;
 }
 /*Configuracion de la fuente de todo el body*/
 body {
     font-family: Arial, Helvetica, sans-serif;
     overflow-y: auto;
-    background-color: #ebebeb;
 }
 /*Configuracion de todo el contenido de la pagina*/ 
 .container-main{
@@ -23,13 +21,86 @@ body {
 #Principal {
     background-color: #FFF;
 }
+
 .header {
     width: 100%;
     background-color: #00455d;
     color: #FFF;
-    height: auto;
-    padding: 2%;
-   }
+    height: 40px;
+    position: relative;
+  }
+  
+  .header .headerstyle {
+    display: flex;
+    margin: auto;
+    width: 100%; /* Ajustar al 100% del ancho del contenedor */
+    justify-content: space-between; /* Distribuye los divs horizontalmente */
+    align-items: center; /* Centra los elementos verticalmente */
+    position: relative; /* Cambiado de 'absolute' a 'relative' */
+    
+  }
+  
+  .headerstyle div {
+    color: #FFF;
+    flex: 1; /* Para que cada caja ocupe espacio proporcional */
+    display: flex;
+    justify-content: left;
+    padding-left: 20px;
+    align-items: center;
+    height: 40px;
+  }
+
+  .headerstyle p{
+    display: flex;
+    width: 100%;
+    justify-content: right;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: large;
+    letter-spacing: 2px;
+  }
+  
+
+ .headerstyle #idioma{
+    display: flex;
+    align-items: center;
+    justify-content: left;  /*estilos pendientes*/
+    background-color: #FFF;
+    height: 23px;
+    width: 50%;
+ }
+
+ .headerstyle b{
+    text-shadow: 1px 1px 5px #000;
+ }
+
+ #Horario p{
+    font-size: 15px;
+    padding-right: 40px;
+    text-shadow: 2px 2px 5px #000;
+ }
+
+ .headerstyle #Naranja-fragil{
+    position: relative;
+    width: 100%;
+    background-color: #fc4b08;
+ }
+
+ #Naranja-fragil #Naranja-fuerte{
+    position: absolute;
+    width: 35px;
+    background-color: #de2e03; 
+    transform: skew(40deg);
+    left: -17px;
+ }
+
+.correo-header{
+    margin-right: 80px;
+}
+
+ .me-2{
+   margin-right: 8px;
+ }
+
 /* Imagen de Header (libreria) */
 #Cabecera {
     background: url(../img/barraNav.jpeg);
@@ -52,6 +123,27 @@ body {
     height: 52px;
     margin-left: 5px;
 }
+
+/* Diseño de div de prueba */
+#Contenido-titulo {
+    font-weight: bold;
+    background: linear-gradient(90deg, rgba(12,27,133,1) 4%, rgba(255,255,255,1) 51%, rgba(249,129,9,1) 86%);
+    border: #000;
+    width: 100%;
+    height: 100px;
+    align-content: center;
+    margin-bottom: 25px;
+    justify-self: center;
+}
+
+#texto {
+  text-align: center;
+  letter-spacing: 8px;
+  font-family: copperplate gothic;
+  color: #000;
+  font-weight: bold;
+}
+
 /* Configuracion de contenedor del contenido central */
 #Estanteria{
     height: 100%;
@@ -72,7 +164,7 @@ body {
 /* Configuracion de slider 1 promocion */
 #contenido .slider1{
     width: 100%;
-    height: 400px;
+    height: 600px;
     display: block;
 }
 
@@ -85,69 +177,142 @@ body {
 #vista-de-libros {
   overflow-x: hidden;
  overflow-y: hidden;  
-    width: 87%;
+    width: 100%;
     height: 500px;
 }
 
 /* titulo del contenedor de libros */
-.carrusel{
+
+.carrusel {
+    position: relative;
     display: flex;
     align-items: center;
     width: 100%;
 }
-#vista-de-libros #slider2 .carrusel .viewport{
+
+/* Efectos en imagenes del carrusel de libros */
+.sliderCarr img:hover{
+    box-shadow: 0 3px 20px 6px #000;
+}
+
+img {
+ height: 100%;
+}
+
+/* Efectos en imagenes de 'Contenido Principal' */
+.card-Book img {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  
+  .card-Book img:hover {
+      opacity: 0.5;
+  }
+  
+
+.viewport{
     width: 100%;
     scroll-behavior: smooth;
-    height: auto;
-    overflow-x: scroll;
+    height: 387px;
+    overflow-x: hidden;
     overflow-y: hidden;
 }
-#vista-de-libros #slider2 .carrusel .viewport .sliderCarr{
+
+.sliderCarr{
     display: flex;
     padding: 0;
-    width: max-content;
+    width: 100%;
     height: 100%;
-    
+    flex-wrap: nowrap;
 }
-#vista-de-libros #slider2 .carrusel .viewport .sliderCarr .carrusel-cel{
+
+.carrusel-cel{
     width: 100%;
     list-style: none;
     margin-right: 50px;
    box-shadow: 0 5px 10px 8px rgba(0, 0, 0, 0.15);
 }
 
-#vista-de-libros #slider2 .carrusel .viewport .slider .carrusel-cel h3{
+.carrusel-cel h3{
     margin-top: 8px;
 }
+
 .content-title{
     display: inline-flex;
     width: 100%;
-    border-bottom: 4px solid #58181F;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
+    justify-content: left;
 }
 
+/* Etiqueta de sección de Carrusel de libros */
 .content-title h2{
     display: block;
     color: white;
     font-weight: 500;
-    margin-bottom: -1px;
-    background: #58181F;
-    border: 1px solid #000;
+    background: #000;
     padding: 5px 28px 1px;
-    border-bottom: none;
+    height: 45px;
+    font-size: 1.2rem;
+    align-content: center;
+    border-right: 2px solid #FFF;
+    border-left: 2px solid #FFF;
+    margin-right: 15px;
 }
 
-#vista-de-libros #slider2 .carrusel .viewport .sliderCarr{
-    display: flex;
-    flex-wrap: nowrap;
+/* Estilo general para el select */
+.header-select {
+    color: #000; /* Color del texto */
+    box-sizing: border-box; /* Incluye el borde y el relleno en el tamaño total */
+    cursor: pointer; /* Cambia el cursor al pasar sobre el select */
+}
+
+/* Sombra de filtro de carrusel */
+select#selectCat {
+    box-shadow: 0 3px 3px 1px #000;
+    color: #FFF;
+    font-weight: bold;
+    background-color: #042964;
+}
+
+/* Estilo para cuando el select está en foco */
+select:focus {
+    outline: none; /* Elimina el borde de enfoque por defecto */
+}
+
+/* Estilo para la opción seleccionada */
+select option {
+    background-color: #FFF; /* Fondo de las opciones */
+    color: #333; /* Color del texto de las opciones */
+}
+
+/* Estilo para los select en diferentes estados (hover y activo) */
+select:hover {
+    cursor: pointer;
+    background-color: orangered;
+}
+
+select:active {
+    border-color: #4d85d4; /* Color del borde al hacer clic */
+}
+
+/* Estilo del contenedor del select */
+.content-books-select {
+    appearance: none; /* Elimina el estilo por defecto del navegador */
+    -webkit-appearance: none; /* Compatibilidad con Webkit */
+    -moz-appearance: none; /* Compatibilidad con Firefox */
+    background-color: transparent; /* Fondo del select */
+    padding: 10px; /* Espaciado interno */
+    font-size: 16px; /* Tamaño de la fuente */
+    color: #FFF; /* Color del texto */
+    width: 13%; /* Ancho del select */
+    height: 45px;
+    border-right: 2px solid #FFF;
+    border-left: 2px solid #FFF;
 }
 
 /*Configurando los botones */
 
 .slider1 {
-    width: 100%;
-    /* max-width: 800px; */
-    height: 400px;
     overflow: hidden;
     position: relative;
 }
@@ -169,85 +334,39 @@ body {
     height: auto;
     display: block;
 }
-/* Estilo general para el select */
-select {
-    appearance: none; /* Elimina el estilo por defecto del navegador */
-    -webkit-appearance: none; /* Compatibilidad con Webkit */
-    -moz-appearance: none; /* Compatibilidad con Firefox */
-    background-color: #58181F; /* Fondo del select */
-    border: 2px solid #000; /* Borde del select */
-    border-radius: 0px 5px 5px 0px; /* Esquinas redondeadas */
-    padding: 10px; /* Espaciado interno */
-    font-size: 16px; /* Tamaño de la fuente */
-    color: #FFF; /* Color del texto */
-    width: 13%; /* Ancho del select */
-    height: 45px;
-    box-sizing: border-box; /* Incluye el borde y el relleno en el tamaño total */
-    cursor: pointer; /* Cambia el cursor al pasar sobre el select */
-}
-
-/* Estilo para cuando el select está en foco */
-select:focus {
-    outline: none; /* Elimina el borde de enfoque por defecto */
-    border-color: #66afe9; /* Color del borde en foco */
-    box-shadow: 0 0 5px rgba(102, 175, 233, 0.5); /* Sombra en foco */
-}
-
-/* Estilo para la opción seleccionada */
-select option {
-    background-color: #FFF; /* Fondo de las opciones */
-    color: #333; /* Color del texto de las opciones */
-}
-
-/* Estilo para los select en diferentes estados (hover y activo) */
-select:hover {
-    border-color: #999; /* Color del borde al pasar el mouse */
-}
-
-select:active {
-    border-color: #666; /* Color del borde al hacer clic */
-}
-
-/* Estilo del contenedor del select */
-.content-title select {
-    margin-top: 5px; /* Espaciado inferior */
-    background-image: url('data:image/svg+xml;utf8,<svg fill="%23fff" height="20" viewBox="0 0 24 24" width="20" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>');
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 15px;
-}
 
 /* carrusel buttons */
 
 .carrButton {
-    position: relative;
-    top: 0em;
+    position: absolute;
     width: 3em;
     height: 10em;
-    /* transform: translateY(-10%); */
-    background-color: rgba(0, 0, 0, 0.5);
+    background: linear-gradient(90deg, rgba(4, 41, 100, 0.75) 0%, rgba(6, 55, 157, 0.75) 50%, rgba(107, 165, 255, 0.75) 100%);
     color: white;
     border: none;
     padding: 10px;
     cursor: pointer;
     z-index: 100;
+    border-radius: 10px;
 }
+
+.carrButton:hover{
+ background-color: #000;
+}
+
 .left{
     left: 0;
-    border-radius: 20px 0 0px 20px;
 }
 
 .right{
     right: 0em;
-    border-radius: 0px 20px 20px 0px;
-
 }
 
 .arrowL{
     width: 0;
     height: 0;
     border-top: 15px solid transparent;
-    border-right: 25px solid rgb(167, 167, 167);
+    border-right: 25px solid #FFF;
     border-bottom: 15px solid transparent;
 }
 
@@ -255,7 +374,7 @@ select:active {
     width: 0;
       height: 0;
       border-top: 15px solid transparent;
-      border-left: 25px solid rgb(167, 167, 167);
+      border-left: 25px solid #FFF;
       border-bottom: 15px solid transparent;
 }
 
@@ -264,11 +383,11 @@ select:active {
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
-    padding-top: 20px;
-    background-color: white;
     width: 85%;
-    gap: 20px;
     height: max-content;
+    margin-top: 5px;
+    gap: 20px;
+    background-color: white;
 }
 
 .card-Book{
@@ -342,4 +461,123 @@ select:active {
 
 .pagination-btn-focus {
     background-color: #9c9c9c;
+}
+
+/* STYLES FOR BOOK CARDS FILTER */
+
+.container-filters {
+    display: flex;
+    align-self: flex-end;
+    width: 85%;
+    height: 4em;
+    justify-content: center;
+    background-color: white;
+}
+
+.container-filters > ul {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 4em;
+    margin-bottom: 20px;
+}
+
+.container-filters > ul > li {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: auto;
+    height: 3.5em;
+    list-style: none;
+    background-color: #FFF;
+    color: black;
+}
+
+.container-filters > ul > li > input {
+    width: 13em;
+    height: 3em;
+    margin-right: 1em;
+    background-color: #FFF;
+    color: black;
+}
+
+.container-filters > ul > li > label {
+    width: auto;
+    height: auto;
+    font-size: 16px;
+    margin-right: 10px;
+    color: black;
+}
+
+.container-filters > ul > li > select {
+    width: 6em;
+    height: auto;
+    font-size: 16px;
+    text-align: center;
+    margin-right: 10px;
+    color: black;
+    border: 2px solid;
+}
+
+.custom-select {
+    display: flex;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    width: 10em; /* Igual que el select original */
+    height: 4em; /* Igual que el select original */
+    color: black;
+}
+
+.select-selected {
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    color: #000;
+    border-radius: 4px;
+    padding: 10px;
+    box-sizing: border-box;
+    height: 100%;
+    line-height: 2em; /* Alinea el texto verticalmente */
+    cursor: pointer;
+    font-size: 16px;
+    transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.select-items {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    color: #000;
+    border-radius: 4px;
+    z-index: 99;
+    width: 100%;
+    max-height: 200px; /* Ajusta el alto máximo del dropdown */
+    overflow-y: auto; /* Agrega scroll si es necesario */
+    top: 100%;
+    left: 0;
+}
+
+.select-items div {
+    padding: 10px;
+    color: #000;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.select-items div:hover {
+    background-color: #f9f9f9;
+}
+
+.select-hide {
+    display: none;
+}
+
+.btn-apply-filter {
+    width: 5em;
+    height: 3em;
+    color: #000;
+    cursor: pointer;
 }

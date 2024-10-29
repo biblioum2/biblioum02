@@ -10,26 +10,32 @@
         <!-- <link rel="stylesheet" type="text/css" href="css/footer.css" /> -->
         <link rel="stylesheet" type="text/css" href="css/footer.css" />      
         <link rel="icon" href="img/libro.ico" />
-        <script src="https://kit.fontawesome.com/b408879b64.js" crossorigin="anonymous"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://kit.fontawesome.com/caf315d017.js" crossorigin="anonymous"></script>
+        <script src="/socket.io/socket.io.js"></script>
         <!-- <a href="https://www.flaticon.es/iconos-gratis/biblioteca-en-linea" title="biblioteca en línea iconos">Biblioteca en línea iconos creados por Kalashnyk - Flaticon</a> -->
 </head>
     <body>
         <div class = "contenedor-principal">
           <%- include('./partials/header') %>
+          <div id="notification" class="hidden ghost"></div>        
           <!-- Modal -->
 <div id="requestBookModal" class="modal">
     <div class="modal-content">
         <span id="close-modal" class="close">&times;</span>
         <h2>Solicitar Libro</h2>
-        <form id="requestBookForm" method="post" action="http://localhost:3000/submit/order">
+        <form id="requestBookForm" method="post">
+            <input style="display: none;" type="number" id="userId" value="<%= userId %>" readonly>
+            <input style="display: none;" type="number" id="bookId" value="<%= bookData.id%>" readonly>
             <label for="bookTitle">Libro:</label>
             <input type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
 
             <label for="requestDate">Fecha de Solicitud:</label>
-            <input type="date" id="requestDate" name="requestDate"><br><br>
+            <input type="text" id="requestDate" name="requestDate" placeholder="Seleccione una fecha"><br><br>
 
             <label for="returnDate">Fecha de Entrega:</label>
-            <input type="date" id="returnDate" name="returnDate"><br><br>
+            <input type="text" id="returnDate" name="returnDate" placeholder="Seleccione una fecha"><br><br>
             <div class="submit-btn-container">
                 <button id="sub-btn-2" class="submit-modal-btn-2" type="button">Cancelar</button>
                 <button id="sub-btn-1" class="submit-modal-btn-1" type="submit">Enviar</button>
@@ -56,6 +62,25 @@
             <div id="info">
                 <div id="texto">
                     <p><b><%= bookData.title %> - <%= bookData.edition %> Edición</b></p>
+                    <div class="stars">
+                        <div>
+                           <form>
+                            <p class="clasificacion">
+                                <input id="radio1" type="radio" name="estrellas" value="5"><!--
+                                --><label for="radio1">&#9733</label><!--
+                                --><input id="radio2" type="radio" name="estrellas" value="4"><!--
+                                --><label for="radio2">&#9733</label><!--
+                                --><input id="radio3" type="radio" name="estrellas" value="3"><!--
+                                --><label for="radio3">&#9733</label><!--
+                                --><input id="radio4" type="radio" name="estrellas" value="2"><!--
+                                --><label for="radio4">&#9733</label><!--
+                                --><input id="radio5" type="radio" name="estrellas" value="1"><!--
+                                --><label for="radio5">&#9733</label>
+                              </p>
+                           </form> 
+                        </div>
+                    </div>
+                    <br />
                     <br />
                     <p><b>AUTOR: </b><%= bookData.author %></p><br>                
                     <p><b>CATEGORIA: </b><%= bookData.categories %></p><br />
@@ -67,9 +92,11 @@
 
                 </div>
                 <div class="botones">
-                <div class="btn-1" id="solicitud-btn">
-                  <a><span>SOLICITAR</span></a>
-               </div>
+                    <% if (userId !== 0) { %>
+                        <div class="btn-1" id="solicitud-btn">
+                          <a><span>SOLICITAR</span></a>
+                       </div>                        
+                    <% } %>
                    <!-- Created by   http://grohit.com/   -->
                <div class="btn-2">
                  <a href="pdf/<%= bookData.title %>.pdf" download="<%= bookData.title %>.pdf"><span>DESCARGAR PDF</span></a>
@@ -77,15 +104,13 @@
                 </div>
             </div>
         </div>
+        
         <div class="description">
             <div class="content-title">
               <h2 class="title-slider">Descripción</h2>
           </div>
           <div id="t1" class="text">
-            <p>En este libro se tratan los temas que normalmente constituyen un primer curso de cálculo (Diferencial e Integral de funciones de una variable Real, o bien, simplemente Calculo de una Variable), como el que se imparte en el último año de la preparatoria o en los primeros semestres de una licenciatura. A diferencia de muchos de los libros de cálculo que existen en el mercado, este no ofrece un estudio de los temas clásicos de Geometría Analítica que también se estudian en alguno de los cursos de preparatoria.</p>
-
-            <br /><p>Más bien, la familiaridad entre algunas ecuaciones algebraicas (como las de las rectas y las de las cónicas) y su representación geométrica en el plano cartesiano, así como una plataforma básica en el manejo adecuado de expresiones algebraicas, son consideradas como ingredientes básicos para poder sacar el provecho que este libro ofrece.<br />
-            El hecho de que el calculo de una variable se encuentre dentro de las materias de preparatoria y luego aparezca (con un curso similar) en los primeros semestres de la formación profesional de un estudiante de ciencias básicas o de ingeniería, no es mas que una muestra de la reconocida importancia que tiene el estudio de las ideas manejadas en estas disciplinas, para luego continuar construyendo sobre ellas otras de las mas importantes necesarias partes del conocimien to matemático que un profesionista debe tener.</p>
+            <p><%= bookData.summary %></p>
             </div>
             <button id="showMore" class="show-more">
                 Ver más
@@ -96,5 +121,6 @@
 
         <script src="js/book.js">            
         </script>
+        <script src="js/header.js"></script>
     </body>
 </html>
