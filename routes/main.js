@@ -57,6 +57,7 @@ router.get("/logout", (req, res) => {
   res.clearCookie("isAdmin");
   res.clearCookie("username");
   res.clearCookie("email");
+  res.clearCookie("userId");
   res.redirect("/login");
 });
 
