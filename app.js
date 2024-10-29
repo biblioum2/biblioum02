@@ -135,8 +135,7 @@ app.use("/", indexRouter);
 //   });
 //   });
 // });
-const io = require('socket.io')(server);
-const pool = require('./db'); // Asegúrate de importar tu configuración de base de datos
+
 
 io.on("connection", async (socket) => {
   console.log("Nuevo cliente conectado");
