@@ -341,7 +341,7 @@ select:active {
     position: absolute;
     width: 3em;
     height: 10em;
-    background: linear-gradient(90deg, rgba(4, 41, 100, 1) 0%, rgba(6, 55, 157, 1) 50%, rgba(107, 165, 255, 1) 100%);
+    background: linear-gradient(90deg, rgba(4, 41, 100, 0.75) 0%, rgba(6, 55, 157, 0.75) 50%, rgba(107, 165, 255, 0.75) 100%);
     color: white;
     border: none;
     padding: 10px;
