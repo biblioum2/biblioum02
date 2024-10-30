@@ -129,6 +129,24 @@ const deleteOrder = async (orderId) => {
         console.error('Error al eliminar el usuario', err);
     }
 }
+
+const removeRating = async (userId, bookId) => {
+    const query = `
+        DELETE FROM ratings 
+        WHERE user_id = $1 AND book_id = $2;
+    `;
+
+    try {
+        const result = await pool.query(query, [userId, bookId]);
+        if (result.rowCount > 0) {
+            console.log(`Puntuación para el libro ${bookId} del usuario ${userId} eliminada.`);
+        } else {
+            console.log(`No se encontró puntuación para el libro ${bookId} del usuario ${userId}.`);
+        }
+    } catch (error) {
+        console.error('Error al eliminar la puntuación:', error);
+    }
+};
 module.exports = {
     deleteUser,
     deleteOrder,

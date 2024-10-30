@@ -555,7 +555,21 @@ const incrementBookViews = async (bookId) => {
   }
 };
 
+const addOrUpdateRating = async (userId, bookId, score) => {
+  const query = `
+      INSERT INTO ratings (user_id, book_id, score)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (user_id, book_id) 
+      DO UPDATE SET score = $3;
+  `;
 
+  try {
+      await pool.query(query, [userId, bookId, score]);
+      console.log(`Puntuación de ${score} para el libro ${bookId} del usuario ${userId} agregada o actualizada.`);
+  } catch (error) {
+      console.error('Error al agregar o actualizar la puntuación:', error);
+  }
+};
 
 // insertUser('severo', 'password', 'enrrimarq2000@gmail.com', 'admin');
 // insertUser('cristian', 'password', 'adaksjdjkasdkja@gmail.com', 'admin');
@@ -571,4 +585,5 @@ module.exports = {
   insertBookCategory: insertBookCategory,
   // insertActivityLog: insertActivityLog,
   incrementBookViews,
+  addOrUpdateRating,
 };

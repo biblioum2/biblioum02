@@ -20,6 +20,7 @@ const {
 } = require("../queries/getData");
 const { deleteUser, deleteOrder } = require("../queries/deleteData");
 const { updateOrder, updateOrderStatus } = require("../queries/updateData");
+const { addOrUpdateRating } = require("../queries/inputData");
 router.use(cookieParser());
 
 // Ruta para formulario login
@@ -430,4 +431,21 @@ router.get("/getorders", async (req, res) => {
   }
 });
 
+router.post("/updateRatingBook", async (req, res) => {
+  let { userId, bookId, score } = req.body;
+
+  userId = userId ? parseInt(userId) : null;
+  bookId = bookId ? parseInt(bookId) : null;
+  score = score ? parseInt(score) : null;
+
+  try {
+    console.log('VALORES EN SERVIDOR: ', userId, bookId, score);
+    
+    const response = await addOrUpdateRating(userId, bookId, score);
+    res.status(200).json({success:true, message:'Puntuacion asignada con exito!'});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
 module.exports = router;

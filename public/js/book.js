@@ -158,3 +158,66 @@ const debounce = (func, delay) => {
     debouncedSearch();
   });
   
+  async function updateRatingBook(userId, bookId, score) {
+    // Validación y conversión de los parámetros
+    userId = userId ? parseInt(userId) : null;
+    bookId = bookId ? parseInt(bookId) : null;
+    score = score ? parseInt(score) : null;
+  console.log('DATOS DESDE EL CLIENTE: ', userId, bookId, score);
+  
+    // Validar userId
+    if (userId === null || isNaN(userId) || userId <= 0) {
+      alert('ID de usuario invalido.');
+      console.error("Invalid userId. It must be a positive integer.");
+      return;
+    }
+  
+    // Validar bookId
+    if (bookId === null || isNaN(bookId) || bookId <= 0) {
+      alert('ID de libro invalido.');
+      console.error("Invalid bookId. It must be a positive integer.");
+      return;
+    }
+  
+    // Validar score
+    if (score === null || isNaN(score) || score < 1 || score > 5) {
+      alert('Puntuacion no valida, se debe enviar una puntuacion de 1 a 5.');
+      console.error("Invalid score. It must be an integer between 1 and 5.");
+      return;
+    }
+  
+    try {
+      const result = await fetch('http://localhost:3000/updateRatingBook', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userId: userId,
+            bookId: bookId,
+            score: score
+        })
+    });
+      if (!result.ok) {
+        throw new Error(`HTTP error! status: ${result.success}`);
+      }
+      const data = await result.json(); // Si la respuesta es JSON
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching the data:", error);
+    }
+  }
+  async function getRating(radio) {
+    const rating = parseInt(radio.value); // Obtener el valor del botón de radio que fue clicado
+    console.log(`Rating seleccionado: ${rating}`); // Mostrar el rating en la consola
+    const userId = $userId.value;
+    console.log('Este es el user id', userId);
+    
+    const bookId = document.getElementById('bookId').value;
+    console.log('Este es el bookid', bookId);
+    
+    parseInt(bookId);
+    parseInt(userId);
+    // Aquí puedes agregar más lógica para manejar el rating seleccionado
+    await updateRatingBook(userId, bookId, rating);
+}

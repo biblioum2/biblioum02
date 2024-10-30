@@ -434,6 +434,49 @@ const getFilteredOrders = async (filters) => {
     }
 };
 
+const getTopRatedBooksByCategory = async () => {
+  const query = `
+      SELECT b.id, b.title, b.author, AVG(r.score) AS average_score, c.name AS category_name
+      FROM books b
+      JOIN book_categories bc ON b.id = bc.book_id
+      JOIN categories c ON bc.category_id = c.id
+      LEFT JOIN ratings r ON b.id = r.book_id
+      GROUP BY b.id, c.name
+      ORDER BY average_score DESC;
+      LIMIT 20
+  `;
+
+  try {
+      const result = await pool.query(query);
+      return result.rows;
+  } catch (error) {
+      console.error('Error al obtener los libros más puntuados por categoría:', error);
+      return [];
+  }
+};
+
+
+const getRatingByUserAndBook = async (userId, bookId) => {
+  const query = `
+      SELECT score 
+      FROM ratings 
+      WHERE user_id = $1 AND book_id = $2;
+  `;
+
+  try {
+      const result = await pool.query(query, [userId, bookId]);
+      if (result.rows.length > 0) {
+          return result.rows[0].score; // Retorna el score si se encuentra
+      } else {
+          console.log(`No se encontró puntuación para el libro ${bookId} del usuario ${userId}.`);
+          return null; // Si no se encontró, retorna null
+      }
+  } catch (error) {
+      console.error('Error al obtener la puntuación del libro:', error);
+      return null; // En caso de error, también retorna null
+  }
+};
+
 module.exports = {
   getBooksCount,
   getAuthors,
