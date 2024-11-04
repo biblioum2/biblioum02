@@ -122,6 +122,7 @@
 .stars label:hover,
 .stars label:hover ~ label {
   color: orange;
+  cursor: pointer;
 }
 
 .stars input[type="radio"]:checked ~ label {
@@ -470,3 +471,8 @@ footer{
   animation: fadeInOut 3s ease-in-out 1 forwards; /* 'forwards' mantiene el estilo final */
 }
 
+.modal-content {
+  position: absolute;
+  width: 20rem;
+  height: 20rem;
+}

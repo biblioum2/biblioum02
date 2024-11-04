@@ -434,26 +434,61 @@ const getFilteredOrders = async (filters) => {
     }
 };
 
-const getTopRatedBooksByCategory = async () => {
-  const query = `
-      SELECT b.id, b.title, b.author, AVG(r.score) AS average_score, c.name AS category_name
-      FROM books b
-      JOIN book_categories bc ON b.id = bc.book_id
-      JOIN categories c ON bc.category_id = c.id
-      LEFT JOIN ratings r ON b.id = r.book_id
-      GROUP BY b.id, c.name
-      ORDER BY average_score DESC;
-      LIMIT 20
+/**
+ * Obtiene los libros con su calificación promedio.
+ * 
+ * @param {string|null} categoryName - El nombre de la categoría para filtrar los libros. 
+ * Si es null, se obtendrán todos los libros.
+ * @returns {Promise<Array>} - Una promesa que resuelve un array de libros.
+ */
+const getTopRatedBooksByCategory = async (categoryName = null) => {
+  // Comienza la consulta base
+  let query = `
+      SELECT DISTINCT
+          b.id AS book_id,
+          b.title,
+          b.author,
+          b.cover,
+          COALESCE(ROUND(AVG(r.score)), 0) AS average_rating,
+          STRING_AGG(c.name, ', ') AS categories  -- Concatenar categorías
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      LEFT JOIN 
+          ratings r ON b.id = r.book_id
+  `;
+
+  // Condición para el filtro de categoría
+  if (categoryName) {
+      query += `
+          WHERE c.name = $1
+      `;
+  }
+
+  // Agrupación y ordenamiento
+  query += `
+      GROUP BY 
+          b.id
+      ORDER BY 
+          average_rating DESC
+      LIMIT 10;
   `;
 
   try {
-      const result = await pool.query(query);
-      return result.rows;
+      const params = categoryName ? [categoryName] : []; // Establece los parámetros de la consulta
+      const res = await pool.query(query, params);
+      return res.rows;
   } catch (error) {
-      console.error('Error al obtener los libros más puntuados por categoría:', error);
-      return [];
+      console.error('Error al obtener los libros:', error);
+      throw error;
   }
 };
+// Uso de la función
+// getTopRatedBooks().then(books => console.log(books)).catch(err => console.error(err));
+
 
 
 const getRatingByUserAndBook = async (userId, bookId) => {
@@ -492,6 +527,9 @@ module.exports = {
   getBooksTotal,
   getBooksTotalFilter,
   getFilteredOrders,
+  getRatingByUserAndBook,
+  getTopRatedBooksByCategory,
+  getCategoryById,
 };
 
 

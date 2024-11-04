@@ -46,16 +46,27 @@ async function insertMultipleCategories(categories) {
 
 // Lista de categorías a insertar
 const categories = [
-  "Ficción",
-  "No Ficción",
-  "Ciencia",
-  "Historia",
-  "Biografía",
-  "Fantasía",
-  "Misterio",
-  "Romance",
-  "Tecnología",
-  "Educación"
+  "Diseño Integral",
+  "Administración de Empresas",
+  "Comercio Internacional",
+  "Mercadotécnia",
+  "Contador Público Auditor",
+  "Turismo",
+  "Relaciones Internacionales",
+  "Psicología",
+  "Derecho",
+  "Comunicación y Gestión Digital de Medios",
+  "Educación Inicial",
+  "Arquitectura",
+  "Ingenieria Civil",
+  "Ingenieria Industrial y de Sistemas",
+  "ingenieria en sistemas",
+  "Energías Renovables",
+  "Petrolero",
+  "TIC'S",
+  "MecaTrónica",
+  "Electrónica",
+  "Administración Ambiental",
 ];
 
 // Insertar las categorías
@@ -87,7 +98,8 @@ async function insertBook({
     available,
     publication_year,
     available_copies,
-    cover
+    cover,
+    languaje
 }) {
     const query = `
         INSERT INTO books (
@@ -99,9 +111,10 @@ async function insertBook({
             available, 
             publication_year, 
             available_copies, 
-            cover
+            cover,
+            languahe
         ) VALUES (
-            $1, $2, $3, $4, $5, $6, $7, $8, $9
+            $1, $2, $3, $4, $5, $6, $7, $8, $9, $10
         ) RETURNING id;
     `;
     
@@ -114,7 +127,8 @@ async function insertBook({
         available,
         publication_year,
         available_copies,
-        cover
+        cover,
+        languaje
     ];
     
     try {

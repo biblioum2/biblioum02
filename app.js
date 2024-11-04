@@ -434,6 +434,7 @@ app.post("/submit/order", (req, res) => {
 });
 
 app.post("/admin/books", async (req, res) => {
+  console.log('body del cliente books', req.body);
   const {
     title,
     edition,
@@ -445,6 +446,7 @@ app.post("/admin/books", async (req, res) => {
     available,
     available_copies,
     cover,
+    languaje,
   } = req.body;
   console.log(`ID categoria ${category}`);
   try {
@@ -458,6 +460,7 @@ app.post("/admin/books", async (req, res) => {
       publication_date,
       available_copies,
       cover,
+      languaje,
     });
 
     console.log(bookId);

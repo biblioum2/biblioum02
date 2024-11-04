@@ -17,6 +17,9 @@ const {
   getBooksCount,
   getFilteredOrders,
   getUser,
+  getRatingByUserAndBook,
+  getTopRatedBooksByCategory,
+  getCategoryById,
 } = require("../queries/getData");
 const { deleteUser, deleteOrder } = require("../queries/deleteData");
 const { updateOrder, updateOrderStatus } = require("../queries/updateData");
@@ -86,7 +89,7 @@ router.get("/pages", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  
+
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
   const userId = req.cookies.userId ? req.cookies.userId : '0';
@@ -122,11 +125,15 @@ router.get("/", async (req, res) => {
     offset: offset,
   };
   try {
-    const books = await getBooksTotalFilter(filters);
-    // const booksjson = JSON.stringify(books);
-    // console.log('libros desde ruta main', books);
-
-    //  console.log(`Esto es el resultado en main books: ${booksjson}`);
+    const resultF = await getBooksTotalFilter(filters);
+    const resultS = await getTopRatedBooksByCategory();
+    const books = {
+      all: resultF,
+      topRated: resultS,
+    }
+    console.table(resultS);
+    
+    
     res.render("main", {
       years: years,
       authors: authors,
@@ -163,7 +170,10 @@ router.get("/book", async (req, res) => {
   
   const idBook = req.query.id;
   const data = await getBookDetailsById(idBook);
-  
+  let rating = 0;
+  if (userId !== 0) {
+    rating = await getRatingByUserAndBook(userId, idBook);
+  }
 
   //  console.log(data);
   res.render("book", {
@@ -175,6 +185,7 @@ router.get("/book", async (req, res) => {
     isAdmin: isAdmin,
     authToken: authToken,
     orders: orders,
+    rating: rating,
   });
 });
 
@@ -448,4 +459,33 @@ router.post("/updateRatingBook", async (req, res) => {
     res.status(400).json({success: false});
   }
 });
+
+router.get("/getRatingBook", async (req, res) => {
+  const { userId, bookId } = req.query;
+  try {
+    const response = await getRatingByUserAndBook(userId, bookId);
+    res.status(200).json({success:true, response: response});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
+
+router.get("/getTopRatedBooks", async (req, res) => {
+  const { category } = req.query;
+  console.log('Categoria desde servidor', category);
+  
+  try {
+    const categoryResponse = await getCategoryById(parseInt(category));
+    console.log('Respuesta de categoria', categoryResponse);
+    const categoryName = categoryResponse.name;
+    const response = await getTopRatedBooksByCategory(categoryName);
+    res.status(200).json({success:true, response: response});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
+
+
 module.exports = router;

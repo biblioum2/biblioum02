@@ -207,6 +207,20 @@ const debounce = (func, delay) => {
       console.error("Error fetching the data:", error);
     }
   }
+
+  
+  function createModal() {
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Some text in the Modal..</p>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    return modal
+  }
   async function getRating(radio) {
     const rating = parseInt(radio.value); // Obtener el valor del botón de radio que fue clicado
     console.log(`Rating seleccionado: ${rating}`); // Mostrar el rating en la consola
@@ -219,5 +233,7 @@ const debounce = (func, delay) => {
     parseInt(bookId);
     parseInt(userId);
     // Aquí puedes agregar más lógica para manejar el rating seleccionado
+    document.appendChild(createModal());
     await updateRatingBook(userId, bookId, rating);
+    
 }
