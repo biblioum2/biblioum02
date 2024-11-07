@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const pool = require("../config/database");
 const cookieParser = require("cookie-parser");
 const {
   getAuthors,
@@ -14,8 +15,15 @@ const {
   getBooksByCategory,
   getBooksTotalFilter,
   getBooksCount,
+  getFilteredOrders,
+  getUser,
+  getRatingByUserAndBook,
+  getTopRatedBooksByCategory,
+  getCategoryById,
 } = require("../queries/getData");
-const { deleteUser } = require("../queries/deleteData");
+const { deleteUser, deleteOrder } = require("../queries/deleteData");
+const { updateOrder, updateOrderStatus } = require("../queries/updateData");
+const { addOrUpdateRating } = require("../queries/inputData");
 router.use(cookieParser());
 
 // Ruta para formulario login
@@ -53,6 +61,7 @@ router.get("/logout", (req, res) => {
   res.clearCookie("isAdmin");
   res.clearCookie("username");
   res.clearCookie("email");
+  res.clearCookie("userId");
   res.redirect("/login");
 });
 
@@ -80,10 +89,16 @@ router.get("/pages", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-  const user = req.session.user;
+
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
-  const username = req.cookies.username;
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  console.log('id desde main con cookies',userId);
+  const user = userId !== 0 ? await getUser('null', parseInt(userId)) : null;
+  const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
+  // console.log('datos del usuario desde main: ', user );
+  
+  const username = req.cookies.username;  
   const email = req.cookies.email;
   const categories = await getAllCategories();
   const pagination = await getBooksTotal();
@@ -110,11 +125,15 @@ router.get("/", async (req, res) => {
     offset: offset,
   };
   try {
-    const books = await getBooksTotalFilter(filters);
-    // const booksjson = JSON.stringify(books);
-    // console.log('libros desde ruta main', books);
-
-    //  console.log(`Esto es el resultado en main books: ${booksjson}`);
+    const resultF = await getBooksTotalFilter(filters);
+    const resultS = await getTopRatedBooksByCategory();
+    const books = {
+      all: resultF,
+      topRated: resultS,
+    }
+    console.table(resultS);
+    
+    
     res.render("main", {
       years: years,
       authors: authors,
@@ -128,7 +147,8 @@ router.get("/", async (req, res) => {
       books: books,
       authToken: authToken,
       isAdmin: isAdmin,
-      user: user,
+      user: user[0],
+      orders: orders,
     });
   } catch (error) {
     console.log(`Error al consultar`, error);
@@ -137,20 +157,35 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/book", async (req, res) => {
-  const user = req.session.user;
+  // console.log('datos de req book', req);
+  
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
+  const userId = req.cookies.userId ? parseInt(req.cookies.userId) : 0;
+  const user = await getUser('null', parseInt(userId));
+  console.log('user desde servidor book: ', user);
+  console.log('id desde book: ', userId);
+  const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
+  console.table(orders);
+  
   const idBook = req.query.id;
   const data = await getBookDetailsById(idBook);
-  //  console.log(data);
+  let rating = 0;
+  if (userId !== 0) {
+    rating = await getRatingByUserAndBook(userId, idBook);
+  }
 
+  //  console.log(data);
   res.render("book", {
     bookData: data,
     title: data.title,
     currentPage: "book",
-    user: user,
+    user: user[0],
+    userId: userId,
     isAdmin: isAdmin,
     authToken: authToken,
+    orders: orders,
+    rating: rating,
   });
 });
 
@@ -163,6 +198,7 @@ router.get("/page/:id", async (req, res) => {
     console.log("error en la ruta page/id", error);
   }
 });
+
 // OBTENER LIBROS POR CATEGORIA
 
 router.get("/category/:catId", async (req, res) => {
@@ -177,15 +213,6 @@ router.get("/category/:catId", async (req, res) => {
     res.status(200).json({ books: books });
   } catch (error) {
     console.log("error al obtener libros por categorias", error);
-  }
-});
-
-router.get("/admin", (req, res) => {
-  const isAdmin = req.cookies.isAdmin;
-  if (isAdmin) {
-    res.render("admin", { title: "admin", currentPage: "admin" });
-  } else {
-    res.redirect("/");
   }
 });
 
@@ -285,9 +312,180 @@ router.get("/admin/books/success", async (req, res) => {
   res.redirect(`/admin/books?success=true`);
 });
 
+router.get("/updateOrders", async (req, res) => {
+  console.log('Ejecutando la ruta update orders');
+  
+  let {status} = req.query;
+  
+  status = status ? status : 'Pendiente';
+  const isAdmin = req.cookies.isAdmin ? true : false;
 
-router.get("/admin/orders", (req, res) => {
-  res.render("orders", { currentPage: 'orders' })
-})
+  try {
+    const data = await getFilteredOrders({status: status});
+    // console.table(data);
+    const formatDate = (dateString) => {
+      const date = new Date(dateString);
+      // Cambia el formato aquí según tus necesidades
+      return date.toLocaleDateString('es-MX', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+      });
+  };
+  const formattedData = data.map(item => ({
+    ...item, // Mantiene las demás propiedades del objeto
+    loan_date: formatDate(item.loan_date), // Formatea loan_date
+    return_date: formatDate(item.return_date) // Formatea return_date
+}));
+// console.log('asdkaskdaklakldakldaklkldasklda',formattedData);
+    if (isAdmin) {
+      res.status(200).json({ data: formattedData });
+    } else {
+      res.redirect("/");
+    }
+  } catch (error) {
+    console.log('Error en fetch orders',error);
+  }
+  
+});
+
+
+
+router.get("/admin/orders", async (req, res) => {
+  const idUser = req.cookies.userId;
+  const isAdmin = req.cookies.isAdmin;
+  try {
+    const data = await getFilteredOrders({status: 'Pendiente'});
+    // console.table(data);
+  //   const formatDate = (dateString) => {
+  //     const date = new Date(dateString);
+  //     // Cambia el formato aquí según tus necesidades
+  //     return date.toLocaleDateString('es-MX', {
+  //         day: '2-digit',
+  //         month: '2-digit',
+  //         year: 'numeric'
+  //     });
+  // };
+  const formattedData = data.map(item => ({
+    ...item, // Mantiene las demás propiedades del objeto
+    loan_date: item.loan_date, // Formatea loan_date
+    return_date: item.return_date// Formatea return_date
+}));
+// console.table(formattedData);
+    if (isAdmin) {
+      res.render("orders", { title: "orders", currentPage: "orders", data: formattedData, userId: idUser });
+    } else {
+      res.redirect("/");
+    }
+  } catch (error) {
+    console.log('Error en fetch orders',error);
+  }
+});
+
+router.get("/updateOrderRow", async (req, res) => {
+  const { orderId, loanDate, returnDate } = req.query;
+  console.log('Fechas no formateadas: ', loanDate, returnDate);
+  
+  // // const formatedLoanDate = formatDate(loanDate);
+  // // const formatedReturnDate = formatDate(returnDate);
+  // console.log('Fechas formateadas: ', formatedLoanDate, formatedReturnDate);
+  
+console.log('Datos desde el servidor: ',orderId,loanDate,returnDate);
+
+
+  try {
+    await pool.query('BEGIN');
+    await updateOrder(orderId, loanDate, returnDate);
+    // await updateOrderStatus(orderId, status);
+    await pool.query('COMMIT');
+    res.status(200).json({success: true});
+  } catch (err) {
+    await pool.query('ROLLBACK');
+    console.log('Error al aztualizar registros en ordenes',err);
+    res.status(400).json({success: false});
+  }
+});
+
+router.delete("/deleteOrder", async (req, res) => {
+  const {orderId} = req.body;
+  const formatOrderId = parseInt(orderId);
+  try {
+    await pool.query('BEGIN');
+    const response = await deleteOrder(formatOrderId);
+    await pool.query('COMMIT');
+    res.status(200).json({success: true, response: response});
+  } catch (error) {
+    await pool.query('ROLLBACK');
+    console.error('Error al borrar orden',error);
+    res.status(400).json({success: false});
+  }
+});
+
+router.get("/getorders", async (req, res) => {
+  const { 
+    user_id = undefined,
+    book_id = undefined,
+    loan_date = undefined,
+    return_date = undefined,
+    status = undefined
+  } = req.query;
+  try {
+    const result = await getFilteredOrders({user_id, book_id, loan_date, return_date, status});
+    const data = await JSON.stringify(result);
+    console.log(data);
+    
+    
+    res.status(200).json({response: result, success: true});
+  } catch (error) {
+    console.log('Error al obtener ordenes /getorders', error);
+    res.status(400).json({success: false});
+  }
+});
+
+router.post("/updateRatingBook", async (req, res) => {
+  let { userId, bookId, score } = req.body;
+
+  userId = userId ? parseInt(userId) : null;
+  bookId = bookId ? parseInt(bookId) : null;
+  score = score ? parseInt(score) : null;
+
+  try {
+    console.log('VALORES EN SERVIDOR: ', userId, bookId, score);
+    
+    const response = await addOrUpdateRating(userId, bookId, score);
+    res.status(200).json({success:true, message:'Puntuacion asignada con exito!'});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
+
+router.get("/getRatingBook", async (req, res) => {
+  const { userId, bookId } = req.query;
+  try {
+    const response = await getRatingByUserAndBook(userId, bookId);
+    res.status(200).json({success:true, response: response});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
+
+router.get("/getTopRatedBooks", async (req, res) => {
+  const { category } = req.query;
+  console.log('Categoria desde servidor', category);
+  
+  try {
+    const categoryResponse = await getCategoryById(parseInt(category));
+    console.log('Respuesta de categoria', categoryResponse);
+    const categoryName = categoryResponse.name;
+    const response = await getTopRatedBooksByCategory(categoryName);
+    res.status(200).json({success:true, response: response});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
+
 
 module.exports = router;

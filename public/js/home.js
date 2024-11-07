@@ -64,23 +64,20 @@ document.addEventListener("DOMContentLoaded", () => {
       $booksFragmentOriginal.appendChild($contentBooks.firstChild);
     }
 
-    let term = $category.value;
-    console.log(`ejecutando category ${term}`);
-
     try {
-      const response = await fetch(`https://biblioum02.onrender.com/category/${term}`);
+      const response = await fetch(`http://localhost:3000/getTopRatedBooks?category=${$category.value}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const json = await response.json();
-      console.log(`contenido en respuesta`, JSON.stringify(json));
-      console.log(`contenido en respuesta`, JSON.stringify(json.books));
+      const responseData = await response.json();
+      console.log("esto es la respuesta", responseData);
+      
 
       // Limpiar el contenido actual de $contentBooks
       $contentBooks.innerHTML = "";
 
       // Añadir los nuevos elementos al DocumentFragment
-      json.books.forEach((book) => {
+      responseData.response.forEach((book) => {
         console.log(`esto es lo que hay en book`, book);
 
         // Crear el elemento div
@@ -93,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Crear el enlace que contiene la imagen
         const bookLink = document.createElement("a");
-        bookLink.href = `./book?id=${book.id}`;
+        bookLink.href = `./book?id=${book.book_id}`;
         bookLink.className = "img-related";
         bookLink.title = ""; // Puedes ajustar el título si es necesario
 
@@ -228,7 +225,7 @@ const initializeLiveSearch = ({
 initializeLiveSearch({
   inputSelector: "#search-input",
   suggestionSelector: "#autocomplete-list",
-  fetchUrl: "https://biblioum02.onrender.com/book/name",
+  fetchUrl: "http://localhost:3000/book/name",
   onItemSelect: (item) => {
     window.location.href = `./book?id=${item.id}`;
   },
@@ -245,7 +242,7 @@ async function totalBookPages() {
   const year = $yearValue ? $yearValue : "";
   try {
     const response = await fetch(
-      `https://biblioum02.onrender.com/pages?category=${category}&author=${author}&year=${year}`
+      `http://localhost:3000/pages?category=${category}&author=${author}&year=${year}`
     );
     const totalBooks = await response.json();
     const pages =
@@ -321,7 +318,7 @@ const updateBookCards = async (page) => {
 
   try {
     const totalBooks = await fetch(
-      `https://biblioum02.onrender.com/test?category=${category}&author=${author}&year=${year}&offset=${offset}`
+      `http://localhost:3000/test?category=${category}&author=${author}&year=${year}&offset=${offset}`
     );
     const data = await totalBooks.json();
     const $fragment = document.createDocumentFragment();
@@ -426,12 +423,7 @@ function cambiarIdioma() {
   // Cambiar el atributo lang del elemento <html>
   document.documentElement.lang = idiomaSeleccionado;
 
-  // Cambiar el contenido del saludo según el idioma seleccionado
-  if (idiomaSeleccionado === "es") {
-    document.getElementById("saludo").innerText = "Hola, bienvenido!";
-  } else if (idiomaSeleccionado === "en") {
-    document.getElementById("saludo").innerText = "Hello, welcome!";
-  }
+  // Funcion para cambiar pagina - pendiente
 }
 
 // MANEJO DE FILTROS PARA LOS LIBROS GENERALES DE MAIN //

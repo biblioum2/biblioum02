@@ -23,6 +23,25 @@ LIMIT $1 OFFSET $2;
     console.log("Error al obtener los libros", error);
   }
 };
+const getLastBook = async () => {
+  const query = `
+SELECT *
+FROM books
+ORDER BY id DESC
+LIMIT 1;
+  `;
+  try {
+    const res = await pool.query(query);
+    // console.log(`LIBROS: ${res.rows}`);
+    const data= JSON.stringify(res.rows);
+    // console.log(data);
+    console.log(res.rows);
+     res.rows;
+  } catch (error) {
+    console.log("Error al obtener los libros", error);
+  }
+};
+// getLastBook();
 // console.log( getBooks(100, 281));
 
 
@@ -242,15 +261,15 @@ const getUsers = async (offset) => {
   
   // OBTENER EL USUARIO PARA VALIDAR INICIO
 
-const getUser = async (name) => {
+const getUser = async (name, user_id) => {
   const query = `
         SELECT * FROM users
-        WHERE username = $1;
+        WHERE username = $1 OR user_id = $2;
     `;
-  const value = [name];
+  const values = [name, user_id];
   try {
-    const res = await pool.query(query, value);
-    // console.log("El get user usuario es: ", res.rows);
+    const res = await pool.query(query, values);
+    console.log("El get user usuario es: ", res.rows);
     return res.rows;
   } catch (error) {
     console.log("Error al consultar usuario", error);
@@ -356,8 +375,142 @@ async function getYears() {
       console.error('Error fetching category', err);
   }
 }
+//utilizado en el apartado admin/orders para mostrar ordenes por ser aceptadas
 
+const getFilteredOrders = async (filters) => {
+  // console.log('filtros', filters);
   
+    // Base query
+    let query = `
+        SELECT o.id, o.user_id, u.username, o.book_id, b.title, TO_CHAR(o.loan_date, 'DD/MM/YYYY') AS loan_date, TO_CHAR(o.return_date, 'DD/MM/YYYY') AS return_date, s.status
+        FROM orders o
+        JOIN users u ON o.user_id = u.user_id
+        JOIN books b ON o.book_id = b.id
+        JOIN order_status s ON o.id = s.order_id
+        WHERE 1=1
+    `;
+    
+    // Array para almacenar los valores de los filtros
+    let values = [];
+
+    // Agregar condiciones según los filtros presentes
+    if (filters.user_id) {
+        query += ` AND o.user_id = $${values.length + 1}`;
+        values.push(filters.user_id);
+    }
+
+    if (filters.book_id) {
+        query += ` AND o.book_id = $${values.length + 1}`;
+        values.push(filters.book_id);
+    }
+
+    if (filters.loan_date) {
+        query += ` AND o.loan_date = $${values.length + 1}`;
+        values.push(filters.loan_date);
+    }
+
+    if (filters.return_date) {
+        query += ` AND o.return_date = $${values.length + 1}`;
+        values.push(filters.return_date);
+    }
+
+    if (filters.status) {
+        query += ` AND s.status = $${values.length + 1}`;
+        values.push(filters.status);
+    }
+    query += ` ORDER BY o.id ASC`;
+    
+    // Ejecución de la consulta
+    try {
+      console.log(values);
+      
+        const result = await pool.query(query, values);
+        console.log('resultado',result.rows);
+        
+        return result.rows;
+    } catch (error) {
+        console.error('Error al consultar órdenes con filtros:', error);
+        throw error;
+    }
+};
+
+/**
+ * Obtiene los libros con su calificación promedio.
+ * 
+ * @param {string|null} categoryName - El nombre de la categoría para filtrar los libros. 
+ * Si es null, se obtendrán todos los libros.
+ * @returns {Promise<Array>} - Una promesa que resuelve un array de libros.
+ */
+const getTopRatedBooksByCategory = async (categoryName = null) => {
+  // Comienza la consulta base
+  let query = `
+      SELECT DISTINCT
+          b.id AS book_id,
+          b.title,
+          b.author,
+          b.cover,
+          COALESCE(ROUND(AVG(r.score)), 0) AS average_rating,
+          STRING_AGG(c.name, ', ') AS categories  -- Concatenar categorías
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      LEFT JOIN 
+          ratings r ON b.id = r.book_id
+  `;
+
+  // Condición para el filtro de categoría
+  if (categoryName) {
+      query += `
+          WHERE c.name = $1
+      `;
+  }
+
+  // Agrupación y ordenamiento
+  query += `
+      GROUP BY 
+          b.id
+      ORDER BY 
+          average_rating DESC
+      LIMIT 10;
+  `;
+
+  try {
+      const params = categoryName ? [categoryName] : []; // Establece los parámetros de la consulta
+      const res = await pool.query(query, params);
+      return res.rows;
+  } catch (error) {
+      console.error('Error al obtener los libros:', error);
+      throw error;
+  }
+};
+// Uso de la función
+// getTopRatedBooks().then(books => console.log(books)).catch(err => console.error(err));
+
+
+
+const getRatingByUserAndBook = async (userId, bookId) => {
+  const query = `
+      SELECT score 
+      FROM ratings 
+      WHERE user_id = $1 AND book_id = $2;
+  `;
+
+  try {
+      const result = await pool.query(query, [userId, bookId]);
+      if (result.rows.length > 0) {
+          return result.rows[0].score; // Retorna el score si se encuentra
+      } else {
+          console.log(`No se encontró puntuación para el libro ${bookId} del usuario ${userId}.`);
+          return null; // Si no se encontró, retorna null
+      }
+  } catch (error) {
+      console.error('Error al obtener la puntuación del libro:', error);
+      return null; // En caso de error, también retorna null
+  }
+};
 
 module.exports = {
   getBooksCount,
@@ -373,6 +526,10 @@ module.exports = {
   getBookLiveSearch,
   getBooksTotal,
   getBooksTotalFilter,
+  getFilteredOrders,
+  getRatingByUserAndBook,
+  getTopRatedBooksByCategory,
+  getCategoryById,
 };
 
 

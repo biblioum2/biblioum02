@@ -4,7 +4,6 @@
     padding: 0;
     box-sizing: border-box;
     text-decoration: none;
-    color: white;
 }
 /*Configuracion de la fuente de todo el body*/
 body {
@@ -128,12 +127,12 @@ body {
 /* Diseño de div de prueba */
 #Contenido-titulo {
     font-weight: bold;
-    background: linear-gradient(90deg, rgba(131,58,180,1) 0%, rgba(184,25,25,1) 50%, rgba(252,176,69,1) 100%);
+    background: linear-gradient(90deg, rgba(12,27,133,1) 4%, rgba(255,255,255,1) 51%, rgba(249,129,9,1) 86%);
     border: #000;
     width: 100%;
     height: 100px;
     align-content: center;
-    margin-bottom: -80px;
+    margin-bottom: 25px;
     justify-self: center;
 }
 
@@ -141,20 +140,9 @@ body {
   text-align: center;
   letter-spacing: 8px;
   font-family: copperplate gothic;
+  color: #000;
+  font-weight: bold;
 }
-
-/* Efecto al hacer scroll en div */
-.Efecto {
-    margin: 50px auto;
-    opacity: 1;
-    transition: opacity 1s ease, transform 1s ease;
-  }
-
-.Efecto.hidden {
-    opacity: 0;
-    transform: translateY(50px);
-  }
-
 
 /* Configuracion de contenedor del contenido central */
 #Estanteria{
@@ -202,13 +190,25 @@ body {
     width: 100%;
 }
 
-img:hover{
+/* Efectos en imagenes del carrusel de libros */
+.sliderCarr img:hover{
     box-shadow: 0 3px 20px 6px #000;
 }
 
 img {
  height: 100%;
 }
+
+/* Efectos en imagenes de 'Contenido Principal' */
+.card-Book img {
+    opacity: 1;
+    transition: opacity 0.5s ease;
+  }
+  
+  .card-Book img:hover {
+      opacity: 0.5;
+  }
+  
 
 .viewport{
     width: 100%;
@@ -287,8 +287,8 @@ select option {
 
 /* Estilo para los select en diferentes estados (hover y activo) */
 select:hover {
-    border-color: #FFA500; /* Color del borde al pasar el mouse */
     cursor: pointer;
+    background-color: orangered;
 }
 
 select:active {
@@ -304,7 +304,7 @@ select:active {
     padding: 10px; /* Espaciado interno */
     font-size: 16px; /* Tamaño de la fuente */
     color: #FFF; /* Color del texto */
-    width: 13%; /* Ancho del select */
+    width: 18rem; /* Ancho del select */
     height: 45px;
     border-right: 2px solid #FFF;
     border-left: 2px solid #FFF;
@@ -341,7 +341,7 @@ select:active {
     position: absolute;
     width: 3em;
     height: 10em;
-    background: linear-gradient(90deg, rgba(4, 41, 100, 1) 0%, rgba(6, 55, 157, 1) 50%, rgba(107, 165, 255, 1) 100%);
+    background: linear-gradient(90deg, rgba(4, 41, 100, 0.75) 0%, rgba(6, 55, 157, 0.75) 50%, rgba(107, 165, 255, 0.75) 100%);
     color: white;
     border: none;
     padding: 10px;
@@ -420,10 +420,13 @@ select:active {
     white-space: normal; /* Permite que el texto se envuelva en líneas múltiples */
     overflow: hidden; /* Oculta el texto que se desborda */
     margin: 0; /* Ajusta los márgenes si es necesario */
+    height: 100%;
 }
 
 .black {
     color: black;
+    overflow: hidden;
+    text-align: center;
 }
 
 .pagination-container {
@@ -480,6 +483,7 @@ select:active {
     justify-content: center;
     width: 100%;
     height: 4em;
+    margin-bottom: 20px;
 }
 
 .container-filters > ul > li {
@@ -518,6 +522,7 @@ select:active {
     text-align: center;
     margin-right: 10px;
     color: black;
+    border: 2px solid;
 }
 
 .custom-select {
@@ -577,6 +582,5 @@ select:active {
     width: 5em;
     height: 3em;
     color: #000;
-    background-color: white;
-    
+    cursor: pointer;
 }
