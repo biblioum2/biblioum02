@@ -424,6 +424,8 @@ select:active {
 
 .black {
     color: black;
+    overflow: hidden;
+    text-align: center;
 }
 
 .pagination-container {

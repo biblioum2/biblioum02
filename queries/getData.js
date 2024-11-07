@@ -434,6 +434,84 @@ const getFilteredOrders = async (filters) => {
     }
 };
 
+/**
+ * Obtiene los libros con su calificación promedio.
+ * 
+ * @param {string|null} categoryName - El nombre de la categoría para filtrar los libros. 
+ * Si es null, se obtendrán todos los libros.
+ * @returns {Promise<Array>} - Una promesa que resuelve un array de libros.
+ */
+const getTopRatedBooksByCategory = async (categoryName = null) => {
+  // Comienza la consulta base
+  let query = `
+      SELECT DISTINCT
+          b.id AS book_id,
+          b.title,
+          b.author,
+          b.cover,
+          COALESCE(ROUND(AVG(r.score)), 0) AS average_rating,
+          STRING_AGG(c.name, ', ') AS categories  -- Concatenar categorías
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      LEFT JOIN 
+          ratings r ON b.id = r.book_id
+  `;
+
+  // Condición para el filtro de categoría
+  if (categoryName) {
+      query += `
+          WHERE c.name = $1
+      `;
+  }
+
+  // Agrupación y ordenamiento
+  query += `
+      GROUP BY 
+          b.id
+      ORDER BY 
+          average_rating DESC
+      LIMIT 10;
+  `;
+
+  try {
+      const params = categoryName ? [categoryName] : []; // Establece los parámetros de la consulta
+      const res = await pool.query(query, params);
+      return res.rows;
+  } catch (error) {
+      console.error('Error al obtener los libros:', error);
+      throw error;
+  }
+};
+// Uso de la función
+// getTopRatedBooks().then(books => console.log(books)).catch(err => console.error(err));
+
+
+
+const getRatingByUserAndBook = async (userId, bookId) => {
+  const query = `
+      SELECT score 
+      FROM ratings 
+      WHERE user_id = $1 AND book_id = $2;
+  `;
+
+  try {
+      const result = await pool.query(query, [userId, bookId]);
+      if (result.rows.length > 0) {
+          return result.rows[0].score; // Retorna el score si se encuentra
+      } else {
+          console.log(`No se encontró puntuación para el libro ${bookId} del usuario ${userId}.`);
+          return null; // Si no se encontró, retorna null
+      }
+  } catch (error) {
+      console.error('Error al obtener la puntuación del libro:', error);
+      return null; // En caso de error, también retorna null
+  }
+};
+
 module.exports = {
   getBooksCount,
   getAuthors,
@@ -449,6 +527,9 @@ module.exports = {
   getBooksTotal,
   getBooksTotalFilter,
   getFilteredOrders,
+  getRatingByUserAndBook,
+  getTopRatedBooksByCategory,
+  getCategoryById,
 };
 
 

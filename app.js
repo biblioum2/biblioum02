@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
     "default-src 'self'; " +
-      "img-src 'self' https://i.imgur.com https://drive.google.com; " +
+      "img-src 'self' https://i.imgur.com https://drive.google.com https://res.cloudinary.com https://asset.cloudinary.com; " +
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css; " +
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://kit.fontawesome.com https://cdn.jsdelivr.net/npm/flatpickr; " + // Agregar Flatpickr
       "font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com; " +
@@ -434,6 +434,7 @@ app.post("/submit/order", (req, res) => {
 });
 
 app.post("/admin/books", async (req, res) => {
+  console.log('body del cliente books', req.body);
   const {
     title,
     edition,
@@ -445,6 +446,7 @@ app.post("/admin/books", async (req, res) => {
     available,
     available_copies,
     cover,
+    languaje,
   } = req.body;
   console.log(`ID categoria ${category}`);
   try {
@@ -458,6 +460,7 @@ app.post("/admin/books", async (req, res) => {
       publication_date,
       available_copies,
       cover,
+      languaje,
     });
 
     console.log(bookId);

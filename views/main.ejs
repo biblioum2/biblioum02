@@ -55,7 +55,7 @@
                 <!-- Contenedor de libros en fila -->
                 <div id="caruselContainer" class="sliderCarr">
                   <!-- Funcion de slider dentro del contenedor de libros en fila -->
-                  <% books.forEach(book => { %>              
+                  <% books.topRated.forEach(book => { %>              
                   <div class="carrusel-cel" style="max-width: 258px; position: absolute left auto" aria-hidden="true">
                     <a href="./book?id=<%= book.book_id %>" class="img-related" title="<%= book.title %>">
                       <img src="<%= book.cover %>" width="260px" height="340px" /> <!-- Portada de los libros -->
@@ -114,13 +114,13 @@
 
 
         <div id="cardContainer" class="card-container" data-totalpages="<%= pagination %>">
-          <% books.forEach(element => { %>
+          <% books.all.forEach(element => { %>
           <a href="./book?id=<%= element.book_id %>" class="img-related" title="<%= element.title %>">
             <div id="<%= element.id %>" class="card-Book">
               <img src="<%= element.cover %>" alt="<%= element.title %>">
               <div class="card-info">
                 <p class="black"><%= element.title %></p>
-                <p class="black"><%= element.author %></p>
+                <!-- <p class="black"><%= element.author %></p> -->
               </div>
               <!-- <p class="black">Disponible: <%= element.available == 'yes' ? 'Si' : 'No' %></p> -->
             </div>
