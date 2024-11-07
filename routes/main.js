@@ -88,11 +88,19 @@ router.get("/pages", async (req, res) => {
   }
 });
 
+router.get("/uman", async (req, res) => {
+  res.render("index", { title: "index" });
+});
+
 router.get("/", async (req, res) => {
 
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
   const userId = req.cookies.userId ? req.cookies.userId : '0';
+  if (userId === '0') {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+  }
   console.log('id desde main con cookies',userId);
   const user = userId !== 0 ? await getUser('null', parseInt(userId)) : null;
   const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
@@ -158,10 +166,14 @@ router.get("/", async (req, res) => {
 
 router.get("/book", async (req, res) => {
   // console.log('datos de req book', req);
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  if (userId === '0') {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+  }
   
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
-  const userId = req.cookies.userId ? parseInt(req.cookies.userId) : 0;
   const user = await getUser('null', parseInt(userId));
   console.log('user desde servidor book: ', user);
   console.log('id desde book: ', userId);
@@ -217,6 +229,11 @@ router.get("/category/:catId", async (req, res) => {
 });
 
 router.get("/admin/users", async (req, res) => {
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  if (userId === '0') {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+  }
   let users = await getUsers(0);
   let success =
     req.query.success === "true"
@@ -292,9 +309,13 @@ router.delete("/admin/users/:id", async (req, res) => {
 });
 
 router.get("/admin/books", async (req, res) => {
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  if (userId === '0') {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+  }
   const categories = await getAllCategories();
   const success = req.query.success === "true";
-
   console.log("categorias", categories);
   res.render("books", {
     categories: categories,
