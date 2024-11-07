@@ -41,14 +41,13 @@ $submitCancelBtn.addEventListener('click', () => {
 });
 
 $solicitarBtn.addEventListener('click', () => {
-  $solicitudModal.style.display = 'block';
+  $solicitudModal.style.display = 'flex';
 });
 
 
 // EMITIR LA ORDEN AL SERVIDOR
 $orderForm.addEventListener('submit', (e) => {
   e.preventDefault();  
-  
   const $bookId = document.getElementById('bookId');
   const $title = document.getElementById('bookTitle');
   const $requestDate = document.getElementById('requestDate');
@@ -60,11 +59,17 @@ $orderForm.addEventListener('submit', (e) => {
     loanDate: $requestDate.value,
     returnDate: $returnDate.value
   }
-console.log('data desde cliente book',data);
-
-
+  console.log('data desde cliente book',data);
+  
+  
   const mensaje = 'conexion funcionando';
+  if (data.userId === '' || data.bookId === '' || data.title === '' || data.loanDate === '' || data.returnDate === '') {
+    alert('Todos los campos son requeridos');
+    return;
+  }
   socket.emit('order', data, mensaje);
+  $solicitudModal.style.display = 'none';
+  alert('Orden enviada con exito');
 });
 
 // MANEJAR LA RESPUESTA AL CREAR UNA ORDEN
@@ -233,7 +238,7 @@ const debounce = (func, delay) => {
     parseInt(bookId);
     parseInt(userId);
     // Aquí puedes agregar más lógica para manejar el rating seleccionado
-    document.appendChild(createModal());
+    // document.appendChild(createModal());
     await updateRatingBook(userId, bookId, rating);
     
 }

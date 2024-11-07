@@ -40,7 +40,7 @@ app.use((req, res, next) => {
   res.setHeader(
     "Content-Security-Policy",
     "default-src 'self'; " +
-      "img-src 'self' https://i.imgur.com https://drive.google.com; " +
+      "img-src 'self' https://i.imgur.com https://drive.google.com https://res.cloudinary.com https://asset.cloudinary.com; " +
       "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://ka-f.fontawesome.com https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css; " +
       "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://kit.fontawesome.com https://cdn.jsdelivr.net/npm/flatpickr; " + // Agregar Flatpickr
       "font-src 'self' https://fonts.gstatic.com https://ka-f.fontawesome.com; " +

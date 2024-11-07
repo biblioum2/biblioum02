@@ -28,14 +28,14 @@
         <form id="requestBookForm" method="post">
             <input style="display: none;" type="number" id="userId" value="<%= userId %>" readonly>
             <input style="display: none;" type="number" id="bookId" value="<%= bookData.id%>" readonly>
-            <label for="bookTitle">Libro:</label>
-            <input type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
+            <label for="bookTitle">Libro:</label><br>
+            <input class="modal-inputs" type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
 
             <label for="requestDate">Fecha de Solicitud:</label>
-            <input type="text" id="requestDate" name="requestDate" placeholder="Seleccione una fecha"><br><br>
+            <input class="modal-inputs" type="text" id="requestDate" name="requestDate" placeholder="Seleccione una fecha" required><br><br>
 
             <label for="returnDate">Fecha de Entrega:</label>
-            <input type="text" id="returnDate" name="returnDate" placeholder="Seleccione una fecha"><br><br>
+            <input class="modal-inputs" type="text" id="returnDate" name="returnDate" placeholder="Seleccione una fecha" required><br><br>
             <div class="submit-btn-container">
                 <button id="sub-btn-2" class="submit-modal-btn-2" type="button">Cancelar</button>
                 <button id="sub-btn-1" class="submit-modal-btn-1" type="submit">Enviar</button>

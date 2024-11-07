@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS books (
     publication_year DATE,
     available_copies INT DEFAULT 1,
     cover VARCHAR(255) NOT NULL,
+    lib VARCHAR(255) NOT NULL,
     languaje VARCHAR(35) NOT NULL
 );
 `;
