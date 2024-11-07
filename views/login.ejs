@@ -7,15 +7,20 @@
   <title>Acceso</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/acceso.css">
-  <link rel="icon" href="img/cel.ico" />
+  <link rel="icon" href="img/acceso.ico" />
+  <script src="https://kit.fontawesome.com/caf315d017.js" crossorigin="anonymous"></script>
 </head>
 <body>
+  <div id="Regresar">
+    <a href="Pagina%20de%20UMAN/index.html">Ir al Inicio >> <i class="fas fa-home"></i></a>
+  </div>
+  <div class="Acceso">
   <div class="container">
     <form action="login" method="POST">
       <h1>Acceso</h1>
       <% if (username == undefined) { %>
       <div class="input-box">
-        <input type="text" placeholder="username" name="username" id="username" required />
+        <input type="text" placeholder="Usuario" name="username" id="username" required />
         <!-- <i class="bx bxs-user"></i> -->
       </div>
       <% } else { %>
@@ -53,6 +58,7 @@
         <p>¿No tienes una cuenta? <a href="#">Registrate aquí!</a></p>
       </div>
     </form>
+  </div>
   </div>
 </body>
 </html>
