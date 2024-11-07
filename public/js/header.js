@@ -1,5 +1,8 @@
+const $logo = document.getElementById('logo');
 
-
+$logo.addEventListener('click', () => {
+  window.location.href = '/uman';
+});
 function getCookie(nombre) {
     // Divide las cookies en un array usando el delimitador "; "
     const cookies = document.cookie.split('; ');

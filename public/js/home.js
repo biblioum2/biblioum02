@@ -64,23 +64,20 @@ document.addEventListener("DOMContentLoaded", () => {
       $booksFragmentOriginal.appendChild($contentBooks.firstChild);
     }
 
-    let term = $category.value;
-    console.log(`ejecutando category ${term}`);
-
     try {
-      const response = await fetch(`http://localhost:3000/category/${term}`);
+      const response = await fetch(`http://localhost:3000/getTopRatedBooks?category=${$category.value}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const json = await response.json();
-      console.log(`contenido en respuesta`, JSON.stringify(json));
-      console.log(`contenido en respuesta`, JSON.stringify(json.books));
+      const responseData = await response.json();
+      console.log("esto es la respuesta", responseData);
+      
 
       // Limpiar el contenido actual de $contentBooks
       $contentBooks.innerHTML = "";
 
       // Añadir los nuevos elementos al DocumentFragment
-      json.books.forEach((book) => {
+      responseData.response.forEach((book) => {
         console.log(`esto es lo que hay en book`, book);
 
         // Crear el elemento div
@@ -93,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Crear el enlace que contiene la imagen
         const bookLink = document.createElement("a");
-        bookLink.href = `./book?id=${book.id}`;
+        bookLink.href = `./book?id=${book.book_id}`;
         bookLink.className = "img-related";
         bookLink.title = ""; // Puedes ajustar el título si es necesario
 
@@ -357,13 +354,13 @@ const updateBookCards = async (page) => {
       pTitle.className = "black";
       pTitle.textContent = element.title;
 
-      const pAuthor = document.createElement("p");
-      pAuthor.className = "black";
-      pAuthor.textContent = element.author;
+      // const pAuthor = document.createElement("p");
+      // pAuthor.className = "black";
+      // pAuthor.textContent = element.author;
 
       // Ensambla los elementos
       divInfo.appendChild(pTitle);
-      divInfo.appendChild(pAuthor);
+      // divInfo.appendChild(pAuthor);
       divCard.appendChild(img);
       divCard.appendChild(divInfo);
       a.appendChild(divCard);

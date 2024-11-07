@@ -304,7 +304,7 @@ select:active {
     padding: 10px; /* Espaciado interno */
     font-size: 16px; /* Tamaño de la fuente */
     color: #FFF; /* Color del texto */
-    width: 13%; /* Ancho del select */
+    width: 18rem; /* Ancho del select */
     height: 45px;
     border-right: 2px solid #FFF;
     border-left: 2px solid #FFF;
@@ -420,10 +420,13 @@ select:active {
     white-space: normal; /* Permite que el texto se envuelva en líneas múltiples */
     overflow: hidden; /* Oculta el texto que se desborda */
     margin: 0; /* Ajusta los márgenes si es necesario */
+    height: 100%;
 }
 
 .black {
     color: black;
+    overflow: hidden;
+    text-align: center;
 }
 
 .pagination-container {

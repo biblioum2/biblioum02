@@ -17,9 +17,13 @@ const {
   getBooksCount,
   getFilteredOrders,
   getUser,
+  getRatingByUserAndBook,
+  getTopRatedBooksByCategory,
+  getCategoryById,
 } = require("../queries/getData");
 const { deleteUser, deleteOrder } = require("../queries/deleteData");
 const { updateOrder, updateOrderStatus } = require("../queries/updateData");
+const { addOrUpdateRating } = require("../queries/inputData");
 router.use(cookieParser());
 
 // Ruta para formulario login
@@ -84,11 +88,19 @@ router.get("/pages", async (req, res) => {
   }
 });
 
+router.get("/uman", async (req, res) => {
+  res.render("index", { title: "index" });
+});
+
 router.get("/", async (req, res) => {
-  
+
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
   const userId = req.cookies.userId ? req.cookies.userId : '0';
+  if (userId === '0') {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+  }
   console.log('id desde main con cookies',userId);
   const user = userId !== 0 ? await getUser('null', parseInt(userId)) : null;
   const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
@@ -121,11 +133,15 @@ router.get("/", async (req, res) => {
     offset: offset,
   };
   try {
-    const books = await getBooksTotalFilter(filters);
-    // const booksjson = JSON.stringify(books);
-    // console.log('libros desde ruta main', books);
-
-    //  console.log(`Esto es el resultado en main books: ${booksjson}`);
+    const resultF = await getBooksTotalFilter(filters);
+    const resultS = await getTopRatedBooksByCategory();
+    const books = {
+      all: resultF,
+      topRated: resultS,
+    }
+    console.table(resultS);
+    
+    
     res.render("main", {
       years: years,
       authors: authors,
@@ -150,10 +166,14 @@ router.get("/", async (req, res) => {
 
 router.get("/book", async (req, res) => {
   // console.log('datos de req book', req);
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  if (userId === '0') {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+  }
   
   const authToken = req.cookies.authToken ? true : false;
   const isAdmin = req.cookies.isAdmin ? true : false;
-  const userId = req.cookies.userId ? parseInt(req.cookies.userId) : 0;
   const user = await getUser('null', parseInt(userId));
   console.log('user desde servidor book: ', user);
   console.log('id desde book: ', userId);
@@ -162,7 +182,10 @@ router.get("/book", async (req, res) => {
   
   const idBook = req.query.id;
   const data = await getBookDetailsById(idBook);
-  
+  let rating = 0;
+  if (userId !== 0) {
+    rating = await getRatingByUserAndBook(userId, idBook);
+  }
 
   //  console.log(data);
   res.render("book", {
@@ -174,6 +197,7 @@ router.get("/book", async (req, res) => {
     isAdmin: isAdmin,
     authToken: authToken,
     orders: orders,
+    rating: rating,
   });
 });
 
@@ -205,6 +229,11 @@ router.get("/category/:catId", async (req, res) => {
 });
 
 router.get("/admin/users", async (req, res) => {
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  if (userId === '0') {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+  }
   let users = await getUsers(0);
   let success =
     req.query.success === "true"
@@ -280,9 +309,13 @@ router.delete("/admin/users/:id", async (req, res) => {
 });
 
 router.get("/admin/books", async (req, res) => {
+  const userId = req.cookies.userId ? req.cookies.userId : '0';
+  if (userId === '0') {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+  }
   const categories = await getAllCategories();
   const success = req.query.success === "true";
-
   console.log("categorias", categories);
   res.render("books", {
     categories: categories,
@@ -429,5 +462,51 @@ router.get("/getorders", async (req, res) => {
     res.status(400).json({success: false});
   }
 });
+
+router.post("/updateRatingBook", async (req, res) => {
+  let { userId, bookId, score } = req.body;
+
+  userId = userId ? parseInt(userId) : null;
+  bookId = bookId ? parseInt(bookId) : null;
+  score = score ? parseInt(score) : null;
+
+  try {
+    console.log('VALORES EN SERVIDOR: ', userId, bookId, score);
+    
+    const response = await addOrUpdateRating(userId, bookId, score);
+    res.status(200).json({success:true, message:'Puntuacion asignada con exito!'});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
+
+router.get("/getRatingBook", async (req, res) => {
+  const { userId, bookId } = req.query;
+  try {
+    const response = await getRatingByUserAndBook(userId, bookId);
+    res.status(200).json({success:true, response: response});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
+
+router.get("/getTopRatedBooks", async (req, res) => {
+  const { category } = req.query;
+  console.log('Categoria desde servidor', category);
+  
+  try {
+    const categoryResponse = await getCategoryById(parseInt(category));
+    console.log('Respuesta de categoria', categoryResponse);
+    const categoryName = categoryResponse.name;
+    const response = await getTopRatedBooksByCategory(categoryName);
+    res.status(200).json({success:true, response: response});
+  } catch (error) {
+    console.log(error);
+    res.status(400).json({success: false});
+  }
+});
+
 
 module.exports = router;

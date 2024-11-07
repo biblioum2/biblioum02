@@ -21,7 +21,7 @@ const handleSearch = () => {
     if (term.length > 0) {
         const query = new URLSearchParams({ term });
 
-        fetch(`http://localhost:3000/admin/user/data?${query}`)
+        fetch(`https://biblioum02.onrender.com/admin/user/data?${query}`)
             .then(res => res.ok ? res.json() : Promise.reject(res))
             .then(json => {
                 json.forEach(el => {
@@ -58,7 +58,7 @@ const handleSearch = () => {
                 console.error('Error desde fetch:', err);
             });
     } else {
-        fetch('http://localhost:3000/admin/users/data')
+        fetch('https://biblioum02.onrender.com/admin/users/data')
             .then(res => res.ok ? res.json() : Promise.reject(res))
             .then(json => {
                 json.forEach(el => {
@@ -120,7 +120,7 @@ document.addEventListener('click', (event) => {
     if (event.target.classList.contains('btn-delete')) {
         const userId = event.target.getAttribute('data-id');
         if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-            fetch(`http://localhost:3000/admin/users/${userId}`, {
+            fetch(`https://biblioum02.onrender.com/admin/users/${userId}`, {
                 method: 'DELETE',
             })
             .then(res => {
