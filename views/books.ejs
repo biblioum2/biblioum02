@@ -8,7 +8,11 @@
   <link rel="stylesheet" href="/css/lstyles.css">
   <link rel="stylesheet" href="/css/nav-admin.css">
   <link rel="stylesheet" href="/css/footer.css">
-
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+  <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/es.js"></script>
+  
+  <script src="/js/books.js"></script>
 
 </head>
 
@@ -31,9 +35,9 @@
 
     <div class="containerMain">
       <h1>Formulario de Registro de Libros</h1>
-      <form method="POST">
+      <form method="POST" action="/uploadFiles" enctype="multipart/form-data">
         <label for="title">Título:</label>
-        <input type="text" id="title" name="title" required><br><br>
+        <input type="text" id="title" name="title" maxlength="120" required><br><br>
 
         <label for="edition">Edición:</label>
         <select name="edition" id="edition">
@@ -52,7 +56,7 @@
         </select><br><br>
 
         <label for="author">Autor:</label>
-        <input type="text" id="author" name="author" required><br><br>
+        <input type="text" id="author" name="author" maxlength="75" required><br><br>
 
         <label for="category">Categoría:</label>
         <select name="category" id="category" required>
@@ -62,13 +66,13 @@
         </select><br><br>
 
         <label for="publication_date">Fecha de Publicación:</label>
-        <input type="date" id="publication_date" name="publication_date"><br><br>
+        <input type="text" id="publication_date" name="publication_date"><br><br>
 
         <label for="isbn">ISBN:</label>
-        <input type="text" id="isbn" name="isbn"><br><br>
+        <input type="text" id="isbn" name="isbn" maxlength="50" ><br><br>
 
         <label for="summary">Resumen:</label><br>
-        <textarea id="summary" name="summary" rows="4" required></textarea><br><br>
+        <textarea id="summary" name="summary" rows="4" maxlength="1500" required></textarea><br><br>
 
         <label for="available">Disponible:</label>
         <select id="available" name="available">
@@ -79,17 +83,27 @@
         <label for="available_copies">Cantidad:</label>
         <input type="number" id="available_copies" name="available_copies" required><br><br>
 
+        <label for="lib">Libro (pdf)</label>
+        <input type="file" id="lib" name="lib" accept="application/pdf" required><br><br>
+
         <label for="cover">Imagen de Portada:</label>
-        <input type="text" id="cover" name="cover" required><br><br>
+        <input type="file" id="cover" name="cover" accept="image/*" required><br><br>
         
         <label for="languaje">Lenguaje</label>
-        <input type="text" id="languaje" name="languaje" required><br><br>
-
+        <select name="languaje" id="languaje">
+          <option value="español">Español</option>
+          <option value="ingles">Ingles</option>
+          <option value="frances">Frances</option>
+          <option value="aleman">Aleman</option>
+          <option value="portugues">Portugues</option>
+          <option value="italiano">Italiano</option>
+          <option value="chino">Chino</option>
+        </select>
+        <br><br>
         <button type="submit">Guardar</button>
       </form>
     </div>
   </main>
-
 </body>
 
 </html>

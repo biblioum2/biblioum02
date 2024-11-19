@@ -45,10 +45,14 @@ router.get("/test", async (req, res) => {
     limit: 20,
     offset: parseInt(offset),
   };
+  console.log('filtros desde ruta:', filters);
+  
   // console.log('filtros desde ruta:', filters);
 
   try {
     const data = await getBooksTotalFilter(filters);
+    console.log(data);
+    
     // const json= JSON.stringify(data);
     res.status(200).json(data);
   } catch (error) {
@@ -106,6 +110,12 @@ router.get("/", async (req, res) => {
   const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
   // console.log('datos del usuario desde main: ', user );
   
+const abc = await pool.query('SELECT * FROM books OFFSET 30');
+const categories11 = await pool.query('SELECT * FROM categories');
+console.log('categorias desde main', categories11.rows);
+
+  console.table(abc.rows);
+
   const username = req.cookies.username;  
   const email = req.cookies.email;
   const categories = await getAllCategories();
