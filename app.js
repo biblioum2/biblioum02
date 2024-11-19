@@ -22,7 +22,10 @@ const {
   insertBookCategory,
   createOrder,
 } = require("./queries/inputData");
+const fileUpload = require("express-fileupload");
 const http = require("http");
+const multer = require("multer");
+const cloudinary = require("./config/cloudinaryConfig");
 const app = express();
 const port = 3000;
 const server = http.createServer(app);
@@ -34,6 +37,28 @@ app.use(
     origin: `http://localhost:${port}`, // Permite solicitudes desde tu dominio
   })
 );
+
+// Configuración de Multer para manejar archivos temporales
+const storage = multer.memoryStorage();
+// Validación del archivo
+const fileFilter = (req, file, cb) => {
+  // Tipos MIME permitidos
+  const allowedTypes = ["image/jpeg", "image/png", "image/gif", "application/pdf"];
+
+  if (allowedTypes.includes(file.mimetype)) {
+    cb(null, true); // Aceptar archivo
+  } else {
+    cb(new Error("El archivo debe ser una imagen o un PDF")); // Rechazar archivo
+  }
+};
+const upload = multer({ storage: storage,
+  fileFilter: fileFilter,
+  limits: { fileSize: 100 * 1024 * 1024 },
+});
+
+// Configuración de Express
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 // Middleware para configurar CSP
 app.use((req, res, next) => {
@@ -55,6 +80,8 @@ app.use(express.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, "/public")));
 app.use(cookieParser());
+
+
 
 // Configuración de EJS
 app.set("view engine", "ejs");
@@ -198,6 +225,93 @@ io.on("connection", async (socket) => {
       console.log(`Usuario con ID ${userIdFromSocket} desconectado`);
     });
   });
+});
+
+// Ruta para subir archivos a Cloudinary
+app.post("/uploadFiles", upload.fields([
+  { name: "cover", maxCount: 1 },
+  {name: "lib", maxCount: 1},
+]), async (req, res) => {
+  const { 
+    title,
+    edition,
+    author,
+    category,
+    publication_date,
+    isbn,
+    summary,
+    available,
+    available_copies,
+    languaje } = req.body;
+    function formatDate(dateInput) {
+      // Verificar si el formato de entrada es dd/mm/yyyy
+      const ddmmyyyyRegex = /^\d{2}\/\d{2}\/\d{4}$/;
+      
+      if (ddmmyyyyRegex.test(dateInput)) {
+          // Si es en formato dd/mm/yyyy, convertir a Date
+          const [day, month, year] = dateInput.split('/').map(Number);
+          const date = new Date(year, month - 1, day); // Meses en JS son 0-indexed
+          
+          // Retornar en formato ISO (yyyy-mm-ddTHH:mm:ss.sssZ)
+          return date.toISOString();
+      } else {
+          // Si no es un formato dd/mm/yyyy, se asume que es una fecha ISO
+          const date = new Date(dateInput);
+          
+          // Verificar si la fecha es válida
+          if (isNaN(date)) {
+              throw new Error('Formato de fecha no válido');
+          }
+          
+          // Retornar en formato dd/mm/yyyy
+          const day = String(date.getUTCDate()).padStart(2, '0');
+          const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Meses en JS son 0-indexed
+          const year = date.getUTCFullYear();
+          
+          return `${day}/${month}/${year}`;
+      }
+    }
+    console.log('datos desde app: ', title, edition, author, category, publication_date, isbn, summary, available, available_copies, languaje);
+    const coverFile = req.files.cover ? req.files.cover[0] : null;
+    const pdfFile = req.files.lib ? req.files.lib[0] : null;
+  try {
+    const base64CoverFile = `data:${coverFile.mimetype};base64,${coverFile.buffer.toString('base64')}`;
+    const base64PdfFile = `data:${pdfFile.mimetype};base64,${pdfFile.buffer.toString('base64')}`;
+    // Subir archivo a Cloudinary
+    const result1 = await cloudinary.uploader.upload(base64CoverFile, {
+      folder: "books", // Opcional: carpeta en Cloudinary
+      public_id: `book_cover_${Date.now()}`, // Opcional: nombre del archivo en Cloudinary
+    });
+    const coverUrl = result1.secure_url;
+    console.log('url de la imagen', coverUrl);
+    
+    const result2 = await cloudinary.uploader.upload(base64PdfFile, {
+      folder: "books", // Opcional: carpeta en Cloudinary
+      public_id: `book_PDF_${title}`, // Opcional: nombre del archivo en Cloudinary
+    });
+    const pdfUrl = result2.secure_url;
+    console.log('url del pdf', pdfUrl);
+
+    const resultBd = await insertBook({title, author, edition, isbn, summary, available, publication_year: formatDate(publication_date), available_copies, cover:coverUrl, lib:pdfUrl, languaje});
+
+    await insertBookCategory(resultBd, category);
+
+    console.log('resultado de la base de datos', resultBd);
+    res.redirect("/admin/books/success");
+  } catch (error) {
+    console.error("Error al subir archivo:", error);
+    res.status(500).json({ error: "Error al subir archivo." });
+  }
+  
+});
+
+// Manejo de errores de Multer
+app.use((err, req, res, next) => {
+  if (err instanceof multer.MulterError || err.message) {
+    res.status(400).send({ error: err.message });
+  } else {
+    next(err);
+  }
 });
 
 app.patch("/updateOrderStatus1", async (req, res) => {
