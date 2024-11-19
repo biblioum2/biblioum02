@@ -145,7 +145,7 @@ document.addEventListener('click', (event) => {
                 alert('Error al eliminar el usuario desde JS.');
             });
         }
-    }
+    }        
 });
 
 
