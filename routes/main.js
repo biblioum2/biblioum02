@@ -20,9 +20,10 @@ const {
   getRatingByUserAndBook,
   getTopRatedBooksByCategory,
   getCategoryById,
+  getTotalUsers,
 } = require("../queries/getData");
 const { deleteUser, deleteOrder } = require("../queries/deleteData");
-const { updateOrder, updateOrderStatus } = require("../queries/updateData");
+const { updateOrder, updateOrderStatus, updateUserData } = require("../queries/updateData");
 const { addOrUpdateRating } = require("../queries/inputData");
 router.use(cookieParser());
 
@@ -227,14 +228,28 @@ router.get("/admin/users", async (req, res) => {
       : undefined;
   const errors = req.session.errors || {};
   req.session.errors = {};
+
+  const usersAll = await getTotalUsers();
+  console.log('usuarios',usersAll);
+  const paginationAll = Math.ceil(parseInt(usersAll.total) / 10);
+  const totalUsers = parseInt(usersAll.total);
+
   res.render("users", {
     title: "users",
     users: users,
     currentPage: "users",
+    pagination: paginationAll,
+    totalUsers: totalUsers,
+    currentPage: 1,
     success: success,
     errors: errors,
     postResponse: false,
   });
+});
+
+router.get("admin/users/offset/data", async (req, res) => {
+  const offset = req.body.offset;
+  const users = await getUsers(offset);
 });
 
 // Otras rutas básicas pueden ir aquí
@@ -488,5 +503,26 @@ router.get("/getTopRatedBooks", async (req, res) => {
   }
 });
 
+router.patch("/admin/users/:id", async (req, res) => {
+  const userId = req.params.id;
+  const { name, email, role } = req.body; // Obtiene los datos del formulario
+
+  try {
+    const response = await updateUserData(userId, name, email, role);
+    res.status(200).json({ success: true, response: response });
+  } catch (error) {
+    console.log("Error al actualizar usuario", error);
+    res.status(400).json({ success: false });
+  }
+});
+
+router.get("/admin/users/total", async (req, res) => {
+  const users = await getTotalUsers();
+  console.log(users);
+  const paginationAll = Math.ceil(parseInt(users.total) / 10);
+  const totalUsers = parseInt(users.total);
+  // console.log(paginationAll);
+  res.status(200).json(users);
+});
 
 module.exports = router;

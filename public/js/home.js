@@ -412,7 +412,7 @@ const handleNextClick = async () => {
 
 // Inicializa la paginación con valores predeterminados
 document.addEventListener("DOMContentLoaded", async () => {
-  const initialPage = 1; // Puedes ajustar esto según tus necesidades
+  const initialPage = 1; 
   uploadPaginationButtons(initialPage, await totalBookPages());
 });
 
