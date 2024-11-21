@@ -344,8 +344,8 @@ router.get("/updateOrders", async (req, res) => {
   };
   const formattedData = data.map(item => ({
     ...item, // Mantiene las demás propiedades del objeto
-    loan_date: formatDate(item.loan_date), // Formatea loan_date
-    return_date: formatDate(item.return_date) // Formatea return_date
+    loan_date: item.loan_date, // Formatea loan_date
+    return_date: item.return_date // Formatea return_date
 }));
 // console.log('asdkaskdaklakldakldaklkldasklda',formattedData);
     if (isAdmin) {
