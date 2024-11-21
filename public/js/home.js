@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // Añadir los nuevos elementos al DocumentFragment
       responseData.response.forEach((book) => {
-        console.log(`esto es lo que hay en book`, book);
+        // console.log(`esto es lo que hay en book`, book);
 
         // Crear el elemento div
         const carruselCelDiv = document.createElement("div");
@@ -156,14 +156,14 @@ const initializeLiveSearch = ({
   fetchUrl,
   onItemSelect,
 }) => {
-  console.log("funcon live search ejecutandose");
+  // console.log("funcon live search ejecutandose");
 
   const $suggestion = document.querySelector(suggestionSelector);
   const $inputnav = document.querySelector(inputSelector);
 
   // SE CREA LA FUNCION DE BUSQUEDA
   const handleSearch = async () => {
-    console.log("busqueda funcionando");
+    // console.log("busqueda funcionando");
 
     const $fragment = document.createDocumentFragment();
     let term = $inputnav.value.trim();
@@ -174,7 +174,7 @@ const initializeLiveSearch = ({
 
     if (term.length > 0) {
       const query = new URLSearchParams({ term });
-      console.log("esto es la query", term);
+      // console.log("esto es la query", term);
 
       try {
         const res = await fetch(`${fetchUrl}?${query}`);
@@ -308,7 +308,7 @@ const uploadPaginationButtons = (currentPage, totalPages) => {
 };
 const updateBookCards = async (page) => {
   const offset = page * 20 - 20;
-  console.log("esta es la pagina", page);
+  // console.log("esta es la pagina", page);
   const $autorValue = document.getElementById("authorFilter").value;
   const $categoryValue = document.getElementById("categoryFilter").value;
   const $yearValue = document.getElementById("yearFilter").value;

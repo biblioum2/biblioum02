@@ -100,16 +100,7 @@ router.get("/", async (req, res) => {
   console.log('id desde main con cookies',userId);
   const user = userId !== 0 ? await getUser('null', parseInt(userId)) : null;
   const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
-  // console.log('datos del usuario desde main: ', user );
-  
-const abc = await pool.query('SELECT * FROM books OFFSET 30');
-const categories11 = await pool.query('SELECT * FROM categories');
-console.log('categorias desde main', categories11.rows);
 
-  console.table(abc.rows);
-
-  const username = req.cookies.username;  
-  const email = req.cookies.email;
   const categories = await getAllCategories();
   const pagination = await getBooksTotal();
   const years = await getYears();
@@ -141,7 +132,7 @@ console.log('categorias desde main', categories11.rows);
       all: resultF,
       topRated: resultS,
     }
-    console.table(resultS);
+    // console.table(resultS);
     
     
     res.render("main", {

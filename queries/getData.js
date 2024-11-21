@@ -422,10 +422,10 @@ const getFilteredOrders = async (filters) => {
     
     // Ejecución de la consulta
     try {
-      console.log(values);
+      // console.log(values);
       
         const result = await pool.query(query, values);
-        console.log('resultado',result.rows);
+        // console.log('resultado',result.rows);
         
         return result.rows;
     } catch (error) {
