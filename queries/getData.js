@@ -2,6 +2,7 @@ const { getRandomValues } = require("crypto");
 const pool = require("../config/database");
 const { parseCIDR } = require("ipaddr.js");
 const { log } = require("console");
+const { get } = require("http");
 
 // OBTENCION DE LIBROS GENERAL
 
@@ -145,7 +146,7 @@ const getBooksTotalFilter = async (filters) => {
   try {
       console.log('valores desde query:', values);
       const result = await pool.query(query, values);
-      return result.rows
+      return result.rows;
   } catch (error) {
       console.error('Error al obtener libros', error);
       throw error;
@@ -247,6 +248,8 @@ const getUsers = async (offset) => {
   const query = `
   SELECT *
   FROM users
+  ORDER BY user_id
+  ASC
   LIMIT 10 OFFSET $1
   `;
     const values = [offset];
@@ -277,6 +280,20 @@ const getUser = async (name, user_id) => {
   }
 };
 
+const getTotalUsers = async () => {
+  const query = `
+        SELECT COUNT(*) FROM users;
+    `;
+  try {
+    pool.query("BEGIN");
+    const res = await pool.query(query);
+    pool.query("COMMIT");
+    return res.rows[0].count;
+  } catch (error) {
+    pool.query("ROLLBACK");
+    return error;
+  }
+};
 
 const getUserLiveSearch = async (name) => {
   const query = `
@@ -422,10 +439,10 @@ const getFilteredOrders = async (filters) => {
     
     // Ejecución de la consulta
     try {
-      console.log(values);
+      // console.log(values);
       
         const result = await pool.query(query, values);
-        console.log('resultado',result.rows);
+        // console.log('resultado',result.rows);
         
         return result.rows;
     } catch (error) {
@@ -519,6 +536,7 @@ module.exports = {
   getBooks,
   getUser,
   getUsers,
+  getTotalUsers,
   getUserLiveSearch,
   getAllCategories,
   getBooksByCategory,

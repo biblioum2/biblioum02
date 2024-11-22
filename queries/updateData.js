@@ -79,7 +79,27 @@ const updateOrderStatus = async (orderId, status) => {
   }
 };
 
+const updateUserData = async (userId, name, email, role) => {
+  const query = `
+      UPDATE users
+      SET username = $1, email = $2, role = $3
+      WHERE user_id = $4
+      RETURNING *;
+  `;
+  const values = [name, email, role, userId];
+  try {
+    pool.query("BEGIN");
+    const res = await pool.query(query, values);
+    pool.query("COMMIT");
+    return res.rows[0];
+  } catch (error) {
+    pool.query("ROLLBACK");
+    console.error("Error updating user", error);
+  }
+};
+
 module.exports = {
   updateOrder,
   updateOrderStatus,
+  updateUserData,
 };
