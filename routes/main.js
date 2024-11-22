@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 const pool = require("../config/database");
 const cookieParser = require("cookie-parser");
 const {
@@ -228,6 +229,8 @@ router.get("/admin/users", async (req, res) => {
       : undefined;
   const errors = req.session.errors || {};
   req.session.errors = {};
+  console.log("success", success);
+  
 
   const usersAll = await getTotalUsers();
   console.log('usuarios',usersAll);
@@ -509,10 +512,11 @@ router.get("/getTopRatedBooks", async (req, res) => {
 
 router.patch("/admin/users/:id", async (req, res) => {
   const userId = req.params.id;
-  const { name, email, role } = req.body; // Obtiene los datos del formulario
-
+  const { name, email, password, role } = req.body; // Obtiene los datos del formulario
+  const saltRounds = 10;
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
   try {
-    const response = await updateUserData(userId, name, email, role);
+    const response = await updateUserData(userId, name, email, hashedPassword, role);
     res.status(200).json({ success: true, response: response });
   } catch (error) {
     console.log("Error al actualizar usuario", error);

@@ -79,14 +79,14 @@ const updateOrderStatus = async (orderId, status) => {
   }
 };
 
-const updateUserData = async (userId, name, email, role) => {
+const updateUserData = async (userId, name, email, password, role) => {
   const query = `
       UPDATE users
-      SET username = $1, email = $2, role = $3
-      WHERE user_id = $4
+      SET username = $1, email = $2, password_hash = $3, role = $4
+      WHERE user_id = $5
       RETURNING *;
   `;
-  const values = [name, email, role, userId];
+  const values = [name, email, password, role, userId];
   try {
     pool.query("BEGIN");
     const res = await pool.query(query, values);

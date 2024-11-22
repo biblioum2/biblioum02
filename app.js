@@ -1,4 +1,5 @@
 require("dotenv").config();
+const bcrypt = require("bcrypt");
 // Carga las variables de entorno desde un archivo .env en process.env para que estén disponibles en la aplicación.
 const express = require("express");
 // Importa Express, un framework para Node.js que facilita la creación de aplicaciones web y APIs.
@@ -478,6 +479,7 @@ app.post("/admin/users", async (req, res) => {
 
   // Continuar con la lógica de procesamiento
   try {
+    password = await bcrypt.hash(password, 10);
     await insertUser(username, password, email, role);
     return res.redirect("/admin/users/success");
   } catch (error) {
@@ -496,7 +498,10 @@ app.post("/login", async (req, res) => {
     const data = await getUser(username);
     if (data.length > 0) {
       const user = data[0];
-      if (user.password_hash == password) {
+      const isPasswordCorrect = await bcrypt.compare(password, user.password_hash);
+      console.log("Contraseña correcta? ", isPasswordCorrect);
+      
+      if (isPasswordCorrect) {
         // EVALUAR EL ROL DEL USUARIO
         const isAdmin = user.role == `admin` ? true : false;
         // console.log("Es admin desde app? ", isAdmin);

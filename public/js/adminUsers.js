@@ -162,12 +162,25 @@ document.addEventListener('click', async (event) => {
         console.log('Copia de la fila',rowBackup);
         
         const cellsToEdit = originalRow.querySelectorAll('td:not(:first-child)');
+        console.log('Celdas a editar',cellsToEdit);
         
         cellsToEdit.forEach((cell, indexCell) => {
-            if (indexCell !== 3) {
+          console.log('Celda',cell, indexCell);
+          
+            if (indexCell !== 4 && indexCell !== 3 && indexCell !== 1) {
                 const text = cell.textContent;
                 cell.innerHTML = `<input type="text" value="${text}">`;
-            } else {
+            }else if(indexCell === 3){
+                const text = cell.textContent;
+                cell.innerHTML = `<select name="role" id="role">
+                <option value="admin">Admin</option>
+                <option value="student">Student</option>
+                </select>`;
+
+            }else if(indexCell === 1){
+                const text = cell.textContent;
+                cell.innerHTML = `<input type="email" value="${text}">`;
+            }else{
                 const buttonAccept = document.createElement('button');
                 const buttonCancel = document.createElement('button');
                 buttonAccept.textContent = 'Aceptar';
@@ -193,40 +206,74 @@ document.addEventListener('click', async (event) => {
     }else if(event.target.id === 'acceptBtn'){
         const row = event.target.closest('tr');
         const userId = row.getAttribute('data-id');
-        console.log(userId);
         const name = row.querySelector('td:nth-child(2) > input').value;
         const email = row.querySelector('td:nth-child(3) > input').value;
-        const role = row.querySelector('td:nth-child(4) > input').value;
-        console.log("Nombre: ",name);
-        console.log("Email: ",email);
-        console.log("Role: ",role);
+        const password = row.querySelector('td:nth-child(4) > input').value;
+        const role = row.querySelector('td:nth-child(5) > select').value;
+        const nameBackup = rowBackup.querySelector('td:nth-child(2)').textContent;
+        const emailBackup = rowBackup.querySelector('td:nth-child(3)').textContent;
+        const passwordBackup = rowBackup.querySelector('td:nth-child(4)').textContent;
+        const roleBackup = rowBackup.querySelector('td:nth-child(5)').textContent;
+
         try {
-            const response = await fetch(`http://localhost:3000/admin/users/${userId}`, {
-                method: 'PATCH',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ name, email, role }),
-            });
-            console.log('Respuesta del servidor:', response);
-            const data = await response.json();
-            console.log('Datos recibidos del servidor:', data);
-            if (data.success) {
-                const cells = row.querySelectorAll('td');
-                console.log('Celdas',cells);
-                
-                cells[1].textContent = name;
-                cells[2].textContent = email;
-                cells[3].textContent = role;
-                cells[4].innerHTML = `
-                    <button id="editBtn" class="btn-edit">Editar</button>
-                                <button class="btn-delete" data-id="${userId}}">Eliminar</button>`
-                alert('Usuario editado con éxito.');
-            } else {
-                alert('Error al editar el usuario desde el servidor.');
+            if(name === '' || email === '' || password === ''){
+                alert('Todos los campos son obligatorios');
+                return;
+            }
+            if(name === nameBackup && email === emailBackup && password === passwordBackup && role === roleBackup){
+                alert('No se ha modificado ningún campo');
+                return;
+            }
+            if(password.length < 8){
+                alert('La contraseña debe tener al menos 8 caracteres');
+                return;
+            }
+            if(role !== 'admin' && role !== 'student'){
+                alert('El rol debe ser admin o student');
+                return;
+            }
+            if(!email.includes('@')){
+                alert('El email debe contener un @');
+                return;
+            }
+            if(!email.includes('.')){
+                alert('El email debe contener un .');
+                return;
+            }
+            if(confirm('¿Estás seguro de que deseas editar este usuario?')){
+              console.log('Editar usuario');
+              
+              const response = await fetch(`http://localhost:3000/admin/users/${userId}`, {
+                  method: 'PATCH',
+                  headers: {
+                      'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({ name, email, password, role }),
+              });
+              console.log('Respuesta del servidor:', response);
+              const data = await response.json();
+              console.log('Datos recibidos del servidor:', data);
+              if (data.success) {
+                  const cells = row.querySelectorAll('td');
+                  console.log('Celdas',cells);
+                  
+                  cells[1].textContent = name;
+                  cells[2].textContent = email;
+                  cells[3].textContent = "Password";
+                  cells[4].textContent = role;
+                  cells[5].innerHTML = `
+                      <button id="editBtn" class="btn-edit">Editar</button>
+                                  <button class="btn-delete" data-id="${userId}}">Eliminar</button>`
+                  alert('Usuario editado con éxito.');
+                  return;
+              } else {
+                  alert('Error al editar el usuario desde el servidor.');
+                  return;
+              }
             }
         } catch (error) {
             alert('Error al editar el usuario desde JS.');
+            return;
         }
         
     }
@@ -328,7 +375,26 @@ async function calculateTotalUserPages() {
       );
       const data = await totalUsers.json();
       console.log('Datos de usuarios:', data);
-      
+      const $usersRows = document.getElementById("usersData");
+      $usersRows.innerHTML = "";
+      const $fragment = document.createDocumentFragment();
+      data.forEach((user) => {
+        const $tr = document.createElement("tr");
+        $tr.dataset.id = user.user_id;
+        $tr.innerHTML = `
+          <td>${user.user_id}</td>
+          <td>${user.username}</td>
+          <td>${user.email}</td>
+          <td>Password</td>
+          <td>${user.role}</td>
+          <td>
+            <button id="editBtn" class="btn-edit">Editar</button>
+            <button class="btn-delete" data-id="${user.user_id}">Eliminar</button>
+          </td>
+        `;
+        $fragment.appendChild($tr);
+      });
+      $usersRows.appendChild($fragment);
       
     } catch (error) {
       console.log(error);
