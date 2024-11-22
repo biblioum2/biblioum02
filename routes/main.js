@@ -247,9 +247,13 @@ router.get("/admin/users", async (req, res) => {
   });
 });
 
-router.get("admin/users/offset/data", async (req, res) => {
-  const offset = req.body.offset;
+router.get("/admin/users/data", async (req, res) => {
+  console.log("Ejecutando la ruta offset");
+  const offset = req.query.offset;
+  console.log("offset desde ruta", offset);
+  
   const users = await getUsers(offset);
+  res.status(200).json(users);
 });
 
 // Otras rutas básicas pueden ir aquí

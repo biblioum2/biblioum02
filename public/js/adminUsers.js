@@ -320,7 +320,8 @@ async function calculateTotalUserPages() {
   const updateUsersTable = async (page) => {
     const offset = page * 10 - 10;
     // console.log("esta es la pagina", page);
-  
+    console.log("este es el offset", offset);
+    
     try {
       const totalUsers = await fetch(
         `http://localhost:3000/admin/users/data?offset=${offset}`
@@ -328,54 +329,7 @@ async function calculateTotalUserPages() {
       const data = await totalUsers.json();
       console.log('Datos de usuarios:', data);
       
-      const $fragment = document.createDocumentFragment();
-      const $bookContainer = document.getElementById("cardContainer");
-      const $paginationContainer = document.getElementById("pages-container");
-      const children = Array.from($bookContainer.children);
-  
-      children.forEach((child) => {
-        if (child !== $paginationContainer) {
-          $bookContainer.removeChild(child);
-        }
-      });
-  
-      data.forEach((element) => {
-        // Crea un nuevo elemento <a> y sus hijos
-        const a = document.createElement("a");
-        a.href = `./book?id=${element.book_id}`;
-        a.className = "img-related";
-        a.title = element.title;
-  
-        const divCard = document.createElement("div");
-        divCard.id = element.id;
-        divCard.className = "card-Book";
-  
-        const img = document.createElement("img");
-        img.src = element.cover;
-        img.alt = element.title;
-  
-        const divInfo = document.createElement("div");
-        divInfo.className = "card-info";
-  
-        const pTitle = document.createElement("p");
-        pTitle.className = "black";
-        pTitle.textContent = element.title;
-  
-        const pAuthor = document.createElement("p");
-        pAuthor.className = "black";
-        pAuthor.textContent = element.author;
-  
-        // Ensambla los elementos
-        divInfo.appendChild(pTitle);
-        divInfo.appendChild(pAuthor);
-        divCard.appendChild(img);
-        divCard.appendChild(divInfo);
-        a.appendChild(divCard);
-  
-        // Agrega el elemento <a> al contenedor fragment
-        $fragment.appendChild(a);
-      });
-      $bookContainer.insertBefore($fragment, $paginationContainer);
+      
     } catch (error) {
       console.log(error);
     }
