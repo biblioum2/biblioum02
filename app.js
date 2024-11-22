@@ -498,6 +498,9 @@ app.post("/login", async (req, res) => {
     const data = await getUser(username);
     if (data.length > 0) {
       const user = data[0];
+      console.log("Usuario encontrado", user);
+      console.log(await bcrypt.hash(password, 10));
+      
       const isPasswordCorrect = await bcrypt.compare(password, user.password_hash);
       console.log("Contraseña correcta? ", isPasswordCorrect);
       

@@ -228,6 +228,10 @@ document.addEventListener('click', async (event) => {
                 alert('La contraseña debe tener al menos 8 caracteres');
                 return;
             }
+            if (password.length > 20) {
+              alert('La contraseña no puede tener más de 20 caracteres');
+              return;
+            }
             if(role !== 'admin' && role !== 'student'){
                 alert('El rol debe ser admin o student');
                 return;
@@ -248,7 +252,7 @@ document.addEventListener('click', async (event) => {
                   headers: {
                       'Content-Type': 'application/json',
                   },
-                  body: JSON.stringify({ name, email, password, role }),
+                  body: JSON.stringify({ name, email, ...(password !== passwordBackup && { password }), role }),
               });
               console.log('Respuesta del servidor:', response);
               const data = await response.json();

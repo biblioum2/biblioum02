@@ -79,24 +79,52 @@ const updateOrderStatus = async (orderId, status) => {
   }
 };
 
-const updateUserData = async (userId, name, email, password, role) => {
-  const query = `
-      UPDATE users
-      SET username = $1, email = $2, password_hash = $3, role = $4
-      WHERE user_id = $5
-      RETURNING *;
-  `;
-  const values = [name, email, password, role, userId];
+const updateUserData = async (userId, { name, email, password, role }) => {
+  // Construcción dinámica de la consulta SQL
+  let query = 'UPDATE users SET ';
+  const values = [];
+  let valueIndex = 1;
+  console.log('datos desde update user: ', userId, name, email, password, role);
+  
+  // Agregar atributos dinámicamente al SET de la consulta
+  if (name) {
+    query += `username = $${valueIndex}, `;
+    values.push(name);
+    valueIndex++;
+  }
+  if (email) {
+    query += `email = $${valueIndex}, `;
+    values.push(email);
+    valueIndex++;
+  }
+  if (password && password !== 'Password') {
+    query += `password_hash = $${valueIndex}, `;
+    values.push(password);
+    valueIndex++;
+  }
+  if (role) {
+    query += `role = $${valueIndex}, `;
+    values.push(role);
+    valueIndex++;
+  }
+
+  // Eliminar la última coma y espacio en la cadena de la consulta
+  query = query.slice(0, -2); // Eliminar la última coma
+  query += ` WHERE user_id = $${valueIndex} RETURNING *;`;
+  values.push(userId);
+
   try {
-    pool.query("BEGIN");
+    await pool.query("BEGIN");
     const res = await pool.query(query, values);
-    pool.query("COMMIT");
-    return res.rows[0];
+    await pool.query("COMMIT");
+    return res.rows[0]; // Retorna el usuario actualizado
   } catch (error) {
-    pool.query("ROLLBACK");
+    await pool.query("ROLLBACK");
     console.error("Error updating user", error);
+    throw error;
   }
 };
+
 
 module.exports = {
   updateOrder,

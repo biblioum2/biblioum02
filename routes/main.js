@@ -514,9 +514,17 @@ router.patch("/admin/users/:id", async (req, res) => {
   const userId = req.params.id;
   const { name, email, password, role } = req.body; // Obtiene los datos del formulario
   const saltRounds = 10;
-  const hashedPassword = await bcrypt.hash(password, saltRounds);
+  console.log("Datos desde el servidor", userId, name, email, password, role);
+  
+  let hashedPassword = undefined;
+  
+  console.log("Contraseña encriptada", hashedPassword);
+  
   try {
-    const response = await updateUserData(userId, name, email, hashedPassword, role);
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, saltRounds);
+    }
+    const response = await updateUserData(userId, {name, email, password:hashedPassword, role});
     res.status(200).json({ success: true, response: response });
   } catch (error) {
     console.log("Error al actualizar usuario", error);
