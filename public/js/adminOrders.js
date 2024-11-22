@@ -470,6 +470,7 @@ if (orders.data.length === 0){
         const $cell = document.createElement("td");
         $cell.className = `row${key}`;
         $cell.textContent = order[key];
+        $cell.title = order[key];
         $row.appendChild($cell);
     
         // Si la clave es 'status', añade los botones según el valor del status

@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const bcrypt = require("bcrypt");
 const pool = require("../config/database");
 const cookieParser = require("cookie-parser");
 const {
@@ -20,9 +21,10 @@ const {
   getRatingByUserAndBook,
   getTopRatedBooksByCategory,
   getCategoryById,
+  getTotalUsers,
 } = require("../queries/getData");
 const { deleteUser, deleteOrder } = require("../queries/deleteData");
-const { updateOrder, updateOrderStatus } = require("../queries/updateData");
+const { updateOrder, updateOrderStatus, updateUserData } = require("../queries/updateData");
 const { addOrUpdateRating } = require("../queries/inputData");
 router.use(cookieParser());
 
@@ -108,16 +110,7 @@ router.get("/", async (req, res) => {
   console.log('id desde main con cookies',userId);
   const user = userId !== 0 ? await getUser('null', parseInt(userId)) : null;
   const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
-  // console.log('datos del usuario desde main: ', user );
-  
-const abc = await pool.query('SELECT * FROM books OFFSET 30');
-const categories11 = await pool.query('SELECT * FROM categories');
-console.log('categorias desde main', categories11.rows);
 
-  console.table(abc.rows);
-
-  const username = req.cookies.username;  
-  const email = req.cookies.email;
   const categories = await getAllCategories();
   const pagination = await getBooksTotal();
   const years = await getYears();
@@ -149,7 +142,7 @@ console.log('categorias desde main', categories11.rows);
       all: resultF,
       topRated: resultS,
     }
-    console.table(resultS);
+    // console.table(resultS);
     
     
     res.render("main", {
@@ -253,14 +246,34 @@ router.get("/admin/users", async (req, res) => {
       : undefined;
   const errors = req.session.errors || {};
   req.session.errors = {};
+  console.log("success", success);
+  
+
+  const usersAll = await getTotalUsers();
+  console.log('usuarios',usersAll);
+  const paginationAll = Math.ceil(parseInt(usersAll.total) / 10);
+  const totalUsers = parseInt(usersAll.total);
+
   res.render("users", {
     title: "users",
     users: users,
     currentPage: "users",
+    pagination: paginationAll,
+    totalUsers: totalUsers,
+    currentPage: 1,
     success: success,
     errors: errors,
     postResponse: false,
   });
+});
+
+router.get("/admin/users/data", async (req, res) => {
+  console.log("Ejecutando la ruta offset");
+  const offset = req.query.offset;
+  console.log("offset desde ruta", offset);
+  
+  const users = await getUsers(offset);
+  res.status(200).json(users);
 });
 
 // Otras rutas básicas pueden ir aquí
@@ -365,8 +378,8 @@ router.get("/updateOrders", async (req, res) => {
   };
   const formattedData = data.map(item => ({
     ...item, // Mantiene las demás propiedades del objeto
-    loan_date: formatDate(item.loan_date), // Formatea loan_date
-    return_date: formatDate(item.return_date) // Formatea return_date
+    loan_date: item.loan_date, // Formatea loan_date
+    return_date: item.return_date // Formatea return_date
 }));
 // console.log('asdkaskdaklakldakldaklkldasklda',formattedData);
     if (isAdmin) {
@@ -518,5 +531,35 @@ router.get("/getTopRatedBooks", async (req, res) => {
   }
 });
 
+router.patch("/admin/users/:id", async (req, res) => {
+  const userId = req.params.id;
+  const { name, email, password, role } = req.body; // Obtiene los datos del formulario
+  const saltRounds = 10;
+  console.log("Datos desde el servidor", userId, name, email, password, role);
+  
+  let hashedPassword = undefined;
+  
+  console.log("Contraseña encriptada", hashedPassword);
+  
+  try {
+    if (password) {
+      hashedPassword = await bcrypt.hash(password, saltRounds);
+    }
+    const response = await updateUserData(userId, {name, email, password:hashedPassword, role});
+    res.status(200).json({ success: true, response: response });
+  } catch (error) {
+    console.log("Error al actualizar usuario", error);
+    res.status(400).json({ success: false });
+  }
+});
+
+router.get("/admin/users/total", async (req, res) => {
+  const users = await getTotalUsers();
+  console.log(users);
+  const paginationAll = Math.ceil(parseInt(users.total) / 10);
+  const totalUsers = parseInt(users.total);
+  // console.log(paginationAll);
+  res.status(200).json(users);
+});
 
 module.exports = router;
