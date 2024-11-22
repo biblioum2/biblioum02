@@ -406,7 +406,6 @@ select:active {
 
 @media (min-width: 769px) and (max-width: 1279px) {
     .card-container {
-        background-color: red;
         grid-template-columns: repeat(4, 150px); /* 4 columnas */
     }
     .card-Book {
@@ -417,7 +416,6 @@ select:active {
 
 @media (max-width: 768px) {
     .card-container {
-        background-color: #bbf816;
         grid-template-columns: repeat(2, 250px); /* 2 columnas */
     }
     .card-Book {
