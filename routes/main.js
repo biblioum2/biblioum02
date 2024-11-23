@@ -101,7 +101,7 @@ router.get("/uman", async (req, res) => {
 router.get("/", async (req, res) => {
 
   const authToken = req.cookies.authToken ? true : false;
-  const isAdmin = req.cookies.isAdmin ? true : false;
+  const isAdmin = req.cookies.userid === "6" ? false : true;
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   if (userId === '0') {
     console.log('No hay usuario logueado');
