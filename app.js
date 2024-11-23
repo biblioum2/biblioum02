@@ -35,7 +35,7 @@ const io = new Server(server);
 const local = 'http://localhost:3000';
 const renderr = 'https://biblioum02.onrender.com';
 
-const baseUrl = local;
+const baseUrl = renderr;
 
 // Configuración CORS
 app.use(
