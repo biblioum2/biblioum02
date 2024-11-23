@@ -15,6 +15,31 @@ body {
   background-position: center;
 }
 
+#Regresar {
+  position: absolute;
+  top: 10px;
+  width: 100%;
+  height: auto;
+  text-align: right;
+}
+
+#Regresar a{
+  margin-right: 30px;
+  cursor: pointer;
+  color: #fff;
+}
+
+#Regresar a:hover {
+  color: orangered;
+}
+
+.Acceso {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
 .container {
   width: 420px;
   background: transparent;
