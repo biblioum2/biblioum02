@@ -35,7 +35,7 @@ const io = new Server(server);
 const local = 'http://localhost:3000';
 const renderr = 'https://biblioum02.onrender.com';
 
-const baseUrl = renderr;
+const baseUrl = local;
 
 // Configuración CORS
 app.use(
@@ -513,7 +513,9 @@ app.post("/login", async (req, res) => {
       
       if (isPasswordCorrect) {
         // EVALUAR EL ROL DEL USUARIO
-        const isAdmin = user.role == `admin` ? true : false;
+        console.log("Rol del usuario: ", user.role);
+        
+        const isAdmin = user.role === `student` ? false : true;
         // console.log("Es admin desde app? ", isAdmin);
         const authToken = `${user.user_id}-${Math.random()
           .toString(36)

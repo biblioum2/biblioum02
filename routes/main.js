@@ -101,12 +101,17 @@ router.get("/uman", async (req, res) => {
 router.get("/", async (req, res) => {
 
   const authToken = req.cookies.authToken ? true : false;
-  const isAdmin = req.cookies.isAdmin ? true : false;
+  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
+  const isAdmin = role.rows[0].role === 'admin' ? true : false;
+  console.log("es admin:", isAdmin);
+  
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   if (userId === '0') {
     console.log('No hay usuario logueado');
     res.redirect('/login');
   }
+  console.log('id desde main con cookies',userId);
+  
   console.log('id desde main con cookies',userId);
   const user = userId !== 0 ? await getUser('null', parseInt(userId)) : null;
   const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
