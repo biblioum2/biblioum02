@@ -354,13 +354,13 @@ const updateBookCards = async (page) => {
       pTitle.className = "black";
       pTitle.textContent = element.title;
 
-      const pAuthor = document.createElement("p");
-      pAuthor.className = "black";
-      pAuthor.textContent = element.author;
+      // const pAuthor = document.createElement("p");
+      // pAuthor.className = "black";
+      // pAuthor.textContent = element.author;
 
       // Ensambla los elementos
       divInfo.appendChild(pTitle);
-      divInfo.appendChild(pAuthor);
+      // divInfo.appendChild(pAuthor);
       divCard.appendChild(img);
       divCard.appendChild(divInfo);
       a.appendChild(divCard);

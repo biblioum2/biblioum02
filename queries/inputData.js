@@ -1215,10 +1215,815 @@ const addOrUpdateRating = async (userId, bookId, score) => {
   }
 };
 
+
+const usersData = [
+  [
+    {
+      username: 'user1',
+      email: 'user1@example.com',
+      password_hash: 'hashedpassword1',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket1'
+    },
+    {
+      username: 'user2',
+      email: 'user2@example.com',
+      password_hash: 'hashedpassword2',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket2'
+    },
+    {
+      username: 'user3',
+      email: 'user3@example.com',
+      password_hash: 'hashedpassword3',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket3'
+    },
+    {
+      username: 'user4',
+      email: 'user4@example.com',
+      password_hash: 'hashedpassword4',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket4'
+    },
+    {
+      username: 'user5',
+      email: 'user5@example.com',
+      password_hash: 'hashedpassword5',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket5'
+    },
+    {
+      username: 'user6',
+      email: 'user6@example.com',
+      password_hash: 'hashedpassword6',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket6'
+    },
+    {
+      username: 'user7',
+      email: 'user7@example.com',
+      password_hash: 'hashedpassword7',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket7'
+    },
+    {
+      username: 'user8',
+      email: 'user8@example.com',
+      password_hash: 'hashedpassword8',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket8'
+    },
+    {
+      username: 'user9',
+      email: 'user9@example.com',
+      password_hash: 'hashedpassword9',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket9'
+    },
+    {
+      username: 'user10',
+      email: 'user10@example.com',
+      password_hash: 'hashedpassword10',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket10'
+    },
+    {
+      username: 'user11',
+      email: 'user11@example.com',
+      password_hash: 'hashedpassword11',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket11'
+    },
+    {
+      username: 'user12',
+      email: 'user12@example.com',
+      password_hash: 'hashedpassword12',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket12'
+    },
+    {
+      username: 'user13',
+      email: 'user13@example.com',
+      password_hash: 'hashedpassword13',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket13'
+    },
+    {
+      username: 'user14',
+      email: 'user14@example.com',
+      password_hash: 'hashedpassword14',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket14'
+    },
+    {
+      username: 'user15',
+      email: 'user15@example.com',
+      password_hash: 'hashedpassword15',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket15'
+    },
+    {
+      username: 'user16',
+      email: 'user16@example.com',
+      password_hash: 'hashedpassword16',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket16'
+    },
+    {
+      username: 'user17',
+      email: 'user17@example.com',
+      password_hash: 'hashedpassword17',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket17'
+    },
+    {
+      username: 'user18',
+      email: 'user18@example.com',
+      password_hash: 'hashedpassword18',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket18'
+    },
+    {
+      username: 'user19',
+      email: 'user19@example.com',
+      password_hash: 'hashedpassword19',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket19'
+    },
+    {
+      username: 'user20',
+      email: 'user20@example.com',
+      password_hash: 'hashedpassword20',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket20'
+    },
+    {
+      username: 'user21',
+      email: 'user21@example.com',
+      password_hash: 'hashedpassword21',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket21'
+    },
+    {
+      username: 'user22',
+      email: 'user22@example.com',
+      password_hash: 'hashedpassword22',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket22'
+    },
+    {
+      username: 'user23',
+      email: 'user23@example.com',
+      password_hash: 'hashedpassword23',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket23'
+    },
+    {
+      username: 'user24',
+      email: 'user24@example.com',
+      password_hash: 'hashedpassword24',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket24'
+    },
+    {
+      username: 'user25',
+      email: 'user25@example.com',
+      password_hash: 'hashedpassword25',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket25'
+    },
+    {
+      username: 'user26',
+      email: 'user26@example.com',
+      password_hash: 'hashedpassword26',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket26'
+    },
+    {
+      username: 'user27',
+      email: 'user27@example.com',
+      password_hash: 'hashedpassword27',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket27'
+    },
+    {
+      username: 'user28',
+      email: 'user28@example.com',
+      password_hash: 'hashedpassword28',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket28'
+    },
+    {
+      username: 'user29',
+      email: 'user29@example.com',
+      password_hash: 'hashedpassword29',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket29'
+    },
+    {
+      username: 'user30',
+      email: 'user30@example.com',
+      password_hash: 'hashedpassword30',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket30'
+    },
+    {
+      username: 'user31',
+      email: 'user31@example.com',
+      password_hash: 'hashedpassword31',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket31'
+    },
+    {
+      username: 'user32',
+      email: 'user32@example.com',
+      password_hash: 'hashedpassword32',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket32'
+    },
+    {
+      username: 'user33',
+      email: 'user33@example.com',
+      password_hash: 'hashedpassword33',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket33'
+    },
+    {
+      username: 'user34',
+      email: 'user34@example.com',
+      password_hash: 'hashedpassword34',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket34'
+    },
+    {
+      username: 'user35',
+      email: 'user35@example.com',
+      password_hash: 'hashedpassword35',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket35'
+    },
+    {
+      username: 'user36',
+      email: 'user36@example.com',
+      password_hash: 'hashedpassword36',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket36'
+    },
+    {
+      username: 'user37',
+      email: 'user37@example.com',
+      password_hash: 'hashedpassword37',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket37'
+    },
+    {
+      username: 'user38',
+      email: 'user38@example.com',
+      password_hash: 'hashedpassword38',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket38'
+    },
+    {
+      username: 'user39',
+      email: 'user39@example.com',
+      password_hash: 'hashedpassword39',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket39'
+    },
+    {
+      username: 'user40',
+      email: 'user40@example.com',
+      password_hash: 'hashedpassword40',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket40'
+    },
+    {
+      username: 'user41',
+      email: 'user41@example.com',
+      password_hash: 'hashedpassword41',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket41'
+    },
+    {
+      username: 'user42',
+      email: 'user42@example.com',
+      password_hash: 'hashedpassword42',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket42'
+    },
+    {
+      username: 'user43',
+      email: 'user43@example.com',
+      password_hash: 'hashedpassword43',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket43'
+    },
+    {
+      username: 'user44',
+      email: 'user44@example.com',
+      password_hash: 'hashedpassword44',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket44'
+    },
+    {
+      username: 'user45',
+      email: 'user45@example.com',
+      password_hash: 'hashedpassword45',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket45'
+    },
+    {
+      username: 'user46',
+      email: 'user46@example.com',
+      password_hash: 'hashedpassword46',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket46'
+    },
+    {
+      username: 'user47',
+      email: 'user47@example.com',
+      password_hash: 'hashedpassword47',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket47'
+    },
+    {
+      username: 'user48',
+      email: 'user48@example.com',
+      password_hash: 'hashedpassword48',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket48'
+    },
+    {
+      username: 'user49',
+      email: 'user49@example.com',
+      password_hash: 'hashedpassword49',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket49'
+    },
+    {
+      username: 'user50',
+      email: 'user50@example.com',
+      password_hash: 'hashedpassword50',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket50'
+    },
+    {
+      username: 'user51',
+      email: 'user51@example.com',
+      password_hash: 'hashedpassword51',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket51'
+    },
+    {
+      username: 'user52',
+      email: 'user52@example.com',
+      password_hash: 'hashedpassword52',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket52'
+    },
+    {
+      username: 'user53',
+      email: 'user53@example.com',
+      password_hash: 'hashedpassword53',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket53'
+    },
+    {
+      username: 'user54',
+      email: 'user54@example.com',
+      password_hash: 'hashedpassword54',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket54'
+    },
+    {
+      username: 'user55',
+      email: 'user55@example.com',
+      password_hash: 'hashedpassword55',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket55'
+    },
+    {
+      username: 'user56',
+      email: 'user56@example.com',
+      password_hash: 'hashedpassword56',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket56'
+    },
+    {
+      username: 'user57',
+      email: 'user57@example.com',
+      password_hash: 'hashedpassword57',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket57'
+    },
+    {
+      username: 'user58',
+      email: 'user58@example.com',
+      password_hash: 'hashedpassword58',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket58'
+    },
+    {
+      username: 'user59',
+      email: 'user59@example.com',
+      password_hash: 'hashedpassword59',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket59'
+    },
+    {
+      username: 'user60',
+      email: 'user60@example.com',
+      password_hash: 'hashedpassword60',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket60'
+    },
+    {
+      username: 'user61',
+      email: 'user61@example.com',
+      password_hash: 'hashedpassword61',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket61'
+    },
+    {
+      username: 'user62',
+      email: 'user62@example.com',
+      password_hash: 'hashedpassword62',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket62'
+    },
+    {
+      username: 'user63',
+      email: 'user63@example.com',
+      password_hash: 'hashedpassword63',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket63'
+    },
+    {
+      username: 'user64',
+      email: 'user64@example.com',
+      password_hash: 'hashedpassword64',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket64'
+    },
+    {
+      username: 'user65',
+      email: 'user65@example.com',
+      password_hash: 'hashedpassword65',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket65'
+    },
+    {
+      username: 'user66',
+      email: 'user66@example.com',
+      password_hash: 'hashedpassword66',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket66'
+    },
+    {
+      username: 'user67',
+      email: 'user67@example.com',
+      password_hash: 'hashedpassword67',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket67'
+    },
+    {
+      username: 'user68',
+      email: 'user68@example.com',
+      password_hash: 'hashedpassword68',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket68'
+    },
+    {
+      username: 'user69',
+      email: 'user69@example.com',
+      password_hash: 'hashedpassword69',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket69'
+    },
+    {
+      username: 'user70',
+      email: 'user70@example.com',
+      password_hash: 'hashedpassword70',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket70'
+    },
+    {
+      username: 'user71',
+      email: 'user71@example.com',
+      password_hash: 'hashedpassword71',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket71'
+    },
+    {
+      username: 'user72',
+      email: 'user72@example.com',
+      password_hash: 'hashedpassword72',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket72'
+    },
+    {
+      username: 'user73',
+      email: 'user73@example.com',
+      password_hash: 'hashedpassword73',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket73'
+    },
+    {
+      username: 'user74',
+      email: 'user74@example.com',
+      password_hash: 'hashedpassword74',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket74'
+    },
+    {
+      username: 'user75',
+      email: 'user75@example.com',
+      password_hash: 'hashedpassword75',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket75'
+    },
+    {
+      username: 'user76',
+      email: 'user76@example.com',
+      password_hash: 'hashedpassword76',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket76'
+    },
+    {
+      username: 'user77',
+      email: 'user77@example.com',
+      password_hash: 'hashedpassword77',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket77'
+    },
+    {
+      username: 'user78',
+      email: 'user78@example.com',
+      password_hash: 'hashedpassword78',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket78'
+    },
+    {
+      username: 'user79',
+      email: 'user79@example.com',
+      password_hash: 'hashedpassword79',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket79'
+    },
+    {
+      username: 'user80',
+      email: 'user80@example.com',
+      password_hash: 'hashedpassword80',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket80'
+    },
+    {
+      username: 'user81',
+      email: 'user81@example.com',
+      password_hash: 'hashedpassword81',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket81'
+    },
+    {
+      username: 'user82',
+      email: 'user82@example.com',
+      password_hash: 'hashedpassword82',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket82'
+    },
+    {
+      username: 'user83',
+      email: 'user83@example.com',
+      password_hash: 'hashedpassword83',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket83'
+    },
+    {
+      username: 'user84',
+      email: 'user84@example.com',
+      password_hash: 'hashedpassword84',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket84'
+    },
+    {
+      username: 'user85',
+      email: 'user85@example.com',
+      password_hash: 'hashedpassword85',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket85'
+    },
+    {
+      username: 'user86',
+      email: 'user86@example.com',
+      password_hash: 'hashedpassword86',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket86'
+    },
+    {
+      username: 'user87',
+      email: 'user87@example.com',
+      password_hash: 'hashedpassword87',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket87'
+    },
+    {
+      username: 'user88',
+      email: 'user88@example.com',
+      password_hash: 'hashedpassword88',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket88'
+    },
+    {
+      username: 'user89',
+      email: 'user89@example.com',
+      password_hash: 'hashedpassword89',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket89'
+    },
+    {
+      username: 'user90',
+      email: 'user90@example.com',
+      password_hash: 'hashedpassword90',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket90'
+    },
+    {
+      username: 'user91',
+      email: 'user91@example.com',
+      password_hash: 'hashedpassword91',
+      phone: '1234567890',
+      role: 'admin',
+      socket_id: 'socket91'
+    },
+    {
+      username: 'user92',
+      email: 'user92@example.com',
+      password_hash: 'hashedpassword92',
+      phone: '1234567891',
+      role: 'student',
+      socket_id: 'socket92'
+    },
+    {
+      username: 'user93',
+      email: 'user93@example.com',
+      password_hash: 'hashedpassword93',
+      phone: '1234567892',
+      role: 'admin',
+      socket_id: 'socket93'
+    },
+    {
+      username: 'user94',
+      email: 'user94@example.com',
+      password_hash: 'hashedpassword94',
+      phone: '1234567893',
+      role: 'student',
+      socket_id: 'socket94'
+    },
+    {
+      username: 'user95',
+      email: 'user95@example.com',
+      password_hash: 'hashedpassword95',
+      phone: '1234567894',
+      role: 'admin',
+      socket_id: 'socket95'
+    },
+    {
+      username: 'user96',
+      email: 'user96@example.com',
+      password_hash: 'hashedpassword96',
+      phone: '1234567895',
+      role: 'student',
+      socket_id: 'socket96'
+    },
+    {
+      username: 'user97',
+      email: 'user97@example.com',
+      password_hash: 'hashedpassword97',
+      phone: '1234567896',
+      role: 'admin',
+      socket_id: 'socket97'
+    },
+    {
+      username: 'user98',
+      email: 'user98@example.com',
+      password_hash: 'hashedpassword98',
+      phone: '1234567897',
+      role: 'student',
+      socket_id: 'socket98'
+    },
+    {
+      username: 'user99',
+      email: 'user99@example.com',
+      password_hash: 'hashedpassword99',
+      phone: '1234567898',
+      role: 'admin',
+      socket_id: 'socket99'
+    },
+    {
+      username: 'user100',
+      email: 'user100@example.com',
+      password_hash: 'hashedpassword100',
+      phone: '1234567899',
+      role: 'student',
+      socket_id: 'socket100'
+    }
+  ]
+]
 // insertUser('severo', 'password', 'enrrimarq2000@gmail.com', 'admin');
 // insertUser('cristian', 'password', 'adaksjdjkasdkja@gmail.com', 'admin');
-// insertUser('admin', 'password', 'admin@example.com', 'admin');
-
+// insertUser('user', 'password', 'user@example.com', 'student');
+// usersData[0].forEach(user => insertUser(user.username, user.password_hash, user.email, user.role));
 module.exports = {
   insertUser: insertUser,
   insertBook: insertBook,

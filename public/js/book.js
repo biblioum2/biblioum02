@@ -118,7 +118,7 @@ const debounce = (func, delay) => {
     if (term.length > 0) {
       const query = new URLSearchParams({ term });
   
-      fetch(`http://localhost:3000/book/name?${query}`)
+      fetch(`https://biblioum02.onrender.com/book/name?${query}`)
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(json => {
           json.forEach(el => {
