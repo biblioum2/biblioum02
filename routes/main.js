@@ -100,8 +100,11 @@ router.get("/uman", async (req, res) => {
 
 router.get("/", async (req, res) => {
 
-  const authToken = req.cookies.authToken ? true : false;
-  const isAdmin = req.cookies.userid === "6" ? false : true;
+ const authToken = req.cookies.authToken ? true : false;
+  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
+  const isAdmin = role.rows[0].role === 'admin' ? true : false;
+  console.log("es admin:", isAdmin);
+  
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   if (userId === '0') {
     console.log('No hay usuario logueado');
