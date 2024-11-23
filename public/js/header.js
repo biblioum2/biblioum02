@@ -7,6 +7,7 @@ const adasda = "https://biblioum02.onrender.com";
 $logo.addEventListener('click', () => {
   window.location.href = '/uman';
 });
+
 function getCookie(nombre) {
     // Divide las cookies en un array usando el delimitador "; "
     const cookies = document.cookie.split('; ');
