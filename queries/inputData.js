@@ -1,5 +1,5 @@
 const pool = require("../config/database");
-
+const { parse, format } = require('date-fns');
 // FUNCION PARA CREAR USUARIO
 const insertUser = async (username, passwordHash, email, role) => {
   const query = `
@@ -131,6 +131,10 @@ async function insertBook({
         languaje
     ];
     
+console.log('values:', values);
+const parsedDate = parse(publication_year, "dd/MM/yyyy", new Date());
+const formattedDate = format(parsedDate, "yyyy-MM-dd");
+values[6] = formattedDate;
     try {
         const res = await pool.query(query, values);
         console.log('Book inserted successfully');

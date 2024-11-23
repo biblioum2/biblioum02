@@ -84,7 +84,7 @@
               <select name="author" id="authorFilter">
                 <option value="">-------</option>
                 <% authors.forEach(author => { %>
-                <option value=<%= `${author.author}` %>> <%= author.author %> </option>
+                <option value="<%= `${author.author}` %>"> <%= author.author %> </option>
                 <% }); %>
               </select>
             </li>
@@ -93,7 +93,7 @@
               <select name="date" id="categoryFilter" class="category-filter">
                 <option value="">-------</option>
                 <% categories.forEach(category => { %>
-                <option value=<%= `${category.name}` %>> <%= category.name %> </option>
+                <option value="<%= `${category.name}` %>"> <%= category.name %> </option>
                 <% }); %>
               </select>
             </li>

@@ -1,0 +1,323 @@
+/* Estilos generales */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+.containerMain {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.containerMain h1 {
+    text-align: center;
+    color: #333;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+textarea,
+select {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+select {
+    width: 100%;
+}
+
+input[type="file"] {
+    margin-top: 10px;
+}
+
+input[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 20px;
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Estilos adicionales según la situación */
+.notification.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    animation: fadeInOut 3s ease-in-out 1 forwards; /* 'forwards' mantiene el estilo final */
+}
+
+.notification.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    animation: fadeInOut 3s ease-in-out 1 forwards; /* 'forwards' mantiene el estilo final */
+}
+
+@keyframes fadeInOut {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+}
+
+  
+/* Table styles */
+.container-mains {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    max-width: 100%;
+    padding-top: 3rem;
+    height: auto;
+}
+table {
+    border-collapse: collapse;
+    border: 1px solid #959595;
+    max-width: 100%;
+}
+
+tbody > tr > td:not(:nth-child(1)):not(:nth-child(2)):not(:last-child) {
+    max-width: 137px;
+}
+
+tbody > tr > td:nth-child(1) {
+    max-width: 40px;
+}
+
+tbody > tr > td:nth-child(2) {
+    max-width: 350px;
+}
+
+tbody > tr > td:last-child {
+    max-width: 290px;
+    min-width: 290px;
+}
+
+thead {
+    background-color: #4CAF50;
+    color: white;
+  }
+
+th {
+    position: relative;
+    background-color: #4CAF50;
+    color: white;
+    padding: 8px;
+    border: 1px solid #959595;
+  }
+
+th.dropdown:hover {
+    cursor: pointer;
+    background-color: #4ca34d;
+}
+  td, th {
+    text-align: center;
+  }
+
+tr:nth-child(even) {
+    background-color: #d5d5d5;
+  }
+
+  tr:hover {
+    background-color: #ababab;
+  }
+
+  td {
+    padding: 8px;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    border: 1px solid #959595;
+  }
+  
+
+  button {
+    background-color: #4CAF50; /* Verde */
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 14px;
+    margin: 4px 2px;
+    /* cursor: pointer; */
+    border-radius: 4px;
+  }
+  
+  button.btn:hover {
+    cursor: pointer;
+    background-color: #45a049;
+  }
+  
+
+  
+  .editable-input-1 {
+    max-width: 140px; /* Hacer que el input ocupe el 100% del ancho de la celda */
+    border: 1px solid #ccc; /* Bordes suaves */
+    border-radius: 4px; /* Bordes redondeados */
+    padding: 4px; /* Espaciado interno */
+    box-sizing: border-box; /* Asegurar que el padding no afecte el tamaño total */
+    text-align: left;
+}
+
+.editable-input-2 {
+    max-width: 140px; /* Hacer que el input ocupe el 100% del ancho de la celda */
+    border: 1px solid #ccc; /* Bordes suaves */
+    border-radius: 4px; /* Bordes redondeados */
+    padding: 0px; /* Espaciado interno */
+    box-sizing: border-box; /* Asegurar que el padding no afecte el tamaño total */
+    text-align: left;
+}
+
+.editable-input:focus {
+    border-color: #66afe9; /* Cambiar color del borde al enfocar */
+    outline: none; /* Quitar el borde de enfoque por defecto */
+}
+
+/* Estilos para la notificacion de error o exito */
+.hidden { 
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+    visibility: hidden; /* Cambia display a visibility */
+}
+
+.ghost {
+    position: absolute;
+    width: 100vw;
+}
+
+.success {
+    background-color: #dff0d8;
+    color: #3c763d;
+    border: 1px solid #d6e9c6;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    animation: fadeInOut 3s ease-in-out 1 forwards; /* 'forwards' mantiene el estilo final */
+}
+
+
+.error {
+    background-color: #f2dede;
+    color: #a94442;
+    border: 1px solid #ebccd1;
+    padding: 10px 15px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    opacity: 1;
+    transition: opacity 0.5s ease-in-out;
+    animation: fadeInOut 3s ease-in-out 1 forwards; /* 'forwards' mantiene el estilo final */
+}
+
+.triangle {
+    width: 0;
+    height: 0;
+    margin-top: 5px;
+    margin-left: 9px;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-top: 10px solid #ffffff;
+}
+.th-cell {
+    position: relative;
+    display: flex;
+}
+
+.dropdown {
+    position: relative;
+    /* display: inline-block; */
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    top: 28px;
+    left: -7.5px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.no-elements {
+    display: flex;
+    width: 100%;
+    height: 40vh;
+    text-align: center;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+}
+
+.btn-disabled{
+    background-color: #979696;
+}
+.btn-disabled:hover{
+    cursor: default;
+    background-color: #979696;
+}
+
+.rejectBtn {
+    background-color: red;
+}

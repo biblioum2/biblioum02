@@ -14,8 +14,7 @@ body {
 .container-main{
   display: grid;
   grid-template-rows: auto;
- grid-template-columns: auto;
-    
+  grid-template-columns: auto;
 }
 /* Header y navegador */
 #Principal {
@@ -28,19 +27,18 @@ body {
     color: #FFF;
     height: 40px;
     position: relative;
-  }
+}
   
-  .header .headerstyle {
+.header .headerstyle {
     display: flex;
     margin: auto;
     width: 100%; /* Ajustar al 100% del ancho del contenedor */
     justify-content: space-between; /* Distribuye los divs horizontalmente */
     align-items: center; /* Centra los elementos verticalmente */
     position: relative; /* Cambiado de 'absolute' a 'relative' */
-    
-  }
+}
   
-  .headerstyle div {
+.headerstyle div {
     color: #FFF;
     flex: 1; /* Para que cada caja ocupe espacio proporcional */
     display: flex;
@@ -48,58 +46,57 @@ body {
     padding-left: 20px;
     align-items: center;
     height: 40px;
-  }
+}
 
-  .headerstyle p{
+.headerstyle p{
     display: flex;
     width: 100%;
     justify-content: right;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: large;
     letter-spacing: 2px;
-  }
+}
   
-
- .headerstyle #idioma{
+.headerstyle #idioma{
     display: flex;
     align-items: center;
     justify-content: left;  /*estilos pendientes*/
     background-color: #FFF;
     height: 23px;
     width: 50%;
- }
+}
 
- .headerstyle b{
+.headerstyle b{
     text-shadow: 1px 1px 5px #000;
- }
+}
 
- #Horario p{
+#Horario p{
     font-size: 15px;
     padding-right: 40px;
     text-shadow: 2px 2px 5px #000;
- }
+}
 
- .headerstyle #Naranja-fragil{
+.headerstyle #Naranja-fragil{
     position: relative;
     width: 100%;
     background-color: #fc4b08;
- }
+}
 
- #Naranja-fragil #Naranja-fuerte{
+#Naranja-fragil #Naranja-fuerte{
     position: absolute;
     width: 35px;
     background-color: #de2e03; 
     transform: skew(40deg);
     left: -17px;
- }
+}
 
 .correo-header{
     margin-right: 80px;
 }
 
- .me-2{
+.me-2{
    margin-right: 8px;
- }
+}
 
 /* Imagen de Header (libreria) */
 #Cabecera {
@@ -148,7 +145,7 @@ body {
 #Estanteria{
     height: 100%;
     margin: 0;
- display: grid;
+    display: grid;
     margin-bottom: 200px;
 }
 /* Configuracion de contenido sliders */
@@ -159,7 +156,6 @@ body {
     width: 100%;
     justify-items: center;
 }
-
 
 /* Configuracion de slider 1 promocion */
 #contenido .slider1{
@@ -172,17 +168,15 @@ body {
     height: 100%;
 }
 
-
 /* Configuracion de slider 2 area de libros*/
 #vista-de-libros {
-  overflow-x: hidden;
- overflow-y: hidden;  
+    overflow-x: hidden;
+    overflow-y: hidden;  
     width: 100%;
     height: 500px;
 }
 
 /* titulo del contenedor de libros */
-
 .carrusel {
     position: relative;
     display: flex;
@@ -196,20 +190,19 @@ body {
 }
 
 img {
- height: 100%;
+    height: 100%;
 }
 
 /* Efectos en imagenes de 'Contenido Principal' */
 .card-Book img {
     opacity: 1;
     transition: opacity 0.5s ease;
-  }
+}
   
-  .card-Book img:hover {
-      opacity: 0.5;
-  }
+.card-Book img:hover {
+    opacity: 0.5;
+}
   
-
 .viewport{
     width: 100%;
     scroll-behavior: smooth;
@@ -230,7 +223,7 @@ img {
     width: 100%;
     list-style: none;
     margin-right: 50px;
-   box-shadow: 0 5px 10px 8px rgba(0, 0, 0, 0.15);
+    box-shadow: 0 5px 10px 8px rgba(0, 0, 0, 0.15);
 }
 
 .carrusel-cel h3{
@@ -242,6 +235,7 @@ img {
     width: 100%;
     margin-bottom: 2rem;
     justify-content: left;
+    margin-top: 20px;
 }
 
 /* Etiqueta de sección de Carrusel de libros */
@@ -328,7 +322,6 @@ select:active {
     flex-shrink: 0;
 }
 
-
 .slides.img {
     width: 100%;
     height: auto;
@@ -351,7 +344,7 @@ select:active {
 }
 
 .carrButton:hover{
- background-color: #000;
+    background-color: #000;
 }
 
 .left{
@@ -372,45 +365,94 @@ select:active {
 
 .arrowR{
     width: 0;
-      height: 0;
-      border-top: 15px solid transparent;
-      border-left: 25px solid #FFF;
-      border-bottom: 15px solid transparent;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-left: 25px solid #FFF;
+    border-bottom: 15px solid transparent;
 }
 
-.card-container{
-    display: flex;
-    flex-wrap: wrap;
+.card-container {
+    display: grid;
+    gap: 10px;
     justify-content: center;
+    justify-items: center;
     align-items: center;
-    width: 85%;
-    height: max-content;
+    width: 100%;
     margin-top: 5px;
-    gap: 20px;
     background-color: white;
 }
 
-.card-Book{
+@media (min-width: 1441px) {
+    .card-container {
+        grid-template-columns: repeat(5, 280px); /* 6 columnas */
+    }
+    .card-Book {
+        width: 280px; /* Ancho fijo */
+        height: 430px; /* Altura fija */
+        font-size: x-large;
+    }
+}
+
+@media (min-width: 1280px) and (max-width: 1440px) {
+    .card-container {
+        grid-template-columns: repeat(5, 220px); /* 5 columnas */
+    }
+    .card-Book {
+        width: 220px; /* Ancho fijo */
+        height: 350px; /* Altura fija */
+        font-size: x-large;
+    }
+}
+
+
+@media (min-width: 769px) and (max-width: 1279px) {
+    .card-container {
+        grid-template-columns: repeat(4, 150px); /* 4 columnas */
+    }
+    .card-Book {
+        width: 150px; /* Ancho fijo */
+        height: 250px; /* Altura fija */
+    }
+}
+
+@media (max-width: 768px) {
+    .card-container {
+        grid-template-columns: repeat(2, 250px); /* 2 columnas */
+    }
+    .card-Book {
+        width: 250px; /* Ancho fijo */
+        height: 250px; /* Altura fija */
+    }
+}
+
+
+
+.card-Book {
     display: flex;
     flex-direction: column;
     align-items: center;
     white-space: nowrap;
     overflow: hidden;
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     text-overflow: ellipsis;
-    width: 175px;
-    height: 270px;
     margin: 10px;
-    font-size: smaller  ;
+    font-size: large;
     border: 1px solid #ddd;
-    box-shadow: 0 4px 8px rgba( 0, 0, 0, 0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transiciones para la animación */
+}
+
+.card-Book:hover {
+    transform: translateY(-10px); /* Mueve la card hacia arriba */
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Aumenta la sombra */
 }
 
 .card-Book img {
-    width: 175px;
-    height: 225px;
+    width: 100%;
+    height: 70%; /* Ajusta la altura de la imagen dentro de la card */
 }
 
-.card-info{
+.card-info {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -420,7 +462,20 @@ select:active {
     white-space: normal; /* Permite que el texto se envuelva en líneas múltiples */
     overflow: hidden; /* Oculta el texto que se desborda */
     margin: 0; /* Ajusta los márgenes si es necesario */
-    height: 100%;
+    height: 30%; /* Ajusta la altura del contenedor de información */
+}
+
+.card-container > :last-child {
+    grid-column: span 5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.black {
+    color: black;
+    overflow: hidden;
+    text-align: center;
 }
 
 .black {
@@ -436,7 +491,6 @@ select:active {
     gap: 10px;
     width: 100%;
     height: 40px;
-
 }
 
 .pagination-container > button:hover,

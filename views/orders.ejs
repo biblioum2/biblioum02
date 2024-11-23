@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Formulario de Registro de Libros</title>
-  <link rel="stylesheet" href="/css/lstyles.css">
+  <link rel="stylesheet" href="/css/orders.css">
   <link rel="stylesheet" href="/css/nav-admin.css">
   <link rel="stylesheet" href="/css/footer.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -55,22 +55,22 @@
 
       <% data.forEach(element=> { %>
       <tr>
-        <td class="rowid">
+        <td class="rowid" title="<%= element.id %>">
           <%= element.id %>
         </td>
-        <td class="rowtitle">
+        <td class="rowtitle" title="<%= element.title %>">
           <%= element.title %>
         </td>
-        <td class="rowusername">
+        <td class="rowusername" title="<%= element.username %>">
           <%= element.username %>
         </td>
-        <td class="rowloan_date">
+        <td class="rowloan_date" title="<%= element.loan_date %>">
           <%= element.loan_date %>
         </td>
-        <td class="rowreturn_date">
+        <td class="rowreturn_date" title="<%= element.return_date %>">
           <%= element.return_date %>
         </td>
-        <td class="rowstatus">
+        <td class="rowstatus" title="<%= element.status %>">
           <%= element.status %>
         </td>
         <td>
