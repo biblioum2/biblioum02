@@ -1,9 +1,8 @@
+
 const $logo = document.getElementById('logo');
 
-const local = 'http://localhost:3000';
-const render = 'https://biblioum02.onrender.com';
 
-const baseUrl = render;
+const adasda = "https://biblioum02.onrender.com";
 
 $logo.addEventListener('click', () => {
   window.location.href = '/uman';
@@ -73,7 +72,7 @@ function highlightButton(selectedButton) {
 async function getOrders(values) {
     try {
       const queryString = new URLSearchParams(values).toString();
-      const response = await fetch(`${baseUrl}/getorders?${queryString}`);
+      const response = await fetch(`${adasda}/getorders?${queryString}`);
       console.log('Ordenes desdes que recibe el cliente:', response);
       
       return response;
@@ -237,7 +236,7 @@ if (allOrders) {
       } else if (target && target.dataset.action === 'delete') {
         const orderId = parseInt(order.dataset.id);
         try {
-          const result = await fetch(`${baseUrl}/deleteOrder`, {
+          const result = await fetch(`${adasda}/deleteOrder`, {
             method: 'DELETE',
             headers: {
               "Content-Type": "application/json",

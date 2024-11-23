@@ -1,5 +1,7 @@
+const { get } = require("http");
 const pool = require("../config/database");
 const { parse, format } = require('date-fns');
+const bcrypt = require("bcrypt");
 // FUNCION PARA CREAR USUARIO
 const insertUser = async (username, passwordHash, email, role) => {
   const query = `
@@ -54,6 +56,7 @@ const categories = [
   "Diseño Integral",
   "Energías Renovables",
   "Ingenieria Civil",
+  "NO SELECCIONAR",
 ];
 // "Relaciones Internacionales",
 // "Mercadotécnia",
@@ -464,7 +467,15 @@ const booksAdmin = [
     "author": "Michael E. Porter",
     "edition": "1ª",
     "isbn": "0-02-925360-4",
-    "summary": "**\"Competitive Strategy: Techniques for Analyzing Industries and Competitors\"** es un clásico en el campo de la estrategia empresarial. Michael E. Porter presenta un enfoque estructurado para analizar las industrias y los competidores, introduciendo herramientas clave como las cinco fuerzas competitivas, la cadena de valor y las estrategias genéricas. Este libro proporciona un marco práctico para desarrollar estrategias competitivas sostenibles y mejorar el rendimiento en mercados dinámicos y competitivos.",
+    "summary": `
+    *Competitive Strategy: Techniques for Analyzing Industries and Competitors*, escrito por Michael E. Porter, es una obra fundamental en el campo de la administración empresarial que proporciona un marco teórico y práctico para comprender la competencia dentro de las industrias. Publicado por primera vez en 1980, el libro presenta conceptos clave que transformaron la manera en que las empresas analizan su entorno competitivo y toman decisiones estratégicas.
+    
+    En su obra, Porter introduce el concepto de las "cinco fuerzas" competitivas, que se utilizan para evaluar la intensidad de la competencia dentro de una industria. Estas fuerzas incluyen la amenaza de nuevos competidores, el poder de negociación de los proveedores y los compradores, la amenaza de productos sustitutivos y la rivalidad entre los competidores existentes. Además, Porter profundiza en las estrategias competitivas que las empresas pueden emplear para posicionarse de manera efectiva en su mercado, incluyendo la diferenciación, el liderazgo en costos y la focalización.
+    
+    Porter también explica cómo las empresas pueden analizar y entender su estructura competitiva a través de herramientas como el análisis de las fuerzas del mercado y la cadena de valor, lo que les permite identificar áreas donde pueden generar ventajas competitivas sostenibles. El autor argumenta que una estrategia exitosa debe centrarse en la creación de valor de una manera que no sea fácilmente replicable por los competidores.
+    
+    En resumen, *Competitive Strategy* ofrece una guía comprensiva para los gerentes y ejecutivos que buscan comprender los elementos que influyen en la competencia de su industria y cómo utilizar esa comprensión para desarrollar estrategias que maximicen su ventaja competitiva. Con su enfoque analítico y detallado, el libro se ha mantenido como una referencia esencial en el estudio de la estrategia empresarial.
+  `,
     "available": "yes",
     "publication_year": "1980-09-01",
     "available_copies": 3,
@@ -477,7 +488,17 @@ const booksAdmin = [
     "author": "Philip Kotler, Kevin Lane Keller",
     "edition": "15ª",
     "isbn": "0-13-385646-1",
-    "summary": "**\"Marketing Management\"** es un libro de referencia fundamental en el campo del marketing, escrito por los expertos Philip Kotler y Kevin Lane Keller. El libro ofrece un enfoque integral sobre cómo desarrollar estrategias de marketing efectivas para diversos mercados y cómo aplicar principios de marketing para resolver problemas comerciales reales. Cubre temas clave como la segmentación de mercado, la gestión de marcas, el marketing digital y el análisis de la competencia, y se considera esencial para estudiantes y profesionales del marketing.",
+    "summary": `
+    *Marketing Management* de Philip Kotler es uno de los textos más influyentes y completos sobre marketing, ampliamente utilizado en estudios académicos y en la práctica empresarial. La obra, que se encuentra en varias ediciones desde su publicación original, ha sido una referencia esencial para comprender las estrategias de marketing en un contexto empresarial dinámico y globalizado.
+    
+    En este libro, Kotler aborda de manera integral el proceso de gestión del marketing, ofreciendo un enfoque detallado de cómo las empresas deben planificar, ejecutar y evaluar sus estrategias de marketing para satisfacer las necesidades de sus clientes y obtener ventajas competitivas. A lo largo de la obra, Kotler subraya la importancia de entender el comportamiento del consumidor, las dinámicas del mercado y las tendencias sociales y tecnológicas para construir campañas efectivas.
+    
+    El autor introduce un marco conceptual para la toma de decisiones en marketing, que abarca temas como la segmentación de mercados, el posicionamiento de productos, el desarrollo de nuevos productos, la fijación de precios, la distribución y la promoción. Además, Kotler examina el impacto de las tecnologías digitales en el marketing, destacando el papel del marketing en línea, la publicidad digital y las redes sociales como herramientas cruciales para las empresas modernas.
+    
+    Uno de los puntos clave de *Marketing Management* es la idea de que el marketing no se limita solo a la venta de productos, sino que es un proceso continuo de creación de valor para los consumidores y la empresa. Kotler enfatiza que las estrategias de marketing deben ser flexibles y adaptarse rápidamente a los cambios del mercado para mantener la competitividad.
+    
+    En resumen, *Marketing Management* proporciona un enfoque exhaustivo y estratégico sobre cómo las empresas pueden maximizar el impacto de sus esfuerzos de marketing. Es un manual esencial para estudiantes, profesionales y ejecutivos que buscan profundizar en el análisis y la implementación de estrategias efectivas de marketing en un entorno competitivo y en constante cambio.
+  `,
     "available": "yes",
     "publication_year": "2015-01-01",
     "available_copies": 4,
@@ -490,7 +511,17 @@ const booksAdmin = [
     "author": "Jim Collins",
     "edition": "1ª",
     "isbn": "0-06-662099-6",
-    "summary": "**\"Good to Great: Why Some Companies Make the Leap... and Others Don't\"** es un análisis profundo sobre qué hace que algunas empresas logren pasar de ser buenas a grandes. Jim Collins y su equipo de investigación examinan las características comunes entre las empresas que han logrado un rendimiento excepcional a largo plazo y aquellas que no lo han conseguido. A través de un enfoque basado en datos y ejemplos concretos, el libro explora conceptos como el liderazgo de nivel 5, la cultura disciplinada y el concepto del erizo, proporcionando valiosas lecciones sobre cómo alcanzar la excelencia empresarial.",
+    "summary": `
+    *Good to Great: Why Some Companies Make the Leap... and Others Don't* de Jim Collins es un estudio exhaustivo que analiza las características comunes de las empresas que han logrado una transición exitosa de ser buenas a ser grandes y, lo que es aún más importante, cómo estas empresas han mantenido su éxito a largo plazo. Publicado en 2001, el libro se basa en un extenso análisis de datos y casos de estudio de 1,435 empresas que fueron evaluadas durante un periodo de 40 años para identificar qué las hizo sobresalir entre sus competidores.
+
+    Collins explora varios factores clave que distinguen a las empresas que dan el salto de "bueno a grande". Uno de los conceptos centrales que se presenta en el libro es el de la "Liderazgo Nivel 5", un tipo de liderazgo que combina una feroz determinación con humildad personal, una característica común en los líderes de las empresas más exitosas. Además, Collins destaca la importancia de tener las personas adecuadas en el lugar adecuado, enfatizando que las empresas que logran un éxito sostenido son aquellas que priorizan a las personas antes que la estrategia o la tecnología.
+
+    Otro concepto clave es el "Hedgehog Concept", que sostiene que las empresas deben enfocarse en lo que hacen mejor en el mundo, en lo que pueden ser las mejores, y en lo que les proporciona la mayor fuente de ganancias. Las compañías exitosas descubren su núcleo de valor y se concentran en él, eliminando las distracciones y asegurando que sus esfuerzos estén alineados con esa visión central.
+
+    Collins también introduce la idea del "Flywheel Effect" (Efecto Flywheel), que describe cómo el éxito sostenido se construye con el tiempo, a través de esfuerzos consistentes y acumulativos. A diferencia de las soluciones rápidas, el Flywheel se basa en la persistencia, la disciplina y la inversión a largo plazo, lo que genera un impulso imparable una vez que la empresa ha alcanzado un nivel de excelencia.
+
+    En resumen, *Good to Great* ofrece una visión profunda de los principios y las prácticas que separan a las empresas excepcionales de las mediocres. A través de su investigación y análisis detallado, Collins proporciona un marco para que las empresas busquen el crecimiento sostenible, la excelencia operativa y el liderazgo visionario, con el objetivo de lograr la transición de ser una buena empresa a convertirse en una gran empresa.
+  `,
     "available": "yes",
     "publication_year": "2001-10-16",
     "available_copies": 5,
@@ -503,7 +534,17 @@ const booksAdmin = [
     "author": "Simon Sinek",
     "edition": "1ª",
     "isbn": "1-59184-801-6",
-    "summary": "**\"Leaders Eat Last: Why Some Teams Pull Together and Others Don't\"** es un análisis sobre cómo los grandes líderes crean ambientes en los que los equipos prosperan. Simon Sinek explora las dinámicas de liderazgo, la importancia de la confianza y la seguridad en el trabajo, y cómo los líderes pueden inspirar a sus equipos para lograr resultados extraordinarios. A través de ejemplos de empresas y organizaciones exitosas, el libro muestra cómo un enfoque en el bienestar del equipo puede llevar a una cohesión y éxito duraderos.",
+    "summary": `
+    *Leaders Eat Last: Why Some Teams Pull Together and Others Don't* de Simon Sinek es un libro que explora el impacto del liderazgo en la cultura de las organizaciones y cómo los líderes efectivos pueden inspirar a sus equipos a trabajar de manera unida y con propósito. Publicado en 2014, el libro continúa con la idea central de Sinek, presentada en su anterior obra *Start with Why*, enfocándose en cómo los líderes pueden crear un entorno en el que las personas se sientan seguras, valoradas y motivadas para colaborar de manera efectiva.
+
+    Sinek utiliza el concepto de "círculos de seguridad" para ilustrar cómo los líderes deben proteger a sus equipos de amenazas externas e internas, de modo que los miembros del equipo puedan concentrarse en su trabajo sin temor. El autor argumenta que cuando los líderes priorizan el bienestar de sus empleados y fomentan una cultura de confianza y respeto, las personas están más dispuestas a sacrificarse por el bien del equipo y de la organización.
+
+    Un tema recurrente en el libro es la importancia de los lazos sociales y emocionales en el trabajo. Sinek explica cómo las neurociencias, particularmente la liberación de sustancias químicas como la oxitocina, están involucradas en las relaciones humanas y cómo los líderes pueden aprovechar estos principios para crear una cultura en la que las personas se cuiden mutuamente, especialmente en tiempos de crisis. Los líderes que se ocupan de las necesidades emocionales de sus equipos pueden fomentar un sentido de propósito y pertenencia que impulsa el compromiso y el rendimiento.
+
+    Además, Sinek aborda las malas prácticas de liderazgo y cómo algunas organizaciones priorizan las ganancias a corto plazo sobre el bienestar de sus empleados, lo que puede llevar a la desconfianza, el agotamiento y el deterioro de la moral. Contrariamente, los líderes que "comen al final", es decir, que ponen las necesidades de su equipo antes que las suyas propias, son los que generan resultados sostenibles y una cultura organizacional sólida.
+
+    En resumen, *Leaders Eat Last* proporciona una visión profunda sobre cómo los grandes líderes fomentan la cooperación, la lealtad y el éxito a largo plazo dentro de sus equipos, creando un entorno seguro, inclusivo y de apoyo. A través de ejemplos de la vida real y principios basados en la neurociencia, Sinek ofrece un enfoque humanista sobre el liderazgo que inspira a los lectores a reimaginar cómo pueden liderar y hacer crecer sus propias organizaciones.
+  `,
     "available": "yes",
     "publication_year": "2014-01-07",
     "available_copies": 3,
@@ -516,7 +557,19 @@ const booksAdmin = [
     "author": "Richard A. Brealey, Stewart C. Myers, Franklin Allen",
     "edition": "12ª",
     "isbn": "978-1259862433",
-    "summary": "**\"Principles of Corporate Finance\"** es un texto esencial sobre las finanzas corporativas, cubriendo temas clave como la valoración de empresas, la gestión de riesgos, las decisiones de inversión y financiación, y la creación de valor a largo plazo. Los autores, Richard A. Brealey, Stewart C. Myers y Franklin Allen, presentan los principios fundamentales de la teoría financiera y cómo se aplican en el mundo real. Este libro es ampliamente utilizado en cursos universitarios de finanzas y es una referencia importante para profesionales de las finanzas.",
+    "summary": `
+    *Principles of Corporate Finance* es una obra esencial en el campo de las finanzas corporativas que proporciona un enfoque integral sobre los conceptos, principios y técnicas utilizadas en la toma de decisiones financieras dentro de las empresas. Publicado por primera vez en 1978, el libro ha sido actualizado y revisado en varias ediciones, y sigue siendo una de las referencias más importantes en el estudio de las finanzas empresariales.
+
+    Los autores comienzan con una introducción a los principios fundamentales de las finanzas, como la maximización del valor para los accionistas y la gestión del riesgo. A lo largo del libro, se exploran diversos temas clave, incluyendo la evaluación de proyectos de inversión, el análisis de riesgos, la estructura de capital, las políticas de dividendos, la valoración de activos financieros y el uso de instrumentos financieros para financiar las operaciones de la empresa.
+
+    Una de las ideas centrales del libro es el concepto de **valor presente neto (VPN)**, que se utiliza para tomar decisiones sobre la viabilidad de proyectos de inversión. Los autores enfatizan que las empresas deben tomar decisiones que maximicen el valor de sus flujos de efectivo futuros, descontados a su valor presente, utilizando tasas de descuento adecuadas que reflejen el riesgo de esos flujos.
+
+    Otro tema fundamental es la **estructura de capital**, que trata sobre cómo las empresas deben financiar sus actividades, ya sea mediante deuda o capital propio. El libro explica los beneficios y riesgos asociados con cada fuente de financiación, y cómo las decisiones sobre la estructura de capital afectan al valor de la empresa y a la gestión del riesgo.
+
+    Además, *Principles of Corporate Finance* cubre el impacto de las decisiones financieras en el comportamiento de los mercados, analizando cómo los inversores reaccionan ante las decisiones corporativas, la importancia de la información financiera y cómo la teoría moderna de carteras y la eficiencia del mercado pueden ser aplicadas en las decisiones corporativas.
+
+    En resumen, *Principles of Corporate Finance* ofrece un enfoque completo y accesible sobre las finanzas corporativas, proporcionando a los lectores una base sólida para comprender los aspectos clave de la toma de decisiones financieras dentro de las empresas. Es un texto clave para estudiantes de finanzas y profesionales que buscan profundizar en los principios y prácticas que guían las decisiones financieras en el entorno corporativo.
+  `,
     "available": "yes",
     "publication_year": "2020-06-15",
     "available_copies": 4,
@@ -529,7 +582,27 @@ const booksAdmin = [
     "author": "Robert B. Cialdini",
     "edition": "1ª",
     "isbn": "0-06-124189-X",
-    "summary": "**\"Influence: The Psychology of Persuasion\"** es una obra clave en el estudio de la psicología y la persuasión. Robert B. Cialdini explora las seis leyes universales de la influencia, que incluyen la reciprocidad, la consistencia, la validación social, la simpatía, la autoridad y la escasez. A través de ejemplos prácticos y estudios de caso, Cialdini explica cómo estas fuerzas psicológicas son utilizadas en la publicidad, ventas, negociaciones y otras áreas para influir en las decisiones y comportamientos de las personas.",
+    "summary": `
+    *Influence: The Psychology of Persuasion* de Robert B. Cialdini es un libro clave en el campo de la psicología del comportamiento y la persuasión, publicado por primera vez en 1984. Cialdini explora los principios fundamentales que subyacen en el proceso de persuasión, ayudando a los lectores a entender cómo las personas pueden ser influenciadas y cómo estas técnicas pueden ser utilizadas en diversos contextos, desde la publicidad hasta la negociación y la política.
+
+    A lo largo del libro, Cialdini identifica seis principios universales de persuasión, que son fundamentales para comprender cómo los individuos toman decisiones y cómo las marcas, organizaciones y personas pueden influir en esas decisiones. Estos principios son:
+
+    1. **Reciprocidad**: Las personas tienden a devolver los favores o gestos amables. Si alguien hace algo por nosotros, sentimos la necesidad de devolverlo.
+    
+    2. **Compromiso y coherencia**: Una vez que una persona se compromete con algo, es más probable que continúe en esa dirección para mantener la coherencia con su compromiso inicial.
+    
+    3. **Prueba social**: Las personas tienden a hacer lo que ven hacer a otros, especialmente si perciben que esas otras personas tienen autoridad o son similares a ellos.
+    
+    4. **Gusto**: Las personas están más dispuestas a ser influenciadas por aquellos que les gustan o con los que tienen una conexión emocional. La simpatía y la relación personal juegan un papel clave en la persuasión.
+    
+    5. **Autoridad**: Las personas tienden a seguir a figuras de autoridad o expertos en un tema, incluso si no entienden completamente los argumentos presentados.
+    
+    6. **Escasez**: Las personas valoran más las cosas que perciben como escasas o limitadas, lo que las lleva a tomar decisiones más rápidas e impulsivas por miedo a perder una oportunidad.
+
+    Cialdini también describe cómo estos principios pueden ser usados de manera ética para influir en otros, así como cómo reconocer cuándo están siendo utilizados de manera manipulativa o coercitiva. El autor explica cómo la persuasión no es solo una herramienta de marketing, sino también una habilidad que se puede aplicar en la vida diaria, desde el entorno laboral hasta las relaciones personales.
+
+    En resumen, *Influence* es una obra esencial para comprender los mecanismos psicológicos detrás de las decisiones humanas y cómo las personas y organizaciones pueden usar ese conocimiento para mejorar sus estrategias de persuasión y comunicación. A través de ejemplos prácticos y estudios de caso, Cialdini ofrece un enfoque accesible y profundo sobre cómo influir de manera efectiva en los demás, siempre consciente de las implicaciones éticas del poder de la persuasión.
+  `,
     "available": "yes",
     "publication_year": "1984-09-01",
     "available_copies": 5,
@@ -542,7 +615,17 @@ const booksAdmin = [
     "author": "Peter Thiel, Blake Masters",
     "edition": "1ª",
     "isbn": "978-0804139298",
-    "summary": "**\"Zero to One: Notes on Startups, or How to Build the Future\"** es un libro que ofrece una mirada única sobre la creación de startups y la innovación. Peter Thiel y Blake Masters exploran cómo construir empresas que no solo compiten en mercados existentes, sino que crean algo completamente nuevo y disruptivo. A través de ideas provocativas, como el valor de la monopolización y el poder de la tecnología, este libro se convierte en una guía para emprendedores que buscan transformar el futuro y dejar una huella única en el mundo de los negocios.",
+    "summary": `
+    *Zero to One: Notes on Startups, or How to Build the Future* de Peter Thiel es un libro que ofrece una visión profunda sobre la creación de startups y la innovación tecnológica. Publicado en 2014, el libro se centra en la idea de que el verdadero progreso en los negocios y la tecnología no proviene de copiar lo que ya existe, sino de crear algo completamente nuevo. Thiel, un inversor y empresario de renombre, conocido por ser cofundador de PayPal y Palantir, comparte sus perspectivas sobre cómo las empresas pueden pasar de cero a uno, es decir, de no existir a crear algo completamente único y valioso.
+
+    El concepto de *Zero to One* se refiere a la creación de monopolios en lugar de competir en mercados saturados. Thiel argumenta que la verdadera innovación ocurre cuando una empresa no intenta replicar lo que ya se hace, sino que inventa algo completamente nuevo que cambie las reglas del juego. En lugar de enfocarse en la competencia, las startups deben crear algo que sea tan único que no tenga competidores. Este tipo de innovación, según Thiel, es la que genera el mayor valor y tiene el mayor impacto.
+
+    El libro cubre varios temas clave, como la importancia de la visión a largo plazo, el liderazgo y la construcción de equipos excepcionales, y la necesidad de buscar oportunidades de negocio que otros no están viendo. Thiel también discute la importancia de las barreras de entrada, como la tecnología propietaria y el control de la distribución, que permiten a las empresas mantenerse competitivas a lo largo del tiempo.
+
+    Además, *Zero to One* desafía muchas de las ideas comunes sobre el éxito empresarial. Thiel critica la obsesión con la competencia y la imitación, y subraya la importancia de pensar de manera original y arriesgada. A lo largo del libro, ofrece consejos prácticos para emprendedores, como la importancia de enfocarse en el producto primero, la necesidad de tener una ventaja tecnológica, y cómo las empresas pueden construir un equipo que comparta una visión común.
+
+    En resumen, *Zero to One* es un libro esencial para cualquier emprendedor o innovador que busque no solo crear una empresa exitosa, sino también generar un impacto real en el futuro. Thiel proporciona una guía sobre cómo pensar de manera diferente, construir monopolios tecnológicos y, lo más importante, cómo pasar de cero a uno, de la nada a algo verdaderamente revolucionario.
+  `,
     "available": "yes",
     "publication_year": "2014-09-16",
     "available_copies": 4,
@@ -1141,7 +1224,19 @@ const insertBookWithCategory = async (book, categoryId) => {
       throw error;
   }
 };
-// booksCivil.forEach(book => insertBookWithCategory(book, 8));
+// booksArchitecture.forEach(book => insertBookWithCategory(book, 2));
+
+function getcatecories (){
+  const query = 'SELECT * FROM categories';
+  pool.query(query, (err, res) => {
+    if (err) {
+      console.error('Error al obtener las categorías:', err);
+      return;
+    }
+    console.log(res.rows);
+  });
+}
+// getcatecories();
 
 // // async function insertarLibrosCiclo () {
 //   for (let index = 0; index < 30; index++) {
@@ -2020,7 +2115,13 @@ const usersData = [
     }
   ]
 ]
-// insertUser('severo', 'password', 'enrrimarq2000@gmail.com', 'admin');
+
+async function hashPassword(password){
+  const hashedPass = await bcrypt.hash(password, 10);
+  return hashedPass
+};
+
+// insertUser('serveros', hashPassword("password"), 'enrrimasdarq2000@gmail.com', 'admin');
 // insertUser('cristian', 'password', 'adaksjdjkasdkja@gmail.com', 'admin');
 // insertUser('user', 'password', 'user@example.com', 'student');
 // usersData[0].forEach(user => insertUser(user.username, user.password_hash, user.email, user.role));
