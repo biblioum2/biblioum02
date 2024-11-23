@@ -1,4 +1,10 @@
 
+const local = 'http://localhost:3000';
+const render = 'https://biblioum02.onrender.com';
+
+const baseUrl = render;
+
+
 function getCookie(nombre) {
   // Divide las cookies en un array usando el delimitador "; "
   const cookies = document.cookie.split('; ');
@@ -20,7 +26,7 @@ function getCookie(nombre) {
 const idUser = getCookie('userId');
 console.log('ID USER DESDE ADMIN ORDERS',idUser);
 
-const socket = io('https://biblioum02.onrender.com',{
+const socket = io(`${baseUrl}`,{
   query: {
     userId: parseInt(idUser),
   }
@@ -167,7 +173,7 @@ document.addEventListener("DOMContentLoaded", function () {
           returnDate,
         );
         const result = await fetch(
-          `https://biblioum02.onrender.com/updateOrderRow?orderId=${orderId}&loanDate=${loanDate}&returnDate=${returnDate}`
+          `${baseUrl}/updateOrderRow?orderId=${orderId}&loanDate=${loanDate}&returnDate=${returnDate}`
         );
         console.log("se termino de ejecutar el fetch");
 
@@ -197,7 +203,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const $notification = document.getElementById("notification");
 
     try {
-      const response = await fetch('https://biblioum02.onrender.com/deleteOrder', {
+      const response = await fetch(`${baseUrl}/deleteOrder`, {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
@@ -264,7 +270,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("datos desde el cliente: ", orderId, status);
 
     try {
-      const response = await fetch(`https://biblioum02.onrender.com/updateOrderStatus1`, {
+      const response = await fetch(`${baseUrl}/updateOrderStatus1`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -430,7 +436,7 @@ const getOrders = async (value) => {
   console.log('status enviado al cliente: ', value);
   
   try {
-    const response = await fetch(`https://biblioum02.onrender.com/updateOrders?status=${status}`);
+    const response = await fetch(`${baseUrl}/updateOrders?status=${status}`);
     const data = await response.json();
     console.log(data);
     console.table(data);

@@ -32,10 +32,15 @@ const port = 3000;
 const server = http.createServer(app);
 const io = new Server(server);
 
+const local = 'http://localhost:3000';
+const renderr = 'https://biblioum02.onrender.com';
+
+const baseUrl = renderr;
+
 // Configuración CORS
 app.use(
   cors({
-    origin: `https://biblioum02.onrender.com`, // Permite solicitudes desde tu dominio
+    origin: baseUrl, // Permite solicitudes desde tu dominio
   })
 );
 
@@ -102,6 +107,7 @@ app.use(
 const indexRouter = require("./routes/main");
 const { updateOrderStatus } = require("./queries/updateData");
 const { sendMessageToUser } = require("./utilities/deleteCookies");
+const { render } = require("ejs");
 app.use("/", indexRouter);
 
 //Uso de websocket para manejar las ordenes en tiempo real
@@ -598,5 +604,5 @@ app.post("/admin/books", async (req, res) => {
 
 // Iniciar servidor
 server.listen(port, () => {
-  console.log(`Servidor corriendo en https://biblioum02.onrender.com`);
+  console.log(`Servidor corriendo en ${baseUrl}`);
 });

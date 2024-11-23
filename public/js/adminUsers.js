@@ -1,3 +1,7 @@
+const local = 'http://localhost:3000';
+const render = 'https://biblioum02.onrender.com';
+
+const baseUrl = render;
 // TIMEOUT PARA LIVESEARCH
 const debounce = (func, delay) => {
     let timerId;
@@ -21,7 +25,7 @@ const handleSearch = () => {
     if (term.length > 0) {
         const query = new URLSearchParams({ term });
 
-        fetch(`https://biblioum02.onrender.com/admin/user/data?${query}`)
+        fetch(`${baseUrl}/admin/user/data?${query}`)
             .then(res => res.ok ? res.json() : Promise.reject(res))
             .then(json => {
                 json.forEach(el => {
@@ -58,7 +62,7 @@ const handleSearch = () => {
                 console.error('Error desde fetch:', err);
             });
     } else {
-        fetch('https://biblioum02.onrender.com/admin/users/data')
+        fetch(`${baseUrl}/admin/users/data`)
             .then(res => res.ok ? res.json() : Promise.reject(res))
             .then(json => {
                 json.forEach(el => {
@@ -126,7 +130,7 @@ document.addEventListener('click', async (event) => {
     if (event.target.classList.contains('btn-delete')) {
         const userId = event.target.getAttribute('data-id');
         if (confirm('¿Estás seguro de que deseas eliminar este usuario?')) {
-            fetch(`https://biblioum02.onrender.com/admin/users/${userId}`, {
+            fetch(`${baseUrl}/admin/users/${userId}`, {
                 method: 'DELETE',
             })
             .then(res => {
@@ -247,7 +251,7 @@ document.addEventListener('click', async (event) => {
             if(confirm('¿Estás seguro de que deseas editar este usuario?')){
               console.log('Editar usuario');
               
-              const response = await fetch(`https://biblioum02.onrender.com/admin/users/${userId}`, {
+              const response = await fetch(`${baseUrl}/admin/users/${userId}`, {
                   method: 'PATCH',
                   headers: {
                       'Content-Type': 'application/json',
@@ -298,7 +302,7 @@ async function calculateTotalUserPages() {
     
     try {
       const response = await fetch(
-        `https://biblioum02.onrender.com/admin/users/total`
+        `${baseUrl}/admin/users/total`
       );
       console.log('Respuesta del servidor:', response);
       
@@ -375,7 +379,7 @@ async function calculateTotalUserPages() {
     
     try {
       const totalUsers = await fetch(
-        `https://biblioum02.onrender.com/admin/users/data?offset=${offset}`
+        `${baseUrl}/admin/users/data?offset=${offset}`
       );
       const data = await totalUsers.json();
       console.log('Datos de usuarios:', data);

@@ -1,6 +1,10 @@
+const local = 'http://localhost:3000';
+const render = 'https://biblioum02.onrender.com';
+
+const baseUrl = render;
 
 const $userId = document.getElementById('userId');
-const socket = io('https://biblioum02.onrender.com', {
+const socket = io(`${baseUrl}`, {
   query: {
     userId: parseInt($userId.value),
   }
@@ -118,7 +122,7 @@ const debounce = (func, delay) => {
     if (term.length > 0) {
       const query = new URLSearchParams({ term });
   
-      fetch(`https://biblioum02.onrender.com/book/name?${query}`)
+      fetch(`${baseUrl}/book/name?${query}`)
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(json => {
           json.forEach(el => {
@@ -192,7 +196,7 @@ const debounce = (func, delay) => {
     }
   
     try {
-      const result = await fetch('https://biblioum02.onrender.com/updateRatingBook', {
+      const result = await fetch(`${baseUrl}/updateRatingBook`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
