@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch(`http://localhost:3000/getTopRatedBooks?category=${$category.value}`);
+      const response = await fetch(`https://biblioum02.onrender.com/getTopRatedBooks?category=${$category.value}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -225,7 +225,7 @@ const initializeLiveSearch = ({
 initializeLiveSearch({
   inputSelector: "#search-input",
   suggestionSelector: "#autocomplete-list",
-  fetchUrl: "http://localhost:3000/book/name",
+  fetchUrl: "https://biblioum02.onrender.com/book/name",
   onItemSelect: (item) => {
     window.location.href = `./book?id=${item.id}`;
   },
@@ -242,7 +242,7 @@ async function totalBookPages() {
   const year = $yearValue ? $yearValue : "";
   try {
     const response = await fetch(
-      `http://localhost:3000/pages?category=${category}&author=${author}&year=${year}`
+      `https://biblioum02.onrender.com/pages?category=${category}&author=${author}&year=${year}`
     );
     const totalBooks = await response.json();
     const pages =
@@ -318,7 +318,7 @@ const updateBookCards = async (page) => {
 
   try {
     const totalBooks = await fetch(
-      `http://localhost:3000/test?category=${category}&author=${author}&year=${year}&offset=${offset}`
+      `https://biblioum02.onrender.com/test?category=${category}&author=${author}&year=${year}&offset=${offset}`
     );
     const data = await totalBooks.json();
     const $fragment = document.createDocumentFragment();

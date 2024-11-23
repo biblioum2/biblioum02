@@ -68,7 +68,7 @@ function highlightButton(selectedButton) {
 async function getOrders(values) {
     try {
       const queryString = new URLSearchParams(values).toString();
-      const response = await fetch(`http://localhost:3000/getorders?${queryString}`);
+      const response = await fetch(`https://biblioum02.onrender.com/getorders?${queryString}`);
       console.log('Ordenes desdes que recibe el cliente:', response);
       
       return response;
@@ -232,7 +232,7 @@ if (allOrders) {
       } else if (target && target.dataset.action === 'delete') {
         const orderId = parseInt(order.dataset.id);
         try {
-          const result = await fetch(`http://localhost:3000/deleteOrder`, {
+          const result = await fetch(`https://biblioum02.onrender.com/deleteOrder`, {
             method: 'DELETE',
             headers: {
               "Content-Type": "application/json",

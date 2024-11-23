@@ -247,7 +247,7 @@ document.addEventListener('click', async (event) => {
             if(confirm('¿Estás seguro de que deseas editar este usuario?')){
               console.log('Editar usuario');
               
-              const response = await fetch(`http://localhost:3000/admin/users/${userId}`, {
+              const response = await fetch(`https://biblioum02.onrender.com/admin/users/${userId}`, {
                   method: 'PATCH',
                   headers: {
                       'Content-Type': 'application/json',
@@ -298,7 +298,7 @@ async function calculateTotalUserPages() {
     
     try {
       const response = await fetch(
-        `http://localhost:3000/admin/users/total`
+        `https://biblioum02.onrender.com/admin/users/total`
       );
       console.log('Respuesta del servidor:', response);
       
@@ -375,7 +375,7 @@ async function calculateTotalUserPages() {
     
     try {
       const totalUsers = await fetch(
-        `http://localhost:3000/admin/users/data?offset=${offset}`
+        `https://biblioum02.onrender.com/admin/users/data?offset=${offset}`
       );
       const data = await totalUsers.json();
       console.log('Datos de usuarios:', data);

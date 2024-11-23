@@ -1,6 +1,6 @@
 
 const $userId = document.getElementById('userId');
-const socket = io('http://localhost:3000', {
+const socket = io('https://biblioum02.onrender.com', {
   query: {
     userId: parseInt($userId.value),
   }
@@ -192,7 +192,7 @@ const debounce = (func, delay) => {
     }
   
     try {
-      const result = await fetch('http://localhost:3000/updateRatingBook', {
+      const result = await fetch('https://biblioum02.onrender.com/updateRatingBook', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'

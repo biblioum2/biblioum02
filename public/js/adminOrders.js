@@ -20,7 +20,7 @@ function getCookie(nombre) {
 const idUser = getCookie('userId');
 console.log('ID USER DESDE ADMIN ORDERS',idUser);
 
-const socket = io('http://localhost:3000',{
+const socket = io('https://biblioum02.onrender.com',{
   query: {
     userId: parseInt(idUser),
   }
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
           returnDate,
         );
         const result = await fetch(
-          `http://localhost:3000/updateOrderRow?orderId=${orderId}&loanDate=${loanDate}&returnDate=${returnDate}`
+          `https://biblioum02.onrender.com/updateOrderRow?orderId=${orderId}&loanDate=${loanDate}&returnDate=${returnDate}`
         );
         console.log("se termino de ejecutar el fetch");
 
@@ -197,7 +197,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const $notification = document.getElementById("notification");
 
     try {
-      const response = await fetch('http://localhost:3000/deleteOrder', {
+      const response = await fetch('https://biblioum02.onrender.com/deleteOrder', {
         method: 'DELETE',
         headers: {
           "Content-Type": "application/json",
@@ -264,7 +264,7 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("datos desde el cliente: ", orderId, status);
 
     try {
-      const response = await fetch(`http://localhost:3000/updateOrderStatus1`, {
+      const response = await fetch(`https://biblioum02.onrender.com/updateOrderStatus1`, {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -430,7 +430,7 @@ const getOrders = async (value) => {
   console.log('status enviado al cliente: ', value);
   
   try {
-    const response = await fetch(`http://localhost:3000/updateOrders?status=${status}`);
+    const response = await fetch(`https://biblioum02.onrender.com/updateOrders?status=${status}`);
     const data = await response.json();
     console.log(data);
     console.table(data);
