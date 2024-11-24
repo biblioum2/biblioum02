@@ -1,6 +1,10 @@
+const local = 'http://localhost:3000';
+const render = 'https://biblioum02.onrender.com';
+
+const baseUrl = render;
 
 const $userId = document.getElementById('userId');
-const socket = io('http://localhost:3000', {
+const socket = io(`${baseUrl}`, {
   query: {
     userId: parseInt($userId.value),
   }
@@ -41,14 +45,13 @@ $submitCancelBtn.addEventListener('click', () => {
 });
 
 $solicitarBtn.addEventListener('click', () => {
-  $solicitudModal.style.display = 'block';
+  $solicitudModal.style.display = 'flex';
 });
 
 
 // EMITIR LA ORDEN AL SERVIDOR
 $orderForm.addEventListener('submit', (e) => {
   e.preventDefault();  
-  
   const $bookId = document.getElementById('bookId');
   const $title = document.getElementById('bookTitle');
   const $requestDate = document.getElementById('requestDate');
@@ -60,11 +63,17 @@ $orderForm.addEventListener('submit', (e) => {
     loanDate: $requestDate.value,
     returnDate: $returnDate.value
   }
-console.log('data desde cliente book',data);
-
-
+  console.log('data desde cliente book',data);
+  
+  
   const mensaje = 'conexion funcionando';
+  if (data.userId === '' || data.bookId === '' || data.title === '' || data.loanDate === '' || data.returnDate === '') {
+    alert('Todos los campos son requeridos');
+    return;
+  }
   socket.emit('order', data, mensaje);
+  $solicitudModal.style.display = 'none';
+  alert('Orden enviada con exito');
 });
 
 // MANEJAR LA RESPUESTA AL CREAR UNA ORDEN
@@ -113,7 +122,7 @@ const debounce = (func, delay) => {
     if (term.length > 0) {
       const query = new URLSearchParams({ term });
   
-      fetch(`http://localhost:3000/book/name?${query}`)
+      fetch(`${baseUrl}/book/name?${query}`)
         .then(res => res.ok ? res.json() : Promise.reject(res))
         .then(json => {
           json.forEach(el => {
@@ -158,3 +167,82 @@ const debounce = (func, delay) => {
     debouncedSearch();
   });
   
+  async function updateRatingBook(userId, bookId, score) {
+    // Validación y conversión de los parámetros
+    userId = userId ? parseInt(userId) : null;
+    bookId = bookId ? parseInt(bookId) : null;
+    score = score ? parseInt(score) : null;
+  console.log('DATOS DESDE EL CLIENTE: ', userId, bookId, score);
+  
+    // Validar userId
+    if (userId === null || isNaN(userId) || userId <= 0) {
+      alert('ID de usuario invalido.');
+      console.error("Invalid userId. It must be a positive integer.");
+      return;
+    }
+  
+    // Validar bookId
+    if (bookId === null || isNaN(bookId) || bookId <= 0) {
+      alert('ID de libro invalido.');
+      console.error("Invalid bookId. It must be a positive integer.");
+      return;
+    }
+  
+    // Validar score
+    if (score === null || isNaN(score) || score < 1 || score > 5) {
+      alert('Puntuacion no valida, se debe enviar una puntuacion de 1 a 5.');
+      console.error("Invalid score. It must be an integer between 1 and 5.");
+      return;
+    }
+  
+    try {
+      const result = await fetch(`${baseUrl}/updateRatingBook`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            userId: userId,
+            bookId: bookId,
+            score: score
+        })
+    });
+      if (!result.ok) {
+        throw new Error(`HTTP error! status: ${result.success}`);
+      }
+      const data = await result.json(); // Si la respuesta es JSON
+      console.log(data);
+    } catch (error) {
+      console.error("Error fetching the data:", error);
+    }
+  }
+
+  
+  function createModal() {
+    const modal = document.createElement('div');
+    modal.classList.add('modal');
+    modal.innerHTML = `
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <p>Some text in the Modal..</p>
+      </div>
+    `;
+    document.body.appendChild(modal);
+    return modal
+  }
+  async function getRating(radio) {
+    const rating = parseInt(radio.value); // Obtener el valor del botón de radio que fue clicado
+    console.log(`Rating seleccionado: ${rating}`); // Mostrar el rating en la consola
+    const userId = $userId.value;
+    console.log('Este es el user id', userId);
+    
+    const bookId = document.getElementById('bookId').value;
+    console.log('Este es el bookid', bookId);
+    
+    parseInt(bookId);
+    parseInt(userId);
+    // Aquí puedes agregar más lógica para manejar el rating seleccionado
+    // document.appendChild(createModal());
+    await updateRatingBook(userId, bookId, rating);
+    
+}

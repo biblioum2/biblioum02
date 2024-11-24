@@ -1,6 +1,10 @@
+const local = 'http://localhost:3000';
+const render = 'https://biblioum02.onrender.com';
+
+const baseUrl = render;
 // Función para manejar la búsqueda
 export const performSearch = async (term) => {
-    const response = await fetch(`http://localhost:3000/book/name?${new URLSearchParams({ term })}`);
+    const response = await fetch(`${baseUrl}/book/name?${new URLSearchParams({ term })}`);
     if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
     return await response.json();
   };

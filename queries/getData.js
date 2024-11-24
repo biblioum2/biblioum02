@@ -2,6 +2,7 @@ const { getRandomValues } = require("crypto");
 const pool = require("../config/database");
 const { parseCIDR } = require("ipaddr.js");
 const { log } = require("console");
+const { get } = require("http");
 
 // OBTENCION DE LIBROS GENERAL
 
@@ -145,7 +146,7 @@ const getBooksTotalFilter = async (filters) => {
   try {
       console.log('valores desde query:', values);
       const result = await pool.query(query, values);
-      return result.rows
+      return result.rows;
   } catch (error) {
       console.error('Error al obtener libros', error);
       throw error;
@@ -247,6 +248,8 @@ const getUsers = async (offset) => {
   const query = `
   SELECT *
   FROM users
+  ORDER BY user_id
+  ASC
   LIMIT 10 OFFSET $1
   `;
     const values = [offset];
@@ -277,6 +280,20 @@ const getUser = async (name, user_id) => {
   }
 };
 
+const getTotalUsers = async () => {
+  const query = `
+        SELECT COUNT(*) FROM users;
+    `;
+  try {
+    pool.query("BEGIN");
+    const res = await pool.query(query);
+    pool.query("COMMIT");
+    return res.rows[0].count;
+  } catch (error) {
+    pool.query("ROLLBACK");
+    return error;
+  }
+};
 
 const getUserLiveSearch = async (name) => {
   const query = `
@@ -378,9 +395,11 @@ async function getYears() {
 //utilizado en el apartado admin/orders para mostrar ordenes por ser aceptadas
 
 const getFilteredOrders = async (filters) => {
+  // console.log('filtros', filters);
+  
     // Base query
     let query = `
-        SELECT o.id, o.user_id, u.username, o.book_id, b.title, o.loan_date, o.return_date, s.status
+        SELECT o.id, o.user_id, u.username, o.book_id, b.title, TO_CHAR(o.loan_date, 'DD/MM/YYYY') AS loan_date, TO_CHAR(o.return_date, 'DD/MM/YYYY') AS return_date, s.status
         FROM orders o
         JOIN users u ON o.user_id = u.user_id
         JOIN books b ON o.book_id = b.id
@@ -420,12 +439,94 @@ const getFilteredOrders = async (filters) => {
     
     // Ejecución de la consulta
     try {
+      // console.log(values);
+      
         const result = await pool.query(query, values);
+        // console.log('resultado',result.rows);
+        
         return result.rows;
     } catch (error) {
         console.error('Error al consultar órdenes con filtros:', error);
         throw error;
     }
+};
+
+/**
+ * Obtiene los libros con su calificación promedio.
+ * 
+ * @param {string|null} categoryName - El nombre de la categoría para filtrar los libros. 
+ * Si es null, se obtendrán todos los libros.
+ * @returns {Promise<Array>} - Una promesa que resuelve un array de libros.
+ */
+const getTopRatedBooksByCategory = async (categoryName = null) => {
+  // Comienza la consulta base
+  let query = `
+      SELECT DISTINCT
+          b.id AS book_id,
+          b.title,
+          b.author,
+          b.cover,
+          COALESCE(ROUND(AVG(r.score)), 0) AS average_rating,
+          STRING_AGG(c.name, ', ') AS categories  -- Concatenar categorías
+      FROM 
+          books b
+      LEFT JOIN 
+          book_categories bc ON b.id = bc.book_id
+      LEFT JOIN 
+          categories c ON bc.category_id = c.id
+      LEFT JOIN 
+          ratings r ON b.id = r.book_id
+  `;
+
+  // Condición para el filtro de categoría
+  if (categoryName) {
+      query += `
+          WHERE c.name = $1
+      `;
+  }
+
+  // Agrupación y ordenamiento
+  query += `
+      GROUP BY 
+          b.id
+      ORDER BY 
+          average_rating DESC
+      LIMIT 10;
+  `;
+
+  try {
+      const params = categoryName ? [categoryName] : []; // Establece los parámetros de la consulta
+      const res = await pool.query(query, params);
+      return res.rows;
+  } catch (error) {
+      console.error('Error al obtener los libros:', error);
+      throw error;
+  }
+};
+// Uso de la función
+// getTopRatedBooks().then(books => console.log(books)).catch(err => console.error(err));
+
+
+
+const getRatingByUserAndBook = async (userId, bookId) => {
+  const query = `
+      SELECT score 
+      FROM ratings 
+      WHERE user_id = $1 AND book_id = $2;
+  `;
+
+  try {
+      const result = await pool.query(query, [userId, bookId]);
+      if (result.rows.length > 0) {
+          return result.rows[0].score; // Retorna el score si se encuentra
+      } else {
+          console.log(`No se encontró puntuación para el libro ${bookId} del usuario ${userId}.`);
+          return null; // Si no se encontró, retorna null
+      }
+  } catch (error) {
+      console.error('Error al obtener la puntuación del libro:', error);
+      return null; // En caso de error, también retorna null
+  }
 };
 
 module.exports = {
@@ -435,6 +536,7 @@ module.exports = {
   getBooks,
   getUser,
   getUsers,
+  getTotalUsers,
   getUserLiveSearch,
   getAllCategories,
   getBooksByCategory,
@@ -443,6 +545,9 @@ module.exports = {
   getBooksTotal,
   getBooksTotalFilter,
   getFilteredOrders,
+  getRatingByUserAndBook,
+  getTopRatedBooksByCategory,
+  getCategoryById,
 };
 
 

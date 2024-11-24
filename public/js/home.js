@@ -1,3 +1,7 @@
+const local = 'http://localhost:3000';
+const render = 'https://biblioum02.onrender.com';
+
+const baseUrl = render;
 const $books = document.getElementById("books");
 const $fragment = document.createDocumentFragment();
 // document.querySelector("select").addEventListener('change', () => {
@@ -64,24 +68,21 @@ document.addEventListener("DOMContentLoaded", () => {
       $booksFragmentOriginal.appendChild($contentBooks.firstChild);
     }
 
-    let term = $category.value;
-    console.log(`ejecutando category ${term}`);
-
     try {
-      const response = await fetch(`http://localhost:3000/category/${term}`);
+      const response = await fetch(`${baseUrl}/getTopRatedBooks?category=${$category.value}`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      const json = await response.json();
-      console.log(`contenido en respuesta`, JSON.stringify(json));
-      console.log(`contenido en respuesta`, JSON.stringify(json.books));
+      const responseData = await response.json();
+      console.log("esto es la respuesta", responseData);
+      
 
       // Limpiar el contenido actual de $contentBooks
       $contentBooks.innerHTML = "";
 
       // Añadir los nuevos elementos al DocumentFragment
-      json.books.forEach((book) => {
-        console.log(`esto es lo que hay en book`, book);
+      responseData.response.forEach((book) => {
+        // console.log(`esto es lo que hay en book`, book);
 
         // Crear el elemento div
         const carruselCelDiv = document.createElement("div");
@@ -93,7 +94,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Crear el enlace que contiene la imagen
         const bookLink = document.createElement("a");
-        bookLink.href = `./book?id=${book.id}`;
+        bookLink.href = `./book?id=${book.book_id}`;
         bookLink.className = "img-related";
         bookLink.title = ""; // Puedes ajustar el título si es necesario
 
@@ -159,14 +160,14 @@ const initializeLiveSearch = ({
   fetchUrl,
   onItemSelect,
 }) => {
-  console.log("funcon live search ejecutandose");
+  // console.log("funcon live search ejecutandose");
 
   const $suggestion = document.querySelector(suggestionSelector);
   const $inputnav = document.querySelector(inputSelector);
 
   // SE CREA LA FUNCION DE BUSQUEDA
   const handleSearch = async () => {
-    console.log("busqueda funcionando");
+    // console.log("busqueda funcionando");
 
     const $fragment = document.createDocumentFragment();
     let term = $inputnav.value.trim();
@@ -177,7 +178,7 @@ const initializeLiveSearch = ({
 
     if (term.length > 0) {
       const query = new URLSearchParams({ term });
-      console.log("esto es la query", term);
+      // console.log("esto es la query", term);
 
       try {
         const res = await fetch(`${fetchUrl}?${query}`);
@@ -228,7 +229,7 @@ const initializeLiveSearch = ({
 initializeLiveSearch({
   inputSelector: "#search-input",
   suggestionSelector: "#autocomplete-list",
-  fetchUrl: "http://localhost:3000/book/name",
+  fetchUrl: `${baseUrl}/book/name`,
   onItemSelect: (item) => {
     window.location.href = `./book?id=${item.id}`;
   },
@@ -245,7 +246,7 @@ async function totalBookPages() {
   const year = $yearValue ? $yearValue : "";
   try {
     const response = await fetch(
-      `http://localhost:3000/pages?category=${category}&author=${author}&year=${year}`
+      `${baseUrl}/pages?category=${category}&author=${author}&year=${year}`
     );
     const totalBooks = await response.json();
     const pages =
@@ -311,7 +312,7 @@ const uploadPaginationButtons = (currentPage, totalPages) => {
 };
 const updateBookCards = async (page) => {
   const offset = page * 20 - 20;
-  console.log("esta es la pagina", page);
+  // console.log("esta es la pagina", page);
   const $autorValue = document.getElementById("authorFilter").value;
   const $categoryValue = document.getElementById("categoryFilter").value;
   const $yearValue = document.getElementById("yearFilter").value;
@@ -321,7 +322,7 @@ const updateBookCards = async (page) => {
 
   try {
     const totalBooks = await fetch(
-      `http://localhost:3000/test?category=${category}&author=${author}&year=${year}&offset=${offset}`
+      `${baseUrl}/test?category=${category}&author=${author}&year=${year}&offset=${offset}`
     );
     const data = await totalBooks.json();
     const $fragment = document.createDocumentFragment();
@@ -357,13 +358,13 @@ const updateBookCards = async (page) => {
       pTitle.className = "black";
       pTitle.textContent = element.title;
 
-      const pAuthor = document.createElement("p");
-      pAuthor.className = "black";
-      pAuthor.textContent = element.author;
+      // const pAuthor = document.createElement("p");
+      // pAuthor.className = "black";
+      // pAuthor.textContent = element.author;
 
       // Ensambla los elementos
       divInfo.appendChild(pTitle);
-      divInfo.appendChild(pAuthor);
+      // divInfo.appendChild(pAuthor);
       divCard.appendChild(img);
       divCard.appendChild(divInfo);
       a.appendChild(divCard);
@@ -415,7 +416,7 @@ const handleNextClick = async () => {
 
 // Inicializa la paginación con valores predeterminados
 document.addEventListener("DOMContentLoaded", async () => {
-  const initialPage = 1; // Puedes ajustar esto según tus necesidades
+  const initialPage = 1; 
   uploadPaginationButtons(initialPage, await totalBookPages());
 });
 

@@ -29,36 +29,42 @@
             <form id="form-add-user" class="form" method="POST">
                 <div class="form-group">
                     <label for="username">Nombre de usuario</label>
-                    <input type="text" id="username" name="username" autocomplete="off" required>
-                    <% if (errors.username && errors.username.error.length > 0) { %>
-                        <ul>
-                            <% errors.username.error.forEach(function(err) { %>
-                                <li><%= err %></li>
-                            <% }); %>
-                        </ul>
+                    <input type="text" id="username" name="username" autocomplete="off" placeholder="Debe tener entre 3 y 15 caracteres, solo letras minúsculas y números." required>
+                    <% if (success === false) { %>
+                        <% if (errors.username && errors.username.error.length > 0) { %>
+                            <ul>
+                                <% errors.username.error.forEach(function(err) { %>
+                                    <li><%= err %></li>
+                                <% }); %>
+                            </ul>
+                        <% } %>                        
                     <% } %>
                 </div>
                 <div class="form-group">
                     <label for="password">Contraseña</label>
-                    <input type="password"  id="password" name="password" autocomplete="new-password" required>
-                    <% if (errors.password && errors.password.error.length > 0) { %>
-                        <ul>
-                            <% errors.password.error.forEach(function(err) { %>
-                                <li><%= err %></li>
-                            <% }); %>
-                        </ul>
+                    <input type="password"  id="password" name="password" autocomplete="new-password" placeholder="La contraseña debe tener entre 8 y 20 caracteres, incluir una mayúscula, una minúscula, un número y un carácter especial." required>
+                    <% if (success === false) { %>
+                        <% if (errors.password && errors.password.error.length > 0) { %>
+                            <ul>
+                                <% errors.password.error.forEach(function(err) { %>
+                                    <li><%= err %></li>
+                                <% }); %>
+                            </ul>
+                        <% } %>
                     <% } %>
                 </div>
                 <div class="form-group">
                     <label for="email">Correo electrónico</label>
-                    <input type="email" id="email" name="email" autocomplete="off" required>
-                    <% if (errors.email && errors.email.error.length > 0) { %>
-                        <ul>
-                            <% errors.email.error.forEach(function(err) { %>
-                                <li><%= err %></li>
-                            <% }); %>
-                        </ul>
-                    <% } %>
+                    <input type="email" id="email" name="email" autocomplete="off" placeholder="Introduce un correo válido (ejemplo: usuario@dominio.com)." required>
+                    <% if (success === false) { %>
+                        <% if (errors.email && errors.email.error.length > 0) { %>
+                            <ul>
+                                <% errors.email.error.forEach(function(err) { %>
+                                    <li><%= err %></li>
+                                <% }); %>
+                            </ul>
+                        <% } %>                        
+                    <% } %>        
                 </div>
                 <div class="form-group">
                     <label for="role">Rol</label>
@@ -84,6 +90,7 @@
                         <th>ID</th>
                         <th>Nombre de usuario</th>
                         <th>Email</th>
+                        <th>Contraseña</th>
                         <th>Rol</th>
                         <th>Acciones</th>
                     </tr>
@@ -91,10 +98,11 @@
                 <tbody id="usersData">
                     <!-- Aquí se llenarán dinámicamente los datos de los usuarios -->
                     <% users.forEach(user => { %>
-                        <tr>
+                        <tr data-id="<%= user.user_id %>">
                             <td><%= user.user_id %></td>
                             <td><%= user.username %></td>
                             <td><%= user.email %></td>
+                            <td>Password</td>
                             <td><%= user.role %></td>
                             <td>
                                 <button id="editBtn" class="btn-edit">Editar</button> 
@@ -106,6 +114,15 @@
                     <!-- Puedes agregar más filas dinámicamente con JavaScript -->
                 </tbody>
             </table>
+            <div id="pages-container" class="pagination-container">
+                <button class="pagination-btn-controller">Anterior</button>
+                <div id="pagesContainer" class="pagination-page-btns">
+                  <% for (let i = 1; i <= pagination; i++ ) { %>
+                  <button id="pagination-btn-<%= i %>" data-page="<%= i %>" class="pagination-btn <%= currentPage == i ? 'pagination-btn-focus' : '' %>"><%= i %></button>
+                  <% } %>
+                </div>
+                <button class="pagination-btn-controller">Siguiente</button>
+              </div>
         </section>
     </div>
     <script src="/js/adminUsers.js"></script>
