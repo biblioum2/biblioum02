@@ -1,23 +1,14 @@
-const local = 'http://localhost:3000';
-const render = 'https://biblioum02.onrender.com';
+const local = "http://localhost:3000";
+const render = "https://biblioum02.onrender.com";
 
 const baseUrl = local;
 const $books = document.getElementById("books");
 const $fragment = document.createDocumentFragment();
-// document.querySelector("select").addEventListener('change', () => {
-//   const selectedOption = event.target.options[event.target.selectedIndex];
-//   const selectedText = selectedOption.text;
-//   console.log('select funcionando', selectedOption.value, selectedText);
-
-//   fetch(`http://localhost:3000/books/category`)
-//   .then().then().catch();
-// });
-
 //CONTROLAR EL CAMBIO DE IMAGEN EN EL SLIDER
 
 const slides = document.querySelectorAll(".slide");
 let currentIndex = 0;
-const slideInterval = 4400; // Cambiar cada 3 segundos
+const slideInterval = 4400;
 
 function showSlide(index) {
   const slidesContainer = document.querySelector(".slides");
@@ -69,13 +60,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      const response = await fetch(`${baseUrl}/getTopRatedBooks?category=${$category.value}`);
+      const response = await fetch(
+        `${baseUrl}/getTopRatedBooks?category=${$category.value}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const responseData = await response.json();
       console.log("esto es la respuesta", responseData);
-      
 
       // Limpiar el contenido actual de $contentBooks
       $contentBooks.innerHTML = "";
@@ -96,7 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const bookLink = document.createElement("a");
         bookLink.href = `./book?id=${book.book_id}`;
         bookLink.className = "img-related";
-        bookLink.title = ""; // Puedes ajustar el título si es necesario
+        bookLink.title = "";
 
         // Crear la imagen y añadirla al enlace
         const bookImage = document.createElement("img");
@@ -104,37 +96,24 @@ document.addEventListener("DOMContentLoaded", () => {
         bookImage.width = 260;
         bookImage.height = 340;
         bookLink.appendChild(bookImage);
-
-        // Añadir el enlace con la imagen al div principal
         carruselCelDiv.appendChild(bookLink);
 
-        // Crear el h3 que contiene el título
         const bookTitleH3 = document.createElement("h3");
-
-        // Crear el enlace dentro del h3
         const titleLink = document.createElement("a");
+
         titleLink.className = "img-related";
-        titleLink.title = book.title; // El título del libro
+        titleLink.title = book.title;
         titleLink.style.color = "black";
         titleLink.style.fontSize = "17px";
         titleLink.style.fontFamily = "monospace";
-        titleLink.textContent = book.title; // El texto del enlace será el título del libro
+        titleLink.textContent = book.title;
 
-        // Añadir el enlace al h3
         bookTitleH3.appendChild(titleLink);
-
-        // Añadir el h3 al div principal
         carruselCelDiv.appendChild(bookTitleH3);
-
-        // Añadir el div completo al fragmento
         $contentBooks.appendChild(carruselCelDiv);
-        // $booksFragment.appendChild(carruselCelDiv);
       });
-      // Finalmente, añadir el fragmento al DOM
     } catch (err) {
       console.error("Error al cambiar contenido de libros por categoría", err);
-
-      // Revertir los cambios en caso de error
       while ($booksFragmentOriginal.firstChild) {
         $contentBooks.appendChild($booksFragmentOriginal.firstChild);
       }
@@ -160,11 +139,8 @@ const initializeLiveSearch = ({
   fetchUrl,
   onItemSelect,
 }) => {
-  // console.log("funcon live search ejecutandose");
-
   const $suggestion = document.querySelector(suggestionSelector);
   const $inputnav = document.querySelector(inputSelector);
-
   // SE CREA LA FUNCION DE BUSQUEDA
   const handleSearch = async () => {
     // console.log("busqueda funcionando");
@@ -312,7 +288,6 @@ const uploadPaginationButtons = (currentPage, totalPages) => {
 };
 const updateBookCards = async (page) => {
   const offset = page * 20 - 20;
-  // console.log("esta es la pagina", page);
   const $autorValue = document.getElementById("authorFilter").value;
   const $categoryValue = document.getElementById("categoryFilter").value;
   const $yearValue = document.getElementById("yearFilter").value;
@@ -337,7 +312,6 @@ const updateBookCards = async (page) => {
     });
 
     data.forEach((element) => {
-      // Crea un nuevo elemento <a> y sus hijos
       const a = document.createElement("a");
       a.href = `./book?id=${element.book_id}`;
       a.className = "img-related";
@@ -357,19 +331,10 @@ const updateBookCards = async (page) => {
       const pTitle = document.createElement("p");
       pTitle.className = "black";
       pTitle.textContent = element.title;
-
-      // const pAuthor = document.createElement("p");
-      // pAuthor.className = "black";
-      // pAuthor.textContent = element.author;
-
-      // Ensambla los elementos
       divInfo.appendChild(pTitle);
-      // divInfo.appendChild(pAuthor);
       divCard.appendChild(img);
       divCard.appendChild(divInfo);
       a.appendChild(divCard);
-
-      // Agrega el elemento <a> al contenedor fragment
       $fragment.appendChild(a);
     });
     $bookContainer.insertBefore($fragment, $paginationContainer);
@@ -416,18 +381,14 @@ const handleNextClick = async () => {
 
 // Inicializa la paginación con valores predeterminados
 document.addEventListener("DOMContentLoaded", async () => {
-  const initialPage = 1; 
+  const initialPage = 1;
   uploadPaginationButtons(initialPage, await totalBookPages());
 });
 
 // Cambio de idioma en página
 function cambiarIdioma() {
   const idiomaSeleccionado = document.getElementById("idioma").value;
-
-  // Cambiar el atributo lang del elemento <html>
   document.documentElement.lang = idiomaSeleccionado;
-
-  // Funcion para cambiar pagina - pendiente
 }
 
 // MANEJO DE FILTROS PARA LOS LIBROS GENERALES DE MAIN //

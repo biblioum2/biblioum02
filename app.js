@@ -40,7 +40,7 @@ const baseUrl = local;
 // Configuración CORS
 app.use(
   cors({
-    origin: baseUrl, // Permite solicitudes desde tu dominio
+    origin: baseUrl,
   })
 );
 
@@ -109,68 +109,6 @@ const { updateOrderStatus } = require("./queries/updateData");
 const { sendMessageToUser } = require("./utilities/deleteCookies");
 const { render } = require("ejs");
 app.use("/", indexRouter);
-
-//Uso de websocket para manejar las ordenes en tiempo real
-
-// io.on("connection", async (socket) => {
-//   console.log("Nuevo cliente conectado");
-//   const userIdFromSocket = socket.handshake.query.userId;
-//   console.log(userIdFromSocket);
-
-//    pool.query('UPDATE users SET socket_id = $1 WHERE user_id = $2', [socket.id, userIdFromSocket], (err) => {
-//     if (err) {
-//         console.error(err);
-//         return;
-//     }
-    
-//     console.log(`Usuario con ID ${userIdFromSocket} conectado con socket ID ${socket.id}`);
-//   });
-
-//   // ESCUCHAR Y REDIRIGIR LA ORDEN DEL CLIENTE AL ADMIN
-//   socket.on("order", async (data, mensaje) => {
-//     // console.log("Mensaje recibido:", mensaje);
-//     const { userId, bookId, title, loanDate, returnDate } = data;
-//     console.log('data desde el servidor book',data);
-//     try {
-//       const response = await createOrder(userId, bookId, loanDate, returnDate);
-//       if(response){
-//         io.emit("new order");
-//       }
-//     } catch (error) {
-//       console.error('Error al crear la orden: ',error);
-//       io.emit("create order result", {success: false});
-//     }
-//   });
-//   // ESCUCHAR LA RESPUESTA DEL ADMIN Y ACTUALIZAR LA INFORMACION
-//   socket.on("admin response", (userId) => {
-//     pool.query('SELECT socket_id FROM users WHERE user_id = $1',[userId],(error, result) => {
-//       if (error){
-//         console.log(error);
-//         return;
-//       } else if (result.rows.length > 0){
-//         const socketId = result.rows[0].socket_id;
-//         console.log(socketId);        
-//       } else {
-//         console.log(`Usuario ${userId} no encontrado.`);        
-//       }
-//     });
-//   })
-// socket.on("message", async () =>{
-//   sendMessageToUser();
-// })
-//   // Manejar la desconexión
-//   socket.on("disconnect", () => {
-//     console.log("Cliente desconectado");
-//     pool.query('UPDATE users SET socket_id = NULL WHERE user_id = $1', [userIdFromSocket], (err) => {
-//       if (err) {
-//           console.error(err);
-//           return;
-//       }
-//       console.log(`Usuario con ID ${userIdFromSocket} desconectado`);
-//   });
-//   });
-// });
-
 
 io.on("connection", async (socket) => {
   console.log("Nuevo cliente conectado");
@@ -499,6 +437,121 @@ app.post("/admin/users", async (req, res) => {
   }
 });
 
+
+app.post("/register", async (req,res) => {
+  const { username = username.trim(), email, password } = req.body;
+  const errors = {
+    username: {
+      exist: false,
+      valid: true,
+      error: [],
+    },
+    email: {
+      exist: false,
+      valid: true,
+      error: [],
+    },
+    password: {
+      valid: true,
+      error: [],
+    },
+  };
+
+  const validateUsername = (username) => {
+    const errors = [];
+    const minLength = 3;
+    const maxLength = 15;
+    const validChars = /^[a-z0-9]+$/;
+    const trimmedUsername = username.trim();
+
+    if (trimmedUsername.length < minLength || trimmedUsername.length > maxLength) {
+      errors.push(
+        `El nombre de usuario debe tener entre ${minLength} y ${maxLength} caracteres.`
+      );
+    }
+
+    if (!validChars.test(trimmedUsername)) {
+      errors.push(
+        "El nombre de usuario contiene caracteres no válidos. Solo se permiten letras minúsculas y números."
+      );
+    }
+
+    return {
+      valid: errors.length === 0,
+      error: errors,
+    };
+  };
+
+  const validateEmail = (email) => {
+    const errors = [];
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailRegex.test(email)) {
+      errors.push("El formato del correo electrónico no es válido.");
+    }
+
+    return {
+      valid: errors.length === 0,
+      error: errors,
+    };
+  };
+
+  const validatePassword = (password) => {
+    const errors = [];
+    const minLength = 8;
+    const maxLength = 20;
+    const hasUpperCase = /[A-Z]/;
+    const hasLowerCase = /[a-z]/;
+    const hasDigit = /\d/;
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/;
+
+    if (password.length < minLength || password.length > maxLength) {
+      errors.push(
+        `La contraseña debe tener entre ${minLength} y ${maxLength} caracteres.`
+      );
+    }
+
+    if (!hasUpperCase.test(password)) {
+      errors.push("La contraseña debe contener al menos una letra mayúscula.");
+    }
+
+    if (!hasLowerCase.test(password)) {
+      errors.push("La contraseña debe contener al menos una letra minúscula.");
+    }
+
+    if (!hasDigit.test(password)) {
+      errors.push("La contraseña debe contener al menos un dígito.");
+    }
+
+    if (!hasSpecialChar.test(password)) {
+      errors.push("La contraseña debe contener al menos un carácter especial.");
+    }
+
+    return {
+      valid: errors.length === 0,
+      error: errors,
+    };
+  };
+
+  validateUsername(username);
+  validateEmail(email);
+  validatePassword(password);
+  
+  try {
+    const passwordHash = await bcrypt.hash(password, 10);
+    const response = await insertUser(username, passwordHash, email);
+    console.log("Usuario registrado: ", response.rows[0]);
+    res.redirect("/login");
+  } catch (error) {
+    console.error("Error al registrar usuario: ", error);
+    res.render("register", {
+      errors,
+      username,
+      email,
+    });
+  }
+});
+
 app.post("/login", async (req, res) => {
   const { username, password, remember } = req.body;
   try {
@@ -515,8 +568,8 @@ app.post("/login", async (req, res) => {
         // EVALUAR EL ROL DEL USUARIO
         console.log("Rol del usuario: ", user.role);
         
-        const isAdmin = user.role === `student` ? false : true;
-        // console.log("Es admin desde app? ", isAdmin);
+        const isAdmin = user.role === "admin" ? true : false;
+        console.log("Es admin desde app? ", isAdmin);
         const authToken = `${user.user_id}-${Math.random()
           .toString(36)
           .substring(7)}`;

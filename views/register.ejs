@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Acceso</title>
+  <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="css/register.css">
+  <link rel="icon" href="img/acceso.ico" />
+</head>
+
+<body>
+  <div id="Regresar">
+    <a href="/Pagina de UMAN/index.html">Ir al Inicio >> <i class="fas fa-home"></i></a>
+  </div>
+  <div class="Acceso">
+    <div class="container">
+      <form id="form">
+        <h1>Crear cuenta</h1>
+
+        <div class="group">
+          <input type="text" name="name" required>
+          <i class="fa-solid fa-circle-exclamation fa-lg input-alert" style="color: #f44336;"></i>
+          <label>Username</label>   
+        </div>
+        <span class="tooltip ghost" id="name-tooltip">
+          <ul>
+            <li>Debe contener al menos 6 caracteres</li>
+            <li>Debe contener al menos una letra mayúscula</li>
+            <li>Debe contener al menos un número</li>
+          </ul>
+      </span>      
+        
+        <div class="group">
+          <input type="text" name="email" required>
+          <i class="fa-solid fa-circle-exclamation fa-lg input-alert" style="color: #f44336;"></i>
+          <label>Email</label>
+        </div>
+        <span class="tooltip ghost" id="email-tooltip">
+            <ul>
+              <li>Debe contener al menos 6 caracteres</li>
+              <li>Debe contener al menos una letra mayúscula</li>
+              <li>Debe contener al menos un número</li>
+            </ul>
+        </span>
+        <div class="group">
+          <input type="password" name="password" required>
+          <i class="fa-solid fa-circle-exclamation fa-lg input-alert" style="color: #f44336;"></i>
+          <label>Password</label>
+        </div>
+        <span class="tooltip ghost" id="password-tooltip">
+            <ul>
+              <li>Debe contener al menos 6 caracteres</li>
+              <li>Debe contener al menos una letra mayúscula</li>
+              <li>Debe contener al menos un número</li>
+            </ul>
+        </span>
+        <div class="group">
+          <input type="password" name="passwordRepeat" required>
+          <i class="fa-solid fa-circle-exclamation fa-lg input-alert" style="color: #f44336;"></i>
+          <label>Confirm Password</label>
+        </div>
+        <span class="tooltip ghost" id="password-confirm-tooltip">
+            <ul>
+              <li>Debe contener al menos 6 caracteres</li>
+              <li>Debe contener al menos una letra mayúscula</li>
+              <li>Debe contener al menos un número</li>
+            </ul>
+        </span>
+        <div class="register-link">
+          <p>¿Ya tienes una cuenta? <a href="/login">Inicia sesión aquí!</a></p>
+        </div>
+
+
+        <button type="submit" class="btn" id="form-send-btn">Ingresar</button>
+      </form>
+    </div>
+  </div>
+  <script src="js/register.js"></script>
+</body>
+
+</html>
