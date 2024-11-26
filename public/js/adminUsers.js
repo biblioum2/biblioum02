@@ -1,8 +1,8 @@
 const local = 'http://localhost:3000';
 const render = 'https://biblioum02.onrender.com';
 
-const baseUrl = render;
-// TIMEOUT PARA LIVESEARCH
+const baseUrl = local;
+
 const debounce = (func, delay) => {
     let timerId;
     return (...args) => {
@@ -11,7 +11,6 @@ const debounce = (func, delay) => {
     };
 };
 
-// FUNCION LIVESEARCH
 const handleSearch = () => {
     const $users = document.getElementById('usersData');
     const $fragment = document.createDocumentFragment();
@@ -105,22 +104,20 @@ const $input = document.getElementById('search-input');
 const debouncedSearch = debounce(handleSearch, 300);
 $input.addEventListener('input', debouncedSearch);
 
-// Función para esconder la notificación después de cierto tiempo
 function hideNotification() {
     const notification = document.querySelector('.notification');
     if (notification) {
         setTimeout(() => {
-            notification.style.opacity = '0'; // Cambia la opacidad para desaparecer gradualmente
+            notification.style.opacity = '0';
             setTimeout(() => {
-                notification.style.display = 'none'; // Oculta la notificación después de desvanecerse
+                notification.style.display = 'none';
             }, 500);
-        }, 2500); // 2500 milisegundos = 2.5 segundos
+        }, 2500);
     }
 }
 hideNotification();
 
 let rowBackup = document.createElement('tr');
-// Función para manejar la eliminación de usuarios
 document.addEventListener('click', async (event) => {
     const inEdition = document.getElementById('usersData').querySelector('td > input') ? true : null;
     console.log(inEdition);
@@ -158,7 +155,6 @@ document.addEventListener('click', async (event) => {
     }else if(event.target.id === 'editBtn' && !inEdition){
         console.log('Editar usuario');
         
-        // Lógica para editar usuarios
         const originalRow = event.target.closest('tr');
         console.log('Fila original',originalRow);
         
@@ -326,7 +322,6 @@ async function calculateTotalUserPages() {
     const $pagesContainer = document.getElementById("pagesContainer");
     $pagesContainer.innerHTML = "";
   
-    // Calcula el rango de páginas visibles
     const maxPagesToShow = 10;
     let startPage = Math.max(1, currentPage - Math.floor(maxPagesToShow / 2));
     let endPage = startPage + maxPagesToShow - 1;
@@ -348,14 +343,12 @@ async function calculateTotalUserPages() {
     }
   
     $pagesContainer.appendChild($fragment);
-  
-    // Añadir eventos de clic después de añadir los botones al DOM
+    
     document.querySelectorAll(".pagination-btn").forEach((el) => {
-      el.removeEventListener("click", handlePaginationClick); // Remover el evento si ya existe
+      el.removeEventListener("click", handlePaginationClick);
       el.addEventListener("click", handlePaginationClick);
     });
   
-    // Controlar visibilidad y funcionalidad de botones Anterior y Siguiente
     const prevButton = document.querySelector(
       ".pagination-btn-controller:first-child"
     );
@@ -366,15 +359,14 @@ async function calculateTotalUserPages() {
     prevButton.disabled = currentPage === 1;
     nextButton.disabled = currentPage === totalPages;
   
-    prevButton.removeEventListener("click", handlePrevClick); // Evita múltiples escuchas
-    nextButton.removeEventListener("click", handleNextClick); // Evita múltiples escuchas
+    prevButton.removeEventListener("click", handlePrevClick);
+    nextButton.removeEventListener("click", handleNextClick);
   
     prevButton.addEventListener("click", handlePrevClick);
     nextButton.addEventListener("click", handleNextClick);
   };
   const updateUsersTable = async (page) => {
     const offset = page * 10 - 10;
-    // console.log("esta es la pagina", page);
     console.log("este es el offset", offset);
     
     try {
@@ -414,11 +406,9 @@ async function calculateTotalUserPages() {
     const totalBooksPages = await calculateTotalUserPages();
     const totalPages = parseInt(totalBooksPages);
     uploadPaginationButtons(page, totalPages);
-    updateUsersTable(page);
-    // window.scrollTo({ top: 950, behavior: 'smooth' });
+    updateUsersTable(page);  
   };
-  
-  // Funciones para manejar los clics en los botones de navegación
+
   const handlePrevClick = async () => {
     const totalBooksPages = await calculateTotalUserPages();
     const currentPage = parseInt(
@@ -427,8 +417,7 @@ async function calculateTotalUserPages() {
     const totalPages = parseInt(totalBooksPages);
     if (currentPage > 1) {
       uploadPaginationButtons(currentPage - 1, totalPages);
-      updateUsersTable(currentPage - 1);
-      // window.scrollTo({ top: 950, behavior: 'smooth' });
+      updateUsersTable(currentPage - 1);      
     }
   };
   
@@ -440,12 +429,9 @@ async function calculateTotalUserPages() {
     const totalPages = parseInt(totalBooksPages);
     if (currentPage < totalPages) {
       uploadPaginationButtons(currentPage + 1, totalPages);
-      updateUsersTable(currentPage + 1);
-      // window.scrollTo({ top: 950, behavior: 'smooth' });
+      updateUsersTable(currentPage + 1);    
     }
   };
-  
-  // Inicializa la paginación con valores predeterminados
   document.addEventListener("DOMContentLoaded", async () => {
     const initialPage = 1; 
     uploadPaginationButtons(initialPage, await calculateTotalUserPages());

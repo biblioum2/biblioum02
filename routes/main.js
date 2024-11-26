@@ -28,7 +28,6 @@ const { updateOrder, updateOrderStatus, updateUserData } = require("../queries/u
 const { addOrUpdateRating } = require("../queries/inputData");
 router.use(cookieParser());
 
-// Ruta para formulario login
 router.get("/login", (req, res) => {
   res.render("login", {
     title: "login",
@@ -36,6 +35,10 @@ router.get("/login", (req, res) => {
     authErrorName: false,
     authErrorPassword: false,
   });
+});
+
+router.get("/register", (req, res) => {
+  res.render("register", { title: "register", errors: {} });
 });
 
 router.get("/test", async (req, res) => {
@@ -47,15 +50,11 @@ router.get("/test", async (req, res) => {
     limit: 20,
     offset: parseInt(offset),
   };
-  console.log('filtros desde ruta:', filters);
   
-  // console.log('filtros desde ruta:', filters);
 
   try {
     const data = await getBooksTotalFilter(filters);
-    console.log(data);
     
-    // const json= JSON.stringify(data);
     res.status(200).json(data);
   } catch (error) {
     res.status(400).json(error);
@@ -63,15 +62,13 @@ router.get("/test", async (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  res.clearCookie("authToken"); // Borra la cookie 'authToken'
+  res.clearCookie("authToken");
   res.clearCookie("isAdmin");
   res.clearCookie("username");
   res.clearCookie("email");
   res.clearCookie("userId");
   res.redirect("/login");
 });
-
-// Ruta para la página principal
 
 router.get("/pages", async (req, res) => {
   const { category, title, author, year } = req.query;
@@ -82,11 +79,10 @@ router.get("/pages", async (req, res) => {
     year: year,
   };
 
-  // console.log("valor de year desde servidor", filters);
+  
 
   try {
     const totalBooks = await getBooksCount(filters);
-    // console.log(`enviando datos al cliente`, totalBooks);
 
     res.status(200).json(totalBooks);
   } catch (error) {
@@ -101,9 +97,18 @@ router.get("/uman", async (req, res) => {
 router.get("/", async (req, res) => {
 
   const authToken = req.cookies.authToken ? true : false;
-  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
+  const reqUserId = req.cookies.userId ? req.cookies.userId : 0;
+  console.log('id desde main con cookies',reqUserId);
+
+  if (reqUserId === 0) {
+    console.log('No hay usuario logueado');
+    res.redirect('/login');
+    return;
+  }
+
+  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [reqUserId]);
+  console.log("es admin:", role);
   const isAdmin = role.rows[0].role === 'admin' ? true : false;
-  console.log("es admin:", isAdmin);
   
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   if (userId === '0') {
@@ -120,10 +125,8 @@ router.get("/", async (req, res) => {
   const pagination = await getBooksTotal();
   const years = await getYears();
   const authors = await getAuthors();
-  // console.log(years);
-  // console.log(authors);
+ 
   const currentPage = 1;
-  // console.log(`Este es el numero de paginas: ${pagination.pagination}`);
 
   const sliderImgs = {
     slider1: "img/sliders/imagen1.jpg",
@@ -147,8 +150,6 @@ router.get("/", async (req, res) => {
       all: resultF,
       topRated: resultS,
     }
-    // console.table(resultS);
-    
     
     res.render("main", {
       years: years,
@@ -173,15 +174,15 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/book", async (req, res) => {
-  // console.log('datos de req book', req);
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   if (userId === '0') {
     console.log('No hay usuario logueado');
     res.redirect('/login');
   }
+  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
+  const isAdmin = role.rows[0].role === 'admin' ? true : false;
   
   const authToken = req.cookies.authToken ? true : false;
-  const isAdmin = req.cookies.isAdmin ? true : false;
   const user = await getUser('null', parseInt(userId));
   console.log('user desde servidor book: ', user);
   console.log('id desde book: ', userId);
@@ -194,8 +195,6 @@ router.get("/book", async (req, res) => {
   if (userId !== 0) {
     rating = await getRatingByUserAndBook(userId, idBook);
   }
-
-  //  console.log(data);
   res.render("book", {
     bookData: data,
     title: data.title,
@@ -219,8 +218,6 @@ router.get("/page/:id", async (req, res) => {
   }
 });
 
-// OBTENER LIBROS POR CATEGORIA
-
 router.get("/category/:catId", async (req, res) => {
   const categoryId = req.params.catId;
 
@@ -228,8 +225,6 @@ router.get("/category/:catId", async (req, res) => {
     console.log("Ejecutando la query catid", categoryId);
 
     const books = await getBooksByCategory(categoryId);
-    // console.log(`esto hay en books desde route`, books);
-
     res.status(200).json({ books: books });
   } catch (error) {
     console.log("error al obtener libros por categorias", error);
@@ -237,6 +232,9 @@ router.get("/category/:catId", async (req, res) => {
 });
 
 router.get("/admin/users", async (req, res) => {
+  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
+  const isAdmin = role.rows[0].role === 'admin' ? true : false;
+  console.log("es admin:", isAdmin);
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   if (userId === '0') {
     console.log('No hay usuario logueado');
@@ -259,17 +257,23 @@ router.get("/admin/users", async (req, res) => {
   const paginationAll = Math.ceil(parseInt(usersAll.total) / 10);
   const totalUsers = parseInt(usersAll.total);
 
-  res.render("users", {
-    title: "users",
-    users: users,
-    currentPage: "users",
-    pagination: paginationAll,
-    totalUsers: totalUsers,
-    currentPage: 1,
-    success: success,
-    errors: errors,
-    postResponse: false,
-  });
+  if (isAdmin) {
+    res.render("users", {
+      title: "users",
+      users: users,
+      currentPage: "users",
+      pagination: paginationAll,
+      totalUsers: totalUsers,
+      currentPage: 1,
+      success: success,
+      errors: errors,
+      postResponse: false,
+    });
+  } else {
+    res.redirect("/");
+  }
+
+  
 });
 
 router.get("/admin/users/data", async (req, res) => {
@@ -281,14 +285,11 @@ router.get("/admin/users/data", async (req, res) => {
   res.status(200).json(users);
 });
 
-// Otras rutas básicas pueden ir aquí
 router.get("/admin/users/success", async (req, res) => {
-  // res.render('users', { title: 'users', users: users, currentPage: 'users', success: true });
   res.redirect(`/admin/users?success=true`);
 });
 router.get("/admin/users/failed", async (req, res) => {
   const users = await getUsers(0);
-  // res.render('users', { title: 'users', users: users, currentPage: 'users', success: true });
   res.redirect(`/admin/users?success=false`);
 });
 
@@ -304,10 +305,8 @@ router.get("/admin/user/data", async (req, res) => {
   res.json(users);
 });
 
-// RUTA PARA BUSCADOR DE LIBROS POR NOMBRE
 router.get("/book/name", async (req, res) => {
   const term = req.query.term || "";
-  // console.log(`Este es el term ${term}`);
   const book = await getBookLiveSearch(term);
   res.status(200).json(book);
 });
@@ -317,7 +316,7 @@ router.delete("/admin/users/:id", async (req, res) => {
   console.log("ID a eliminar:", userId);
   try {
     const result = await deleteUser(userId);
-    console.log("Resultado de deleteUser:", result); // Verifica el resultado
+    console.log("Resultado de deleteUser:", result);
 
     if (result.rowCount > 0) {
       console.log("Usuario eliminado exitosamente");
@@ -337,6 +336,9 @@ router.delete("/admin/users/:id", async (req, res) => {
 });
 
 router.get("/admin/books", async (req, res) => {
+  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
+  const isAdmin = role.rows[0].role === 'admin' ? true : false;
+  console.log("es admin:", isAdmin);
   const userId = req.cookies.userId ? req.cookies.userId : '0';
   if (userId === '0') {
     console.log('No hay usuario logueado');
@@ -345,19 +347,24 @@ router.get("/admin/books", async (req, res) => {
   const categories = await getAllCategories();
   const success = req.query.success === "true";
   console.log("categorias", categories);
-  res.render("books", {
-    categories: categories,
-    title: "libros",
-    currentPage: "books",
-    success: success,
-    postResponse: false,
-  });
+
+  if (isAdmin) {
+    res.render("books", {
+      categories: categories,
+      title: "libros",
+      currentPage: "books",
+      success: success,
+      postResponse: false,
+    });
+    
+  } else {
+    res.redirect("/");
+  }
+
+ 
 });
 
 router.get("/admin/books/success", async (req, res) => {
-  // const categories = await getAllCategories();
-
-  // res.render('books', { title: 'books', categories: categories ,currentPage: 'books', success: true, postResponse: false });
   res.redirect(`/admin/books?success=true`);
 });
 
@@ -371,22 +378,11 @@ router.get("/updateOrders", async (req, res) => {
 
   try {
     const data = await getFilteredOrders({status: status});
-    // console.table(data);
-    const formatDate = (dateString) => {
-      const date = new Date(dateString);
-      // Cambia el formato aquí según tus necesidades
-      return date.toLocaleDateString('es-MX', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-      });
-  };
-  const formattedData = data.map(item => ({
-    ...item, // Mantiene las demás propiedades del objeto
-    loan_date: item.loan_date, // Formatea loan_date
-    return_date: item.return_date // Formatea return_date
+    const formattedData = data.map(item => ({
+    ...item,
+    loan_date: item.loan_date,
+    return_date: item.return_date,
 }));
-// console.log('asdkaskdaklakldakldaklkldasklda',formattedData);
     if (isAdmin) {
       res.status(200).json({ data: formattedData });
     } else {
@@ -402,25 +398,18 @@ router.get("/updateOrders", async (req, res) => {
 
 router.get("/admin/orders", async (req, res) => {
   const idUser = req.cookies.userId;
-  const isAdmin = req.cookies.isAdmin;
+
+  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
+  const isAdmin = role.rows[0].role === 'admin' ? true : false;
+  console.log("es admin:", isAdmin);
+  
   try {
     const data = await getFilteredOrders({status: 'Pendiente'});
-    // console.table(data);
-  //   const formatDate = (dateString) => {
-  //     const date = new Date(dateString);
-  //     // Cambia el formato aquí según tus necesidades
-  //     return date.toLocaleDateString('es-MX', {
-  //         day: '2-digit',
-  //         month: '2-digit',
-  //         year: 'numeric'
-  //     });
-  // };
   const formattedData = data.map(item => ({
-    ...item, // Mantiene las demás propiedades del objeto
-    loan_date: item.loan_date, // Formatea loan_date
-    return_date: item.return_date// Formatea return_date
+    ...item,
+    loan_date: item.loan_date,
+    return_date: item.return_date,
 }));
-// console.table(formattedData);
     if (isAdmin) {
       res.render("orders", { title: "orders", currentPage: "orders", data: formattedData, userId: idUser });
     } else {
@@ -434,18 +423,11 @@ router.get("/admin/orders", async (req, res) => {
 router.get("/updateOrderRow", async (req, res) => {
   const { orderId, loanDate, returnDate } = req.query;
   console.log('Fechas no formateadas: ', loanDate, returnDate);
-  
-  // // const formatedLoanDate = formatDate(loanDate);
-  // // const formatedReturnDate = formatDate(returnDate);
-  // console.log('Fechas formateadas: ', formatedLoanDate, formatedReturnDate);
-  
-console.log('Datos desde el servidor: ',orderId,loanDate,returnDate);
 
 
   try {
     await pool.query('BEGIN');
     await updateOrder(orderId, loanDate, returnDate);
-    // await updateOrderStatus(orderId, status);
     await pool.query('COMMIT');
     res.status(200).json({success: true});
   } catch (err) {
@@ -538,7 +520,7 @@ router.get("/getTopRatedBooks", async (req, res) => {
 
 router.patch("/admin/users/:id", async (req, res) => {
   const userId = req.params.id;
-  const { name, email, password, role } = req.body; // Obtiene los datos del formulario
+  const { name, email, password, role } = req.body;
   const saltRounds = 10;
   console.log("Datos desde el servidor", userId, name, email, password, role);
   
@@ -563,7 +545,6 @@ router.get("/admin/users/total", async (req, res) => {
   console.log(users);
   const paginationAll = Math.ceil(parseInt(users.total) / 10);
   const totalUsers = parseInt(users.total);
-  // console.log(paginationAll);
   res.status(200).json(users);
 });
 
