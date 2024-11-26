@@ -1,7 +1,7 @@
 const local = 'http://localhost:3000';
 const render = 'https://biblioum02.onrender.com';
 
-const baseUrl = render;
+const baseUrl = local;
 const $books = document.getElementById("books");
 const $fragment = document.createDocumentFragment();
 // document.querySelector("select").addEventListener('change', () => {
