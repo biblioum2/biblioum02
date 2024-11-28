@@ -811,7 +811,8 @@ app.post("/login", async (req, res) => {
       if (isPasswordCorrect) {
         // EVALUAR EL ROL DEL USUARIO
         console.log("Rol del usuario: ", user.role);
-
+        const token = jwt.sign({id: user.user_id, username: user.username, role: user.role, email: user.email}, SECRET_KEY, {expiresIn: "1h"});
+        
         const isAdmin = user.role === "admin" ? true : false;
         console.log("Es admin desde app? ", isAdmin);
         const authToken = `${user.user_id}-${Math.random()
