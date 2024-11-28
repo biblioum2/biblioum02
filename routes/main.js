@@ -28,6 +28,19 @@ const { updateOrder, updateOrderStatus, updateUserData } = require("../queries/u
 const { addOrUpdateRating } = require("../queries/inputData");
 router.use(cookieParser());
 
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if (!token) return res.sendStatus(403);
+
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+      if (err) return res.sendStatus(403);
+      req.user = user;
+      next();
+  });
+};
+
 router.get("/login", (req, res) => {
   res.render("login", {
     title: "login",
@@ -38,7 +51,8 @@ router.get("/login", (req, res) => {
 });
 
 router.get("/register", (req, res) => {
-  res.render("register", { title: "register", errors: {} });
+  errors = undefined;
+  res.render("register", { title: "register", errors: errors });
 });
 
 router.get("/test", async (req, res) => {
@@ -105,7 +119,7 @@ router.get("/", async (req, res) => {
     res.redirect('/login');
     return;
   }
-
+ 
   const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [reqUserId]);
   console.log("es admin:", role);
   const isAdmin = role.rows[0].role === 'admin' ? true : false;

@@ -194,7 +194,9 @@
   .tooltip{
     width: 110%;
     padding: 10px;
-    background-color: rgba(223, 35, 35, 0.5);
+    font-size: large;
+    color: white;
+    background-color: rgb(255, 67, 67);
     border-radius: 10px;
     margin-bottom: 30px;
   }
