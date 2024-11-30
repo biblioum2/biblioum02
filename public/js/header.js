@@ -2,6 +2,23 @@ const $logo = document.getElementById("logo");
 
 const adasda = "http://localhost:3000";
 
+async function getUserData(){
+  try {
+    const response = await fetch(`${baseUrl}/payloadXtract`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    
+    return data;
+  } catch (error) {
+    console.log("Error al obtener los datos del usuario: ", error);
+    
+  }
+};
+
 $logo.addEventListener("click", () => {
   window.location.href = "/uman";
 });
@@ -64,8 +81,10 @@ function highlightButton(selectedButton) {
 async function getOrders(values) {
   try {
     const queryString = new URLSearchParams(values).toString();
+    
+    
     const response = await fetch(`${adasda}/getorders?${queryString}`);
-    console.log("Ordenes desdes que recibe el cliente:", response);
+    
 
     return response;
   } catch (error) {
@@ -87,41 +106,43 @@ document.addEventListener("DOMContentLoaded", () => {
       $element.classList.add("ghost");
     }
 
-    console.log("click");
+    
   });
   if ($subOptions) {
     $subOptions.addEventListener("click", async (event) => {
-      console.log("evento disparándose");
+      
       const idUser = getCookie("userId");
+      
+      
       const $target = event.target;
       const filter = { user_id: idUser, status: "Pendiente" };
       highlightButton($target);
 
       if ($target.id && $target.id.includes("btn-waiting")) {
-        console.log("button funcionando waiting");
+      
 
         filter.status = "Pendiente";
         // Aquí puedes agregar la lógica para el botón "waiting"
       } else if ($target.id && $target.id.includes("btn-pending")) {
-        console.log("button funcionando pending");
+        
         filter.status = "No devuelta";
       } else if ($target.id && $target.id.includes("btn-history")) {
-        console.log("button funcionando history");
+        
         filter.status = "Devuelta";
       }
       try {
-        console.log("EJECUTANGO EL GET ORDERS");
+        
 
         const result = await getOrders(filter);
         const data = await result.json();
         const ordenes = data.response;
-        console.log(data);
+        
         const $ordersContainer = document.querySelector(
           ".profile-info-responses"
         );
         const $fragment = document.createDocumentFragment();
         if (data.response.length > 0) {
-          console.log("EJECUTANDO CUANDO HAY ORDENES");
+          
 
           $ordersContainer.innerHTML = "";
           ordenes.forEach((element) => {
@@ -189,25 +210,24 @@ document.addEventListener("DOMContentLoaded", () => {
     // Itera sobre cada elemento y agrega un evento 'click' a cada uno
     Array.from(ordersContainers).forEach((ordersContainer) => {
       ordersContainer.addEventListener("click", async (event) => {
-        console.log("clickenedit");
+        
         let isEditing = false;
         const target = event.target.closest("button");
         const order = target.closest(".prestamo-element");
-        console.log("Target", target);
-        console.log("Orden", order);
+       
 
         if (target && target.dataset.action === "edit" && isEditing === false) {
-          console.log("click");
+          
 
           const selectors = order.querySelectorAll("p");
-          console.log("Selectores", selectors);
+          
 
           const filteredSelectors = Array.from(selectors).slice(1);
-          console.log("Filtrados", filteredSelectors);
+          
 
           filteredSelectors.forEach((element, index) => {
             const oldElement = element;
-            console.log(element);
+            
 
             const input = document.createElement("input");
             input.classList.add("prestamo-inputs");

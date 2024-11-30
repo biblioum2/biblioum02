@@ -1,32 +1,32 @@
+document.addEventListener('DOMContentLoaded', async function() {
+  // Obtiene los datos del usuario logueado
+
+async function getUserData(){
+  try {
+    const response = await fetch(`${baseUrl}/payloadXtract`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    const data = await response.json();
+    console.log('datos obtenidos',data);
+    return data;
+  } catch (error) {
+    console.log("Error al obtener los datos del usuario: ", error);
+    
+  }
+};
 const local = "http://localhost:3000";
 const render = "https://biblioum02.onrender.com";
 
-<<<<<<< HEAD
-const local = 'http://localhost:3000';
-const render = 'https://biblioum02.onrender.com';
-
 const baseUrl = local;
 
-=======
-const baseUrl = local;
->>>>>>> feature/security
-
-function getCookie(nombre) {
-  const cookies = document.cookie.split("; ");
-  for (let i = 0; i < cookies.length; i++) {
-    const cookie = cookies[i];
-    if (cookie.startsWith(nombre + "=")) {
-      return cookie.substring(nombre.length + 1);
-    }
-  }
-  return null;
-}
-const idUser = getCookie("userId");
-console.log("ID USER DESDE ADMIN ORDERS", idUser);
+const user = await getUserData();
 
 const socket = io(`${baseUrl}`, {
   query: {
-    userId: parseInt(idUser),
+    userId: user.id,
   },
 });
 const mensajes = {
@@ -54,7 +54,7 @@ function formatDate(dateInput) {
 }
 
 let isShowingStatus = false;
-document.addEventListener("DOMContentLoaded", () => {
+
   const dropdowns = document.querySelectorAll(".dropdown");
 
   dropdowns.forEach((dropdown) => {
@@ -78,7 +78,7 @@ document.addEventListener("DOMContentLoaded", () => {
       dropdown.querySelector(".dropdown-content").classList.remove("show");
     });
   });
-});
+
 
 async function handleDropdownSelection(value) {
   switch (value) {
@@ -115,7 +115,7 @@ async function handleDropdownSelection(value) {
   }
 }
 
-document.addEventListener("DOMContentLoaded", function () {
+
   const table = document.getElementById("orders-table");
   let isEditing = false;
 
@@ -356,7 +356,7 @@ document.addEventListener("DOMContentLoaded", function () {
     const originalButtons = actionsCell.getAttribute("data-original-buttons");
     actionsCell.innerHTML = originalButtons;
   }
-});
+
 
 const getOrders = async (value) => {
   let status = value.toString().trim();
@@ -376,7 +376,7 @@ const updateContent = async (value) => {
   console.log("status enviado al cliente: ", value);
   const $emptyResults = document.querySelector(".no-elements");
   const orders = await getOrders(value);
-  console.log(orders);
+  console.log('estas son las ordenes',orders);
   const $fragment = document.createDocumentFragment();
   const $contentOrders = document.getElementById("content");
   const orden = [];
@@ -394,6 +394,7 @@ const updateContent = async (value) => {
     $emptyResults.classList.remove("hidden");
   } else {
     $emptyResults.classList.add("hidden");
+    
     orders.data.forEach((order) => {
       const $row = document.createElement("tr");
 
@@ -458,4 +459,6 @@ const updateContent = async (value) => {
 
 socket.on("new order", () => {
   updateContent("Pendiente");
+});
+
 });

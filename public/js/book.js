@@ -36,14 +36,17 @@ const $orderForm = document.getElementById("requestBookForm");
 
 $closeModalBtn.addEventListener("click", () => {
   $solicitudModal.style.display = "none";
+  document.documentElement.style.overflow = "scroll";
 });
 
 $submitCancelBtn.addEventListener("click", () => {
   $solicitudModal.style.display = "none";
+  document.documentElement.style.overflow = "scroll";
 });
 
 $solicitarBtn.addEventListener("click", () => {
   $solicitudModal.style.display = "flex";
+  document.documentElement.style.overflow = "hidden";
 });
 
 // EMITIR LA ORDEN AL SERVIDOR

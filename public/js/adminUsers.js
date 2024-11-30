@@ -2,11 +2,7 @@ const local = 'http://localhost:3000';
 const render = 'https://biblioum02.onrender.com';
 
 const baseUrl = local;
-<<<<<<< HEAD
-// TIMEOUT PARA LIVESEARCH
-=======
 
->>>>>>> feature/security
 const debounce = (func, delay) => {
     let timerId;
     return (...args) => {

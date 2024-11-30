@@ -14,7 +14,8 @@
   <script src="https://kit.fontawesome.com/caf315d017.js" crossorigin="anonymous"></script>
   <meta http-equiv="X-UA-Compatible" content="IE-edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+  <%- include('./partials/meta')  %> 
+  
   <!--a href="https://www.flaticon.es/iconos-gratis/biblioteca" title="biblioteca iconos">Biblioteca iconos creados por Dighital Design - Flaticon</a>-->
 </head>
 
@@ -117,7 +118,7 @@
           <% books.all.forEach(element => { %>
           <a href="./book?id=<%= element.book_id %>" class="img-related" title="<%= element.title %>">
             <div id="<%= element.id %>" class="card-Book">
-              <img src="<%= element.cover %>" alt="<%= element.title %>">
+              <img src="<%= element.cover %>" alt="Portada de libro: <%= element.title %>">
               <div class="card-info">
                 <p class="black"><%= element.title %></p>
                 <!-- <p class="black"><%= element.author %></p> -->

@@ -15,6 +15,7 @@ const path = require("path");
 const cookieParser = require("cookie-parser");
 // Importa cookie-parser, un middleware que permite analizar las cookies enviadas en las solicitudes HTTP y hacerlas accesibles en `req.cookies`.
 const pool = require("./config/database");
+const nodemailer = require("nodemailer");
 // Importa la configuración de la base de datos desde el archivo `database.js` (o el nombre que corresponda), que típicamente configura y exporta un pool de conexiones para interactuar con la base de datos.
 const { Server } = require("socket.io");
 const { getUser } = require("./queries/getData");
@@ -32,7 +33,7 @@ const app = express();
 const port = 3000;
 const server = http.createServer(app);
 const io = new Server(server);
-
+const isProduction = process.env.NODE_ENV === 'production';
 const local = "http://localhost:3000";
 const renderr = "https://biblioum02.onrender.com";
 
@@ -113,6 +114,7 @@ const { updateOrderStatus } = require("./queries/updateData");
 const { sendMessageToUser } = require("./utilities/deleteCookies");
 const { render } = require("ejs");
 const e = require("express");
+const { cookie } = require("express-validator");
 app.use("/", indexRouter);
 
 io.on("connection", async (socket) => {
@@ -497,6 +499,7 @@ app.post("/registerUser", async (req, res) => {
   password = password.trim();
   passwordRepeat = passwordRepeat.trim();
 
+
   const errors = {
     username: {
       exist: false,
@@ -777,7 +780,7 @@ app.post("/register", async (req, res) => {
       console.log(`Errors: ${errors[key].error.join(", ")}`); // Si `error` es un array
     }
   }
-
+  
   try {
     const passwordHash = await bcrypt.hash(password, 10);
     const response = await insertUser(username, passwordHash, email);
@@ -796,6 +799,9 @@ app.post("/register", async (req, res) => {
 app.post("/login", async (req, res) => {
   const { username, password, remember } = req.body;
   try {
+    console.log("Datos del usuario: ", username, password, remember);
+    
+    
     const data = await getUser(username);
     if (data.length > 0) {
       const user = data[0];
@@ -811,34 +817,17 @@ app.post("/login", async (req, res) => {
       if (isPasswordCorrect) {
         // EVALUAR EL ROL DEL USUARIO
         console.log("Rol del usuario: ", user.role);
-        const token = jwt.sign({id: user.user_id, username: user.username, role: user.role, email: user.email}, SECRET_KEY, {expiresIn: "1h"});
-        
-        const isAdmin = user.role === "admin" ? true : false;
-        console.log("Es admin desde app? ", isAdmin);
-        const authToken = `${user.user_id}-${Math.random()
-          .toString(36)
-          .substring(7)}`;
-        // Establecer cookie de autenticación
-        const cookieOptions = {
-          maxAge: remember ? 30 * 24 * 60 * 60 * 1000 : 24 * 60 * 60 * 1000, // 30 días si se selecciona "Remember Me", 1 día si no
-          httpOnly: false, // La cookie solo es accesible mediante HTTP
-          sameSite: "strict", // Limita el alcance de la cookie a la misma origin
-        };
-        // Enviar los datos del usuario por cookies
-        const username = user.username;
-        const email = user.email;
-        const userId = user.user_id;
-        console.log("id del usuario desde inicio", userId);
-
-        res.cookie("authToken", authToken, cookieOptions);
-        res.cookie("isAdmin", isAdmin, cookieOptions);
-        res.cookie("username", username, cookieOptions);
-        res.cookie("email", email, cookieOptions);
-        res.cookie("userId", userId, cookieOptions);
-        // Enviar los datos de usuario a la session
-
-        req.session.user = user;
-        res.redirect("/");
+        const token = jwt.sign({id: user.user_id, username: user.username, role: user.role, email: user.email}, SECRET_KEY, {expiresIn: remember ? "30d" : "1d"});
+        res.cookie("userId", user.user_id, {
+          maxAge: 2592000000,
+        });
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: isProduction,
+          sameSite: isProduction ? "strict" : "lax",
+          maxAge: 2592000000,
+        });
+        res.status(200).json({ success: true, token });
       } else {
         res.render("login", {
           authErrorName: false,

@@ -43,7 +43,7 @@
       <a href="#">Contact</a>
       <a href="#">Search</a>
       <a href="#">Sign up</a>
-      <% if (authToken) {%>
+      <% if (user) {%>
       <a href="./login">Estas logueado</a>
       <% } else { %>
       <a href="./login">Inicia Sesión</a>
@@ -63,10 +63,10 @@
     <div class="secondary full">
       <!-- Links escritorio en nav -->
       <a href="/">Inicio</a>
-      <% if (isAdmin) {%>
+      <% if (user.role === "admin") {%>
       <a href="./admin/orders">Admin</a>
       <% } %>
-      <% if (authToken) {%>
+      <% if (user) {%>
       <a href="./logout">Cerrar sesion</a>
       <% } else { %>
       <a href="./login">Inicia Sesión</a>

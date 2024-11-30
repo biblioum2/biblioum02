@@ -265,12 +265,31 @@ const getUsers = async (offset) => {
   // OBTENER EL USUARIO PARA VALIDAR INICIO
 
 const getUser = async (name, user_id) => {
-  const query = `
+  console.log("El get user usuario es: ", name, user_id);
+  
+  const values = [];
+  let index = 1;
+  let query = `
         SELECT * FROM users
-        WHERE username = $1 OR user_id = $2;
+        WHERE
+        1=1
     `;
-  const values = [name, user_id];
+  
+  if (name !== undefined) {
+    query += ` AND username = $${index}`;
+    values.push(name);
+    index++;
+  }
+  if (user_id !== undefined) {
+    query += ` AND user_id = $${index}`;
+    values.push(user_id);
+    index++;
+  }
+  
   try {
+    console.log("El get user usuario es: ", values);
+    console.log("El get user usuario es: ", query);
+       
     const res = await pool.query(query, values);
     console.log("El get user usuario es: ", res.rows);
     return res.rows;
