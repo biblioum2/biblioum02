@@ -374,6 +374,12 @@ const handleNextClick = async () => {
   );
   const totalPages = parseInt(totalBooksPages);
   if (currentPage < totalPages) {
+    // Hacer scroll a 500 píxeles desde la parte superior
+window.scrollTo({
+  top: 500, // Posición vertical
+  behavior: 'smooth' // Animación suave
+});
+
     uploadPaginationButtons(currentPage + 1, totalPages);
     updateBookCards(currentPage + 1);
     // window.scrollTo({ top: 950, behavior: 'smooth' });
