@@ -58,7 +58,6 @@ const categories = [
   "Diseño Integral",
   "Energías Renovables",
   "Ingenieria Civil",
-  "NO SELECCIONAR",
 ];
 // "Relaciones Internacionales",
 // "Mercadotécnia",
@@ -1313,7 +1312,7 @@ const insertBookWithCategory = async (book, categoryId) => {
     throw error;
   }
 };
-// booksIntegral.forEach(book => insertBookWithCategory(book, 6));
+// booksArchitecture.forEach(book => insertBookWithCategory(book, 2));
 
 function getcatecories() {
   const query = "SELECT * FROM categories";
