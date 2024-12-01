@@ -4,7 +4,8 @@
         <meta charset="utf-8" />
         <title>Libro de ejemplo</title>
         <meta http-equiv="X-UA-Compatible" content="IE-edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />   
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+        <%- include('./partials/meta')  %> 
         <link rel="stylesheet" type="text/css" href="css/Pagina%20de%20libros.css" />
         <link rel="stylesheet" type="text/css" href="css/Nav-libros.css" />
         <!-- <link rel="stylesheet" type="text/css" href="css/footer.css" /> -->
@@ -26,7 +27,7 @@
         <span id="close-modal" class="close">&times;</span>
         <h2>Solicitar Libro</h2>
         <form id="requestBookForm" method="post">
-            <input style="display: none;" type="number" id="userId" value="<%= userId %>" readonly>
+            <input style="display: none;" type="number" id="userId" value="<%= user.id %>" readonly>
             <input style="display: none;" type="number" id="bookId" value="<%= bookData.id%>" readonly>
             <label for="bookTitle">Libro:</label><br>
             <input class="modal-inputs" type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
@@ -106,14 +107,14 @@
 
                 </div>
                 <div class="botones">
-                    <% if (userId !== 0) { %>
+                    <% if (user) { %>
                         <div class="btn-1" id="solicitud-btn">
                           <a><span>SOLICITAR</span></a>
                        </div>                        
                     <% } %>
                    <!-- Created by   http://grohit.com/   -->
                <div class="btn-2">
-                 <a href="<%= bookData.lib %>" download="<%= bookData.title %>.pdf"><span>OBTENER PDF</span></a>
+                 <a href="<%= bookData.lib %>" download="<%= bookData.title %>.pdf" target="_blank"><span>OBTENER PDF</span></a>
                </div>
                 </div>
             </div>

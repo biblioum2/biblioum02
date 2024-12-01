@@ -1242,7 +1242,7 @@ const books = [
 
 //LIBROS
 // const insertBooks = async () => {
-//   // await pool.connect();
+//   await pool.connect();
 
 //   for (const book of books) {
 //     const query = `
@@ -1273,7 +1273,7 @@ const books = [
 //   }
 // return console.log('exito');
 
-//   // await pool.end();
+//   await pool.end();
 // };
 
 const insertBookWithCategory = async (book, categoryId) => {
@@ -1306,14 +1306,14 @@ const insertBookWithCategory = async (book, categoryId) => {
           VALUES ($1, $2);
       `;
     await pool.query(insertCategoryQuery, [bookId, categoryId]);
-
+    console.log(`Libro con ID ${bookId} insertado correctamente.`);    
     await pool.query("COMMIT");
   } catch (error) {
     await pool.query("ROLLBACK");
     throw error;
   }
 };
-// booksArchitecture.forEach(book => insertBookWithCategory(book, 2));
+// booksIntegral.forEach(book => insertBookWithCategory(book, 6));
 
 function getcatecories() {
   const query = "SELECT * FROM categories";
@@ -1322,6 +1322,8 @@ function getcatecories() {
       console.error("Error al obtener las categorías:", err);
       return;
     }
+    console.log("Categorías:", res.rows);
+    
   });
 }
 // getcatecories();
@@ -2201,7 +2203,24 @@ async function hashPassword(password) {
   return hashedPass;
 }
 
-// insertUser('serveros', hashPassword("password"), 'enrrimasdarq2000@gmail.com', 'admin');
+const deleteUsers = async () => {
+  const query = "DELETE FROM users";
+  await pool.query(query);
+};
+// deleteUsers();
+const createUser = async (username, password, email, role) => {
+  const hashedPass = await hashPassword(password);
+  const query = `
+      INSERT INTO users (username, password_hash, email, role)
+      VALUES ($1, $2, $3, $4);
+  `;
+  const values = [username, hashedPass, email, role];
+  await pool.query(query, values);
+}
+
+// createUser('admin', 'Password#1', 'admin@uman.edu.mx', 'admin');
+
+// insertUser('admin', hashingpass, 'admin@uman.edu.mx', 'admin');
 // insertUser('cristian', 'password', 'adaksjdjkasdkja@gmail.com', 'admin');
 // insertUser('user', 'password', 'user@example.com', 'student');
 // usersData[0].forEach(user => insertUser(user.username, user.password_hash, user.email, user.role));

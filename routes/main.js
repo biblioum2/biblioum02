@@ -1,8 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const router = express.Router();
 const bcrypt = require("bcrypt");
 const pool = require("../config/database");
 const cookieParser = require("cookie-parser");
+const jwt = require("jsonwebtoken");
 const {
   getAuthors,
   getYears,
@@ -41,6 +43,37 @@ const authenticateToken = (req, res, next) => {
   });
 };
 
+const SECRET_KEY = process.env.SECRET_KEY;
+
+function validateJwt(req, res, next) {
+  console.log('Ejecutando validacion de token');
+  
+  const token = req.cookies.token;
+  console.log('token', token);
+  
+  if (!token) {
+    console.log('No hay token');
+    
+    return res.redirect("/login");
+  }
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) {
+      console.log('Error en token');
+      
+      return res.redirect("/login");
+    }
+    req.user = user;
+    next();
+  });
+}
+
+router.get("/payloadXtract", validateJwt, (req, res) => {
+  const user = req.user;
+  console.log('user desde payloadXtract', user);
+  
+  res.status(200).json(user);
+});
+
 router.get("/login", (req, res) => {
   res.render("login", {
     title: "login",
@@ -76,10 +109,7 @@ router.get("/test", async (req, res) => {
 });
 
 router.get("/logout", (req, res) => {
-  res.clearCookie("authToken");
-  res.clearCookie("isAdmin");
-  res.clearCookie("username");
-  res.clearCookie("email");
+  res.clearCookie("token");
   res.clearCookie("userId");
   res.redirect("/login");
 });
@@ -108,32 +138,10 @@ router.get("/uman", async (req, res) => {
   res.render("index", { title: "index" });
 });
 
-router.get("/", async (req, res) => {
-
-  const authToken = req.cookies.authToken ? true : false;
-  const reqUserId = req.cookies.userId ? req.cookies.userId : 0;
-  console.log('id desde main con cookies',reqUserId);
-
-  if (reqUserId === 0) {
-    console.log('No hay usuario logueado');
-    res.redirect('/login');
-    return;
-  }
- 
-  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [reqUserId]);
-  console.log("es admin:", role);
-  const isAdmin = role.rows[0].role === 'admin' ? true : false;
-  
-  const userId = req.cookies.userId ? req.cookies.userId : '0';
-  if (userId === '0') {
-    console.log('No hay usuario logueado');
-    res.redirect('/login');
-  }
-  console.log('id desde main con cookies',userId);
-  
-  console.log('id desde main con cookies',userId);
-  const user = userId !== 0 ? await getUser('null', parseInt(userId)) : null;
-  const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
+router.get("/", validateJwt, async (req, res) => {
+  const user = req.user;
+  const orders = await getFilteredOrders({user_id: user.id, status:'Pendiente' });
+  console.log('user desde servidor main: ', user);
 
   const categories = await getAllCategories();
   const pagination = await getBooksTotal();
@@ -176,9 +184,7 @@ router.get("/", async (req, res) => {
       title: "Página de Inicio",
       sliderImgs: sliderImgs,
       books: books,
-      authToken: authToken,
-      isAdmin: isAdmin,
-      user: user[0],
+      user: user,
       orders: orders,
     });
   } catch (error) {
@@ -187,36 +193,25 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/book", async (req, res) => {
-  const userId = req.cookies.userId ? req.cookies.userId : '0';
-  if (userId === '0') {
+router.get("/book", validateJwt, async (req, res) => {
+  const user = req.user;
+  if (!user) {
     console.log('No hay usuario logueado');
     res.redirect('/login');
   }
-  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
-  const isAdmin = role.rows[0].role === 'admin' ? true : false;
-  
-  const authToken = req.cookies.authToken ? true : false;
-  const user = await getUser('null', parseInt(userId));
-  console.log('user desde servidor book: ', user);
-  console.log('id desde book: ', userId);
-  const orders = await getFilteredOrders({user_id: userId, status:'Pendiente' });
-  console.table(orders);
-  
+
+  const orders = await getFilteredOrders({user_id: user.id, status:'Pendiente' });
   const idBook = req.query.id;
   const data = await getBookDetailsById(idBook);
   let rating = 0;
-  if (userId !== 0) {
-    rating = await getRatingByUserAndBook(userId, idBook);
+  if (user.id) {
+    rating = await getRatingByUserAndBook(user.id, idBook);
   }
   res.render("book", {
     bookData: data,
     title: data.title,
     currentPage: "book",
-    user: user[0],
-    userId: userId,
-    isAdmin: isAdmin,
-    authToken: authToken,
+    user: user,
     orders: orders,
     rating: rating,
   });
@@ -245,12 +240,9 @@ router.get("/category/:catId", async (req, res) => {
   }
 });
 
-router.get("/admin/users", async (req, res) => {
-  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
-  const isAdmin = role.rows[0].role === 'admin' ? true : false;
-  console.log("es admin:", isAdmin);
-  const userId = req.cookies.userId ? req.cookies.userId : '0';
-  if (userId === '0') {
+router.get("/admin/users", validateJwt, async (req, res) => {
+  const user = req.user;
+  if (!user.id) {
     console.log('No hay usuario logueado');
     res.redirect('/login');
   }
@@ -271,7 +263,7 @@ router.get("/admin/users", async (req, res) => {
   const paginationAll = Math.ceil(parseInt(usersAll.total) / 10);
   const totalUsers = parseInt(usersAll.total);
 
-  if (isAdmin) {
+  if (user.role === 'admin') {
     res.render("users", {
       title: "users",
       users: users,
@@ -349,12 +341,9 @@ router.delete("/admin/users/:id", async (req, res) => {
   }
 });
 
-router.get("/admin/books", async (req, res) => {
-  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
-  const isAdmin = role.rows[0].role === 'admin' ? true : false;
-  console.log("es admin:", isAdmin);
-  const userId = req.cookies.userId ? req.cookies.userId : '0';
-  if (userId === '0') {
+router.get("/admin/books", validateJwt, async (req, res) => {
+  const user = req.user;
+  if (!user) {
     console.log('No hay usuario logueado');
     res.redirect('/login');
   }
@@ -362,7 +351,7 @@ router.get("/admin/books", async (req, res) => {
   const success = req.query.success === "true";
   console.log("categorias", categories);
 
-  if (isAdmin) {
+  if (user.role === 'admin') {
     res.render("books", {
       categories: categories,
       title: "libros",
@@ -382,13 +371,14 @@ router.get("/admin/books/success", async (req, res) => {
   res.redirect(`/admin/books?success=true`);
 });
 
-router.get("/updateOrders", async (req, res) => {
+router.get("/updateOrders", validateJwt, async (req, res) => {
   console.log('Ejecutando la ruta update orders');
-  
+  const user = req.user;
   let {status} = req.query;
+  console.log('Status desde ruta', status);
   
   status = status ? status : 'Pendiente';
-  const isAdmin = req.cookies.isAdmin ? true : false;
+  
 
   try {
     const data = await getFilteredOrders({status: status});
@@ -397,7 +387,7 @@ router.get("/updateOrders", async (req, res) => {
     loan_date: item.loan_date,
     return_date: item.return_date,
 }));
-    if (isAdmin) {
+    if (user.role === 'admin') {
       res.status(200).json({ data: formattedData });
     } else {
       res.redirect("/");
@@ -410,13 +400,10 @@ router.get("/updateOrders", async (req, res) => {
 
 
 
-router.get("/admin/orders", async (req, res) => {
-  const idUser = req.cookies.userId;
-
-  const role = await pool.query('SELECT role FROM users WHERE user_id = $1', [req.cookies.userId]);
-  const isAdmin = role.rows[0].role === 'admin' ? true : false;
-  console.log("es admin:", isAdmin);
+router.get("/admin/orders", validateJwt, async (req, res) => {
+  const user = req.user;
   
+
   try {
     const data = await getFilteredOrders({status: 'Pendiente'});
   const formattedData = data.map(item => ({
@@ -424,8 +411,8 @@ router.get("/admin/orders", async (req, res) => {
     loan_date: item.loan_date,
     return_date: item.return_date,
 }));
-    if (isAdmin) {
-      res.render("orders", { title: "orders", currentPage: "orders", data: formattedData, userId: idUser });
+    if (user.role === 'admin') {
+      res.render("orders", { title: "orders", currentPage: "orders", data: formattedData, userId: user.id });
     } else {
       res.redirect("/");
     }
