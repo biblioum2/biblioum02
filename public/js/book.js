@@ -78,6 +78,7 @@ $orderForm.addEventListener("submit", (e) => {
   }
   socket.emit("order", data, mensaje);
   $solicitudModal.style.display = "none";
+  document.documentElement.style.overflow = "scroll";
   alert("Orden enviada con exito");
 });
 
