@@ -2,19 +2,17 @@
   <!-- First box -->
   <div class="headerstyle">
     <div id="box1">
-      <p>Seleccionar lenguaje:</p>
+      <p data-section="header" data-value="Select language">Seleccionar lenguaje:</p>
     </div>
     <div>
-      <select id="idioma" class="header-select" onchange="cambiarIdioma()">
-        <option value="en">English</option>
-        <option value="es" selected="selected">Español</option>
-      </select>
-      <div>
-        <b>Horario de atención:</b>
+      <div id="botones-language">
+      <button data-language="es">🇪🇸</button>
+      <button data-language="en">🇺🇸</button>
       </div>
+        <b data-section="header" data-value="Attention hours">Horario de atención:</b>
     </div>
     <div id="Horario">
-      <p id="semana">Lunes - Viernes, 09:00am - 19:00pm.</p>
+      <p id="semana" data-section="header" data-value="Days">Lunes - Viernes, 09:00am - 19:00pm.</p>
     </div>
     <div>
 
@@ -46,7 +44,7 @@
       <% if (user) {%>
       <a href="./login">Estas logueado</a>
       <% } else { %>
-      <a href="./login">Inicia Sesión</a>
+      <a href="./login" data-section="Nav" data-value="Log In">Iniciar Sesión</a>
       <% } %>
     </div>
   </div>
@@ -62,14 +60,14 @@
     </div>
     <div class="secondary full">
       <!-- Links escritorio en nav -->
-      <a href="/">Inicio</a>
+      <a href="/" data-section="Nav" data-value="Start">Inicio</a>
       <% if (user.role === "admin") {%>
       <a href="./admin/orders">Admin</a>
       <% } %>
       <% if (user) {%>
-      <a href="./logout">Cerrar sesion</a>
+      <a href="./logout" data-section="Nav" data-value="Sign out">Cerrar Sesión</a>
       <% } else { %>
-      <a href="./login">Inicia Sesión</a>
+      <a href="./login" data-section="Nav" data-value="Log In">Iniciar Sesión</a>
       <% } %>
       <div class="userIcon" id="profile-button">
         <img style="width: 42px; height: 42px;" src="/img/user/userIcon.png" alt="">
@@ -80,8 +78,8 @@
       <a href="#" class="more">Más</a> <!-- Boton desplegable -->
       <div class="submenu">
         <!-- Submenu -->
-        <a href="#">Regístrate</a>
-        <a href="./login">Inicia Sesión</a>
+        <a href="#" data-section="Nav" data-value="Log In">Regístrate</a>
+        <a href="./login" data-section="Nav" data-value="Sign out">Inicia Sesión</a>
       </div>
     </div>
     <% if (user) { %>
@@ -96,7 +94,7 @@
             </section>
             <hr style="width: 90%; align-self: center; border: none; height: 0.1rem; background-color: rgb(173, 173, 173); margin-top: 0.5rem;">
             <div class="profile-info-buttons">
-              <div class="user-option">
+              <div class="user-option" data-section="Nav" data-value="Loans">
                 Prestamos
               <!-- <div class="triangle-user"></div> -->
               </div>            
@@ -109,9 +107,9 @@
                   </div>
                 </div>
                 <div class="sub-options">
-                  <button type="button" id="btn-waiting" class="sub-options-btn">En aprobacion</button>
-                  <button type="button" id="btn-pending" class="sub-options-btn">Por entregar</button>
-                  <button type="button" id="btn-history" class="sub-options-btn">Historial</button>
+                  <button type="button" id="btn-waiting" class="sub-options-btn" data-section="Nav" data-value="In approval">En aprobacion</button>
+                  <button type="button" id="btn-pending" class="sub-options-btn" data-section="Nav" data-value="For deliver">Por entregar</button>
+                  <button type="button" id="btn-history" class="sub-options-btn" data-section="Nav" data-value="History">Historial</button>
                 </div>
             </div>
             <hr style="width: 90%; align-self: center; border: none; height: 0.1rem; background-color: rgb(173, 173, 173); margin-top: 0.5rem;">
@@ -130,7 +128,7 @@
                 <% }); %>  
               <% } else { %>
                 <div style="width: 100%; height: 10rem; display: flex; align-items: center; justify-content: center;">
-                  <p style="color: rgb(168, 168, 168);">Sin elementos</p>
+                  <p style="color: rgb(168, 168, 168);" data-section="Nav" data-value="Elements">Sin elementos</p>
                 </div>
               <% } %>
             </section>

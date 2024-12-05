@@ -392,11 +392,25 @@ document.addEventListener("DOMContentLoaded", async () => {
   uploadPaginationButtons(initialPage, await totalBookPages());
 });
 
-// Cambio de idioma en página
-function cambiarIdioma() {
-  const idiomaSeleccionado = document.getElementById("idioma").value;
-  document.documentElement.lang = idiomaSeleccionado;
-}
+// FUNCION DE IDIOMA DE LA PÁGINA
+const langButtons = document.querySelectorAll("[data-language]");
+const textsToChange = document.querySelectorAll("[data-section]");
+
+langButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    fetch(`../${button.dataset.language}.json`)
+         .then(res => res.json())
+         .then(data => {
+          textsToChange.forEach((el) => {
+            const section = el.dataset.section;
+            const value = el.dataset.value; 
+
+            el.innerHTML = data[section][value];
+          })
+         })
+  })
+})
+
 
 // MANEJO DE FILTROS PARA LOS LIBROS GENERALES DE MAIN //
 

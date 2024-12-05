@@ -97,12 +97,12 @@ body {
 .me-2{
    margin-right: 8px;
 }
+/* ESTILOS DE SEGUNDO DIV DE HEADER*/
 
-/* Imagen de Header (libreria) */
-#Cabecera {
-    background: url(../img/barraNav.jpeg);
-    padding: 15px;
+#botones-language {
+  justify-content: space-evenly;
 }
+
 /* Efecto de sombra en titulo */
 .Logo #Cabecera h1 {
     text-shadow: 5px 5px 0 #000;
