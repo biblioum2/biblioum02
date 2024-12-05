@@ -103,6 +103,27 @@ body {
   justify-content: space-evenly;
 }
 
+#botones-language button {
+    width: 60px;
+    height: 30px;
+}
+
+#spain {
+    background-image: url(../img/spain.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+#usa {
+    background-image: url(../img/usa.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
 /* Efecto de sombra en titulo */
 .Logo #Cabecera h1 {
     text-shadow: 5px 5px 0 #000;
