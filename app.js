@@ -18,13 +18,41 @@ const pool = require("./config/database");
 const nodemailer = require("nodemailer");
 // Importa la configuración de la base de datos desde el archivo `database.js` (o el nombre que corresponda), que típicamente configura y exporta un pool de conexiones para interactuar con la base de datos.
 const { Server } = require("socket.io");
-const { getUser } = require("./queries/getData");
+const { getUser, checkFavoriteBook } = require("./queries/getData");
 const {
   insertUser,
   insertBook,
   insertBookCategory,
   createOrder,
+  addBookToFavorites,
 } = require("./queries/inputData");
+const { removeBookFromFavorites } = require("./queries/deleteData");
+
+
+function validateJwt(req, res, next) {
+  console.log('Ejecutando validacion de token');
+  
+  const token = req.cookies.token;
+  console.log('token', token);
+  
+  if (!token) {
+    console.log('No hay token');
+    
+    return res.redirect("/login");
+  }
+  jwt.verify(token, SECRET_KEY, (err, user) => {
+    if (err) {
+      console.log('Error en token');
+      
+      return res.redirect("/login");
+    }
+    console.log(user);
+    
+    req.user = user;
+    next();
+  });
+}
+
 const fileUpload = require("express-fileupload");
 const http = require("http");
 const multer = require("multer");
@@ -33,7 +61,7 @@ const app = express();
 const port = 3000;
 const server = http.createServer(app);
 const io = new Server(server);
-const isProduction = process.env.NODE_ENV === 'production';
+// const isProduction = process.env.NODE_ENV === 'production';
 const local = "http://localhost:3000";
 const renderr = "https://biblioum02.onrender.com";
 
@@ -823,8 +851,7 @@ app.post("/login", async (req, res) => {
         });
         res.cookie("token", token, {
           httpOnly: true,
-          secure: isProduction,
-          sameSite: isProduction ? "strict" : "lax",
+          sameSite: "strict",
           maxAge: 2592000000,
         });
         res.status(200).json({ success: true, token });
@@ -888,6 +915,27 @@ app.post("/admin/books", async (req, res) => {
     res.redirect("/admin/books/success");
   } catch (error) {
     console.log("Error al agregar libro: ", error);
+  }
+});
+
+app.post("/insertFavoriteBook", validateJwt, async (req, res) => {
+  console.log('ejecutando insertfavorite book');
+  const userId = req.user.id;
+  const { bookId } = req.body;
+  console.log(`id: ${userId}, bookId: ${bookId}`);
+  try {
+    const isFavorite = await checkFavoriteBook(userId,bookId);
+    pool.query('BEGIN');
+    if (isFavorite > 0) {
+      await removeBookFromFavorites(userId, bookId);
+    }else {
+      await addBookToFavorites(userId,bookId);
+    }
+    res.status(200).json({success: true});
+    pool.query('COMMIT');
+  } catch (error) {
+    pool.query('ROLLBACK');
+    res.status(400).json({success: false});
   }
 });
 

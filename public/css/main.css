@@ -438,11 +438,12 @@ select:active {
 
 @media (max-width: 768px) {
     .card-container {
-        grid-template-columns: repeat(2, 250px); /* 2 columnas */
+        grid-template-columns: repeat(4, 70px); /* 2 columnas */
     }
     .card-Book {
-        width: 250px; /* Ancho fijo */
-        height: 250px; /* Altura fija */
+        
+        width: 70px; /* Ancho fijo */
+        height: 100px; /* Altura fija */
     }
 }
 

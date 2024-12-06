@@ -4,62 +4,64 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <%- include('./partials/meta')  %> 
+  <%- include('./partials/meta')  %>
   <title>Acceso</title>
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/acceso.css">
   <link rel="icon" href="img/acceso.ico" />
 </head>
+
 <body>
   <div id="Regresar">
     <a href="/Pagina de UMAN/index.html">Ir al Inicio >> <i class="fas fa-home"></i></a>
   </div>
   <div class="Acceso">
-  <div class="container">
-    <form id="form">
-      <h1>Acceso</h1>
-      <% if (username == undefined) { %>
-      <div class="input-box">
-        <input type="text" placeholder="Usuario" name="username" id="username" required />
+    <div class="container">
+      <form id="form">
+        <h1>Acceso</h1>
+        <% if (username == undefined) { %>
+        <div class="input-box">
+          <input type="text" placeholder="Usuario" name="username" id="username" required />
+          <!-- <i class="bx bxs-user"></i> -->
+        </div>
+        <% } else { %>
+        <% if (authErrorName) { %>
+        <div class="input-box">
+          <input type="text" class="authError" placeholder="El usuario no existe" name="username" id="username" required />
+        </div>
+        <% } else {%>
+        <div class="input-box">
+          <input type="text" placeholder="Nombre de usuario" name="username" id="username" value="<%= username %>" required />
+        </div>
+        <% } %>
         <!-- <i class="bx bxs-user"></i> -->
-      </div>
-      <% } else { %>
-      <% if (authErrorName) { %>
-      <div class="input-box">
-        <input type="text" class="authError" placeholder="El usuario no existe" name="username" id="username" required />
-      </div>
-      <% } else {%>
-      <div class="input-box">
-        <input type="text" placeholder="Nombre de usuario" name="username" id="username" value="<%= username %>" required />
-      </div>
-      <% } %>
-      <!-- <i class="bx bxs-user"></i> -->
-      <% } %>
-      <% if (authErrorPassword) {%>
-      <div class="input-box">
-        <input type="password" id="passwordInput" class="authError" placeholder="Contraseña invalida" name="password" id="password" required />
-        <!-- <i class="bx bxs-lock-alt"></i> -->
-      </div>
-      <% } else { %>
-      <div class="input-box">
-        <input type="password" placeholder="Contraseña" name="password" id="password" required />
-        <!-- <i class="bx bxs-lock-alt"></i> -->
-      </div>
-      <% } %>
+        <% } %>
+        <% if (authErrorPassword) {%>
+        <div class="input-box">
+          <input type="password" id="passwordInput" class="authError" placeholder="Contraseña invalida" name="password" id="password" required />
+          <!-- <i class="bx bxs-lock-alt"></i> -->
+        </div>
+        <% } else { %>
+        <div class="input-box">
+          <input type="password" placeholder="Contraseña" name="password" id="password" required />
+          <!-- <i class="bx bxs-lock-alt"></i> -->
+        </div>
+        <% } %>
 
       <div class="remember-forgot">
         <label><input name="remember" id="remember" type="checkbox" /> Recordar Contraseña</label>
         <!-- <a href="/forgotPassword">Olvidaste tu contraseña?</a> -->
       </div>
 
-      <button type="submit" class="btn" href="main.html">Ingresar</button>
+        <button type="submit" class="btn" href="main.html">Ingresar</button>
 
-      <div class="register-link">
-        <p>¿No tienes una cuenta? <a href="/register">Registrate aquí!</a></p>
-      </div>
-    </form>
-  </div>
+        <div class="register-link">
+          <p>¿No tienes una cuenta? <a href="/register">Registrate aquí!</a></p>
+        </div>
+      </form>
+    </div>
   </div>
   <script src="js/login.js"></script>
 </body>
+
 </html>
