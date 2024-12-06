@@ -148,21 +148,20 @@ async function insertBook({
 
 //  QUERIES PARA LA TABLA FAVORITES
 
-const addBookToFavorites = async (userId, bookId) => {
+async function insertFavorite(user_id, book_id) {
   const query = `
       INSERT INTO favorites (user_id, book_id)
       VALUES ($1, $2)
-      ON CONFLICT DO NOTHING; -- Evita errores si ya existe esta combinación
+      RETURNING *;
   `;
-
+  const values = [user_id, book_id];
   try {
-      await pool.query(query, [userId, bookId]);
-      console.log('Libro agregado a favoritos');
-  } catch (error) {
-      console.error('Error al agregar el libro a favoritos:', error);
+    const res = await pool.query(query, values);
+    return res.rows[0];
+  } catch (err) {
+    console.error("Error creating favorite", err);
   }
-};
-
+}
 
 async function getAllFavoritesByUser(user_id) {
   const query = `
@@ -2235,5 +2234,4 @@ module.exports = {
   // insertActivityLog: insertActivityLog,
   incrementBookViews,
   addOrUpdateRating,
-  addBookToFavorites,
 };

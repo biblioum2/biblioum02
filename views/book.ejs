@@ -1,171 +1,141 @@
 <!DOCTYPE html>
 <html lang="es">
-
-<head>
-  <meta charset="utf-8" />
-  <title>Libro de ejemplo</title>
-  <meta http-equiv="X-UA-Compatible" content="IE-edge" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <%- include('./partials/meta')  %>
-  <link rel="stylesheet" type="text/css" href="css/Pagina%20de%20libros.css" />
-  <link rel="stylesheet" type="text/css" href="css/Nav-libros.css" />
-  <!-- <link rel="stylesheet" type="text/css" href="css/footer.css" /> -->
-  <link rel="stylesheet" type="text/css" href="css/footer.css" />
-  <link rel="icon" href="img/libro.ico" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-  <script src="https://kit.fontawesome.com/caf315d017.js" crossorigin="anonymous"></script>
-  <script src="/socket.io/socket.io.js"></script>
-  <!-- <a href="https://www.flaticon.es/iconos-gratis/biblioteca-en-linea" title="biblioteca en línea iconos">Biblioteca en línea iconos creados por Kalashnyk - Flaticon</a> -->
+    <head>
+        <meta charset="utf-8" />
+        <title>Libro de ejemplo</title>
+        <meta http-equiv="X-UA-Compatible" content="IE-edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />  
+        <%- include('./partials/meta')  %> 
+        <link rel="stylesheet" type="text/css" href="css/Pagina%20de%20libros.css" />
+        <link rel="stylesheet" type="text/css" href="css/Nav-libros.css" />
+        <!-- <link rel="stylesheet" type="text/css" href="css/footer.css" /> -->
+        <link rel="stylesheet" type="text/css" href="css/footer.css" />      
+        <link rel="icon" href="img/libro.ico" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+        <script src="https://kit.fontawesome.com/caf315d017.js" crossorigin="anonymous"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <!-- <a href="https://www.flaticon.es/iconos-gratis/biblioteca-en-linea" title="biblioteca en línea iconos">Biblioteca en línea iconos creados por Kalashnyk - Flaticon</a> -->
 </head>
-
-<body>
-  <div class="contenedor-principal">
-    <%- include('./partials/header') %>
-    <div id="notification" class="hidden ghost"></div>
-    <!-- Modal -->
-    <div id="requestBookModal" class="modal">
-      <div class="modal-content">
+    <body>
+        <div class = "contenedor-principal">
+          <%- include('./partials/header') %>
+          <div id="notification" class="hidden ghost"></div>        
+          <!-- Modal -->
+<div id="requestBookModal" class="modal">
+    <div class="modal-content">
         <span id="close-modal" class="close">&times;</span>
         <h2>Solicitar Libro</h2>
         <form id="requestBookForm" method="post">
-          <input style="display: none;" type="number" id="userId" value="<%= user.id %>" readonly>
-          <input style="display: none;" type="number" id="bookId" value="<%= bookData.id%>" readonly>
-          <label for="bookTitle">Libro:</label><br>
-          <input class="modal-inputs" type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
+            <input style="display: none;" type="number" id="userId" value="<%= user.id %>" readonly>
+            <input style="display: none;" type="number" id="bookId" value="<%= bookData.id%>" readonly>
+            <label for="bookTitle">Libro:</label><br>
+            <input class="modal-inputs" type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
 
-          <label for="requestDate">Fecha de Solicitud:</label>
-          <input class="modal-inputs" type="text" id="requestDate" name="requestDate" placeholder="Seleccione una fecha" required><br><br>
+            <label for="requestDate">Fecha de Solicitud:</label>
+            <input class="modal-inputs" type="text" id="requestDate" name="requestDate" placeholder="Seleccione una fecha" required><br><br>
 
-          <label for="returnDate">Fecha de Entrega:</label>
-          <input class="modal-inputs" type="text" id="returnDate" name="returnDate" placeholder="Seleccione una fecha" required><br><br>
-          <div class="submit-btn-container">
-            <button id="sub-btn-2" class="submit-modal-btn-2" type="button">Cancelar</button>
-            <button id="sub-btn-1" class="submit-modal-btn-1" type="submit">Enviar</button>
-          </div>
-        </form>
-      </div>
-    </div>
-    <div class="contenedor-libros">
-      <div id="botones-lateral">
-        <div>
-        </div>
-        <div>
-        </div>
-        <div>
-        </div>
-        <div>
-        </div>
-        <div>
-        </div>
-      </div>
-      <div id="ejemplar">
-        <div id="libro"><img src="<%= bookData.cover %>" alt="Libro" /></div>
-      </div>
-      <div id="info">
-        <div id="texto">
-          <p><b><%= bookData.title %></b></p>
-          <div class="bookSec1">
-            <p style="font-size: x-large;"><b><%= bookData.edition %> Edición</b></p>
-            <% if (isFavoriteBook) { %>
-            <i class="fa-solid fa-bookmark fa-xl bookMark" id="bookMarkIcon" title="Agregar a favoritos" data-isFavorite="<%= true %>"></i>
-            <% } else { %>
-            <i class="fa-regular fa-bookmark fa-xl bookMark" id="bookMarkIcon" title="Agregar a favoritos" data-isFavorite="<%= false %>"></i>
-            <% } %>
-
-          </div>
-          <div class="stars">
-            <div>
-              <form>
-                <p class="clasificacion">
-                  <% if (rating !== 0) { %>
-                  <input id="radio1" type="radio" name="estrellas" value="5" onclick="getRating(this)" <%= rating === 5 ? 'checked': '' %>>
-                  <!--
-                                    --><label for="radio1">&#9733</label>
-                  <!--
-                                    --><input id="radio2" type="radio" name="estrellas" value="4" onclick="getRating(this)" <%= rating === 4 ? 'checked': '' %>>
-                  <!--
-                                    --><label for="radio2">&#9733</label>
-                  <!--
-                                    --><input id="radio3" type="radio" name="estrellas" value="3" onclick="getRating(this)" <%= rating === 3 ? 'checked': '' %>>
-                  <!--
-                                    --><label for="radio3">&#9733</label>
-                  <!--
-                                    --><input id="radio4" type="radio" name="estrellas" value="2" onclick="getRating(this)" <%= rating === 2 ? 'checked': '' %>>
-                  <!--
-                                    --><label for="radio4">&#9733</label>
-                  <!--
-                                    --><input id="radio5" type="radio" name="estrellas" value="1" onclick="getRating(this)" <%= rating === 1 ? 'checked': '' %>>
-                  <!--
-                                    --><label for="radio5">&#9733</label>
-                  <% } else { %>
-                  <input id="radio1" type="radio" name="estrellas" value="5" onclick="getRating(this)">
-                  <!--
-                                    --><label for="radio1">&#9733</label>
-                  <!--
-                                    --><input id="radio2" type="radio" name="estrellas" value="4" onclick="getRating(this)">
-                  <!--
-                                    --><label for="radio2">&#9733</label>
-                  <!--
-                                    --><input id="radio3" type="radio" name="estrellas" value="3" onclick="getRating(this)">
-                  <!--
-                                    --><label for="radio3">&#9733</label>
-                  <!--
-                                    --><input id="radio4" type="radio" name="estrellas" value="2" onclick="getRating(this)">
-                  <!--
-                                    --><label for="radio4">&#9733</label>
-                  <!--
-                                    --><input id="radio5" type="radio" name="estrellas" value="1" onclick="getRating(this)">
-                  <!--
-                                    --><label for="radio5">&#9733</label>
-                  <% } %>
-
-                </p>
-              </form>
+            <label for="returnDate">Fecha de Entrega:</label>
+            <input class="modal-inputs" type="text" id="returnDate" name="returnDate" placeholder="Seleccione una fecha" required><br><br>
+            <div class="submit-btn-container">
+                <button id="sub-btn-2" class="submit-modal-btn-2" type="button">Cancelar</button>
+                <button id="sub-btn-1" class="submit-modal-btn-1" type="submit">Enviar</button>
             </div>
-            <p>4.5</p>
-          </div>
-          <br />
-          <p><b>AUTOR: </b><%= bookData.author %></p><br>
-          <p><b>CATEGORIA: </b><%= bookData.categories %></p><br />
-          <p><b>EDICIÓN: </b><%= bookData.edition %> Edición</p><br />
-          <p><b>ISBN-13: </b><%= bookData.isbn %></p><br />
-          <p><b>ARCHIVO: </b>Físico</p><br />
-          <p><b>IDIOMA: </b>Español</p><br>
-          <p><b>DISPONIBLES: </b><%= bookData.available_copies %></p>
-
-        </div>
-        <div class="botones">
-          <% if (user) { %>
-          <div class="btn-1" id="solicitud-btn">
-            <a><span>SOLICITAR</span></a>
-          </div>
-          <% } %>
-          <!-- Created by   http://grohit.com/   -->
-          <div class="btn-2">
-            <a href="<%= bookData.lib %>" download="<%= bookData.title %>.pdf" target="_blank"><span>OBTENER PDF</span></a>
-          </div>
-        </div>
-      </div>
+        </form>
     </div>
+</div>
+        <div class="contenedor-libros">
+            <div id="botones-lateral">
+                <div>
+                </div>
+                <div>
+                </div>
+               <div>
+                </div>
+               <div>
+                </div>
+               <div>
+                </div>         
+            </div>
+            <div id="ejemplar">
+                <div id="libro"><img src="<%= bookData.cover %>" alt="Libro" /></div>
+            </div>
+            <div id="info">
+                <div id="texto">
+                    <p><b><%= bookData.title %> - <%= bookData.edition %> Edición</b></p>
+                    <div class="stars">
+                        <div>
+                           <form>
+                            <p class="clasificacion">
+                                <% if (rating !== 0) { %>
+                                    <input id="radio1" type="radio" name="estrellas" value="5" onclick="getRating(this)" <%= rating === 5 ? 'checked': '' %>><!--
+                                    --><label for="radio1">&#9733</label><!--
+                                    --><input id="radio2" type="radio" name="estrellas" value="4" onclick="getRating(this)" <%= rating === 4 ? 'checked': '' %>><!--
+                                    --><label for="radio2">&#9733</label><!--
+                                    --><input id="radio3" type="radio" name="estrellas" value="3" onclick="getRating(this)" <%= rating === 3 ? 'checked': '' %>><!--
+                                    --><label for="radio3">&#9733</label><!--
+                                    --><input id="radio4" type="radio" name="estrellas" value="2" onclick="getRating(this)" <%= rating === 2 ? 'checked': '' %>><!--
+                                    --><label for="radio4">&#9733</label><!--
+                                    --><input id="radio5" type="radio" name="estrellas" value="1" onclick="getRating(this)" <%= rating === 1 ? 'checked': '' %>><!--
+                                    --><label for="radio5">&#9733</label>    
+                                <% } else { %>
+                                    <input id="radio1" type="radio" name="estrellas" value="5" onclick="getRating(this)"><!--
+                                    --><label for="radio1">&#9733</label><!--
+                                    --><input id="radio2" type="radio" name="estrellas" value="4" onclick="getRating(this)"><!--
+                                    --><label for="radio2">&#9733</label><!--
+                                    --><input id="radio3" type="radio" name="estrellas" value="3" onclick="getRating(this)"><!--
+                                    --><label for="radio3">&#9733</label><!--
+                                    --><input id="radio4" type="radio" name="estrellas" value="2" onclick="getRating(this)"><!--
+                                    --><label for="radio4">&#9733</label><!--
+                                    --><input id="radio5" type="radio" name="estrellas" value="1" onclick="getRating(this)"><!--
+                                    --><label for="radio5">&#9733</label>
+                                <% } %>
+                                
+                              </p>
+                           </form> 
+                        </div>
+                    </div>
+                    <br />
+                    <br />
+                    <p><b>AUTOR: </b><%= bookData.author %></p><br>                
+                    <p><b>CATEGORIA: </b><%= bookData.categories %></p><br />
+                    <p><b>EDICIÓN: </b><%= bookData.edition %> Edición</p><br />
+                    <p><b>ISBN-13: </b><%= bookData.isbn %></p><br />
+                    <p><b>ARCHIVO: </b>Físico</p><br />
+                    <p><b>IDIOMA: </b>Español</p><br>
+                    <p><b>DISPONIBLES: </b><%= bookData.available_copies %></p>
 
-    <div class="description">
-      <div class="content-title">
-        <h2 class="title-slider">Descripción</h2>
-      </div>
-      <div id="t1" class="text">
-        <p><%= bookData.summary %></p>
-      </div>
-      <button id="showMore" class="show-more">
-        Ver más
-      </button>
-    </div>
-  </div>
-  <%- include(`./partials/footer`) %>
+                </div>
+                <div class="botones">
+                    <% if (user) { %>
+                        <div class="btn-1" id="solicitud-btn">
+                          <a><span>SOLICITAR</span></a>
+                       </div>                        
+                    <% } %>
+                   <!-- Created by   http://grohit.com/   -->
+               <div class="btn-2">
+                 <a href="<%= bookData.lib %>" download="<%= bookData.title %>.pdf" target="_blank"><span>OBTENER PDF</span></a>
+               </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="description">
+            <div class="content-title">
+              <h2 class="title-slider">Descripción</h2>
+          </div>
+          <div id="t1" class="text">
+            <p><%= bookData.summary %></p>
+            </div>
+            <button id="showMore" class="show-more">
+                Ver más
+            </button>
+            </div>
+          </div>
+          <%- include(`./partials/footer`) %>
 
-  <script src="js/book.js">
-  </script>
-  <script src="js/header.js"></script>
-</body>
-
+        <script src="js/book.js">            
+        </script>
+        <script src="js/header.js"></script>
+    </body>
 </html>

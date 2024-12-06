@@ -89,10 +89,6 @@
 .stars {
   width: 371px;
   height: 20px;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  margin-top: 5px;
 }
 
 .stars #form {
@@ -488,13 +484,3 @@ footer{
   animation: fadeInOut 3s ease-in-out 1 forwards; /* 'forwards' mantiene el estilo final */
 }
 
-.bookSec1 {
-  display: flex;
-  width: 100%;
-  gap: 20px;
-  align-items: center;
-}
-
-.bookMark:hover {
-  cursor: pointer;
-}

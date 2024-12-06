@@ -1,118 +1,115 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Panel - Gestión de Datos</title>
-  <link rel="stylesheet" href="/css/admin.css">
-  <link rel="stylesheet" href="/css/nav-admin.css">
-  <link rel="stylesheet" href="/css/footer.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel - Gestión de Datos</title>
+<link rel="stylesheet" href="/css/admin.css">
+<link rel="stylesheet" href="/css/nav-admin.css">
+<link rel="stylesheet" href="/css/footer.css">
 
 </head>
-
 <body>
-  <%- include('./partials/adminHeader.ejs') %>
-
-  <main>
-    <div class="container">
-
-      <!-- Formulario para usuarios -->
-      <section id="users-form" class="form-section">
-        <h2>Usuarios</h2>
-        <form id="form-users" class="form" method="POST">
-          <div class="form-group">
-            <label for="username">Nombre de usuario</label>
-            <input type="text" id="username" name="username" pattern="[a-zA-Z0-9]+" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Contraseña</label>
-            <input type="password" id="password" name="password" required>
-          </div>
-          <div class="form-group">
-            <label for="email">Correo electrónico</label>
-            <input type="email" id="email" name="email" required>
-          </div>
-          <div class="form-group">
-            <label for="role">Rol</label>
-            <input type="text" id="role" name="role" required>
-          </div>
-          <button type="submit" class="btn-submit">Agregar Usuario</button>
-        </form>
-      </section>
-
-      <!-- Formulario para autores -->
-      <section id="authors-form" class="form-section">
-        <h2>Autores</h2>
-        <form id="form-authors" class="form">
-          <div class="form-group">
-            <label for="authorName">Nombre del autor</label>
-            <input type="text" id="authorName" name="authorName" required>
-          </div>
-          <div class="form-group">
-            <label for="biography">Biografía</label>
-            <textarea id="biography" name="biography" rows="4"></textarea>
-          </div>
-          <button type="submit" class="btn-submit">Agregar Autor</button>
-        </form>
-      </section>
-
-      <!-- Formulario para categorías -->
-      <section id="categories-form" class="form-section">
-        <h2>Categorías</h2>
-        <form id="form-categories" class="form">
-          <div class="form-group">
-            <label for="categoryName">Nombre de la categoría</label>
-            <input type="text" id="categoryName" name="categoryName" required>
-          </div>
-          <button type="submit" class="btn-submit">Agregar Categoría</button>
-        </form>
-      </section>
-
-      <!-- Formulario para libros -->
-      <section id="books-form" class="form-section">
-        <h2>Libros</h2>
-        <form id="form-books" class="form">
-          <div class="form-group">
-            <label for="bookTitle">Título del libro</label>
-            <input type="text" id="bookTitle" name="bookTitle" required>
-          </div>
-          <div class="form-group">
-            <label for="authorID">ID del Autor</label>
-            <input type="number" id="authorID" name="authorID" required>
-          </div>
-          <div class="form-group">
-            <label for="categoryID">ID de la Categoría</label>
-            <input type="number" id="categoryID" name="categoryID" required>
-          </div>
-          <button type="submit" class="btn-submit">Agregar Libro</button>
-        </form>
-      </section>
-
-      <!-- Formulario para órdenes -->
-      <section id="orders-form" class="form-section">
-        <h2>Órdenes</h2>
-        <form id="form-orders" class="form">
-          <div class="form-group">
-            <label for="orderNumber">Número de Orden</label>
-            <input type="text" id="orderNumber" name="orderNumber" required>
-          </div>
-          <div class="form-group">
-            <label for="userID">ID del Usuario</label>
-            <input type="number" id="userID" name="userID" required>
-          </div>
-          <div class="form-group">
-            <label for="bookID">ID del Libro</label>
-            <input type="number" id="bookID" name="bookID" required>
-          </div>
-          <button type="submit" class="btn-submit">Agregar Orden</button>
-        </form>
-      </section>
-    </div>
-
-  </main>
-  <%- include('./partials/footer.ejs') %>
+    <%- include('./partials/adminHeader.ejs') %>
+    
+    <main>
+        <div class="container">
+            
+            <!-- Formulario para usuarios -->
+            <section id="users-form" class="form-section">
+                <h2>Usuarios</h2>
+                <form id="form-users" class="form" method="POST">
+                    <div class="form-group">
+                        <label for="username">Nombre de usuario</label>
+                        <input type="text" id="username" name="username" pattern="[a-zA-Z0-9]+" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Contraseña</label>
+                        <input type="password" id="password" name="password" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo electrónico</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="role">Rol</label>
+                        <input type="text" id="role" name="role" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Agregar Usuario</button>
+                </form>
+            </section>
+    
+            <!-- Formulario para autores -->
+            <section id="authors-form" class="form-section">
+                <h2>Autores</h2>
+                <form id="form-authors" class="form">
+                    <div class="form-group">
+                        <label for="authorName">Nombre del autor</label>
+                        <input type="text" id="authorName" name="authorName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="biography">Biografía</label>
+                        <textarea id="biography" name="biography" rows="4"></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Agregar Autor</button>
+                </form>
+            </section>
+    
+            <!-- Formulario para categorías -->
+            <section id="categories-form" class="form-section">
+                <h2>Categorías</h2>
+                <form id="form-categories" class="form">
+                    <div class="form-group">
+                        <label for="categoryName">Nombre de la categoría</label>
+                        <input type="text" id="categoryName" name="categoryName" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Agregar Categoría</button>
+                </form>
+            </section>
+    
+            <!-- Formulario para libros -->
+            <section id="books-form" class="form-section">
+                <h2>Libros</h2>
+                <form id="form-books" class="form">
+                    <div class="form-group">
+                        <label for="bookTitle">Título del libro</label>
+                        <input type="text" id="bookTitle" name="bookTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="authorID">ID del Autor</label>
+                        <input type="number" id="authorID" name="authorID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoryID">ID de la Categoría</label>
+                        <input type="number" id="categoryID" name="categoryID" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Agregar Libro</button>
+                </form>
+            </section>
+    
+            <!-- Formulario para órdenes -->
+            <section id="orders-form" class="form-section">
+                <h2>Órdenes</h2>
+                <form id="form-orders" class="form">
+                    <div class="form-group">
+                        <label for="orderNumber">Número de Orden</label>
+                        <input type="text" id="orderNumber" name="orderNumber" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="userID">ID del Usuario</label>
+                        <input type="number" id="userID" name="userID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="bookID">ID del Libro</label>
+                        <input type="number" id="bookID" name="bookID" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Agregar Orden</button>
+                </form>
+            </section>
+        </div>
+        
+    </main>
+    <%- include('./partials/footer.ejs') %>
 
 </body>
-
 </html>

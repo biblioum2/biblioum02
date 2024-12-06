@@ -24,8 +24,6 @@ const {
   getTopRatedBooksByCategory,
   getCategoryById,
   getTotalUsers,
-  checkFavoriteBook,
-  getFavoriteBooks,
 } = require("../queries/getData");
 const { deleteUser, deleteOrder } = require("../queries/deleteData");
 const { updateOrder, updateOrderStatus, updateUserData } = require("../queries/updateData");
@@ -204,9 +202,6 @@ router.get("/book", validateJwt, async (req, res) => {
 
   const orders = await getFilteredOrders({user_id: user.id, status:'Pendiente' });
   const idBook = req.query.id;
-  const isFavoriteBook = await checkFavoriteBook(user.id, idBook);
-  console.log('EL LIBRO ES FAVORITO?',isFavoriteBook);
-  
   const data = await getBookDetailsById(idBook);
   let rating = 0;
   if (user.id) {
@@ -219,7 +214,6 @@ router.get("/book", validateJwt, async (req, res) => {
     user: user,
     orders: orders,
     rating: rating,
-    isFavoriteBook: isFavoriteBook === 1 ? true : false,
   });
 });
 
@@ -553,17 +547,6 @@ router.get("/admin/users/total", async (req, res) => {
   const paginationAll = Math.ceil(parseInt(users.total) / 10);
   const totalUsers = parseInt(users.total);
   res.status(200).json(users);
-});
-
-router.get("/getFavoriteBooks", validateJwt , async (req, res) => {
-  const userId = req.user.id;
-  try {
-    const result = await getFavoriteBooks(userId);
-    res.status(200).json(result);
-  } catch (error) {
-    console.log(error);
-    
-  }
 });
 
 module.exports = router;
