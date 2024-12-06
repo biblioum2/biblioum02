@@ -241,7 +241,7 @@
     .grupo {
         display: flex;
         text-align: center;
-        padding-top: 2rem;
+        padding-top: 1rem;
         
     }
     .triangle-user {
@@ -346,22 +346,43 @@
     .prestamo-element {
         display: flex;
         align-items: center;
-        justify-content: space-around;
+        justify-content: space-evenly;
         width: 100%;
-        margin-top: 0.5rem;
+        padding: 5px 0px;
     }
-    .prestamo-element:hover {
-        background-color: #e0e0e0;
-        cursor: pointer;
-    }
+    
     .prestamo-element > p {
         text-align: center;
+        max-width: 240px;
+
         height: 50px;
     }
     .prestamo-element > p:first-of-type {
-        text-overflow: ellipsis;
-        width: 90px;
+        max-width: 240px;
+        min-width: 240px;
+        padding: 10px 0px;
+        overflow-y: hidden;
         overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .prestamo-element-pendiente {
+        display: flex;
+        align-items: center;
+        justify-content: space-evenly;
+        width: 100%;
+        padding: 15px 0px;
+    }
+
+    .prestamo-element-first-p {
+        max-width: 115px;
+        min-width: 115px;
+        padding: 10px 0px;
+        overflow-y: hidden;
+        overflow-x: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
     .prestamo-element > p:not(:first-of-type) {
         padding-top: 10px;
@@ -372,10 +393,34 @@
     }
     .prestamo-buttons {
         display: flex;
+        cursor: pointer;
         align-items: center;
         gap: 5px;
     }
     .prestamo-inputs {
         width: 2rem;
         height: 0.7rem;
+    }
+
+    .prestamo-element-favorites {
+        
+        align-items: center;
+        min-height: 60px;
+        width: 100%;
+    }
+
+    .prestamo-element-favorites > a {
+        align-items: center;
+        justify-content: center;
+        padding: 10px 0px;
+
+        text-align: center;
+        min-width: 100%;
+        min-height: 100%;
+    }
+
+    .prestamo-element-favorites > a:hover {
+        
+        cursor: pointer;
+        background-color: #e0e0e0;
     }

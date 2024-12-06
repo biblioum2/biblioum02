@@ -2,7 +2,7 @@ const $logo = document.getElementById("logo");
 
 const adasda = "http://localhost:3000";
 
-async function getUserData(){
+async function getUserData() {
   try {
     const response = await fetch(`${baseUrl}/payloadXtract`, {
       method: "GET",
@@ -11,13 +11,12 @@ async function getUserData(){
       },
     });
     const data = await response.json();
-    
+
     return data;
   } catch (error) {
     console.log("Error al obtener los datos del usuario: ", error);
-    
   }
-};
+}
 
 $logo.addEventListener("click", () => {
   window.location.href = "/uman";
@@ -81,10 +80,8 @@ function highlightButton(selectedButton) {
 async function getOrders(values) {
   try {
     const queryString = new URLSearchParams(values).toString();
-    
-    
+
     const response = await fetch(`${adasda}/getorders?${queryString}`);
-    
 
     return response;
   } catch (error) {
@@ -93,109 +90,155 @@ async function getOrders(values) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-  const $subOptions = document.querySelector(".sub-options");
+  const $btnWaiting = document.getElementById("btn-waiting");
+  const $btnPending = document.getElementById("btn-pending");
+  const $btnFavorite = document.getElementById("btn-favorite");
 
-  document.addEventListener("click", (event) => {
-    const $profileButton = document.getElementById("profile-button");
-    const $element = document.getElementById("user-info");
+  $btnWaiting.addEventListener("click", changeOrders);
+  $btnPending.addEventListener("click", changeOrders);
+  $btnFavorite.addEventListener("click", viewFavorites);
 
-    // Verifica si el clic ocurrió en el botón de perfil o dentro del propio elemento
-    if ($profileButton.contains(event.target)) {
-      $element.classList.toggle("ghost");
-    } else if (!$element.contains(event.target)) {
-      $element.classList.add("ghost");
-    }
+  async function changeOrders(event) {
+    const idUser = getCookie("userId");
 
-    
-  });
-  if ($subOptions) {
-    $subOptions.addEventListener("click", async (event) => {
-      
-      const idUser = getCookie("userId");
-      
-      
-      const $target = event.target;
-      const filter = { user_id: idUser, status: "Pendiente" };
-      highlightButton($target);
+    const $target = event.target;
+    const status = $target.dataset.status;
+    const filter = { user_id: idUser, status: status };
+    highlightButton($target);
+    try {
+      const result = await getOrders(filter);
+      const data = await result.json();
+      const ordenes = data.response;
 
-      if ($target.id && $target.id.includes("btn-waiting")) {
-      
+      const $ordersContainer = document.querySelector(
+        ".profile-info-responses"
+      );
+      const $fragment = document.createDocumentFragment();
+      if (data.response.length > 0) {
+        $ordersContainer.innerHTML = "";
+        ordenes.forEach((element) => {
+          const $order = document.createElement("div");
+          const $title = document.createElement("p");
+          const $loan = document.createElement("p");
+          const $return = document.createElement("p");
+          const $buttons = document.createElement("div");
 
-        filter.status = "Pendiente";
-        // Aquí puedes agregar la lógica para el botón "waiting"
-      } else if ($target.id && $target.id.includes("btn-pending")) {
-        
-        filter.status = "No devuelta";
-      } else if ($target.id && $target.id.includes("btn-history")) {
-        
-        filter.status = "Devuelta";
-      }
-      try {
-        
+          const $deleteButton = document.createElement("button");
 
-        const result = await getOrders(filter);
-        const data = await result.json();
-        const ordenes = data.response;
-        
-        const $ordersContainer = document.querySelector(
-          ".profile-info-responses"
-        );
-        const $fragment = document.createDocumentFragment();
-        if (data.response.length > 0) {
-          
+          const $iconDelete = document.createElement("i");
 
-          $ordersContainer.innerHTML = "";
-          ordenes.forEach((element) => {
-            const $order = document.createElement("div");
-            const $title = document.createElement("p");
-            const $loan = document.createElement("p");
-            const $return = document.createElement("p");
-            const $buttons = document.createElement("div");
+          $order.dataset.id = element.id;
 
-            const $deleteButton = document.createElement("button");
+          $iconDelete.classList.add("fa-solid");
+          $iconDelete.classList.add("fa-trash");
+          $deleteButton.appendChild($iconDelete);
+          $deleteButton.type = "button";
 
-            const $iconDelete = document.createElement("i");
+          $deleteButton.title = "Eliminar";
+          $deleteButton.dataset.action = "delete";
 
-            $order.classList.add("prestamo-element");
-            $order.dataset.id = element.id;
+          $buttons.appendChild($deleteButton);
+          $buttons.classList.add("prestamo-buttons");
 
-            $iconDelete.classList.add("fa-solid");
-            $iconDelete.classList.add("fa-trash");
+          $title.textContent = element.title;
+          $title.title = element.title;
+          $loan.textContent = element.loan_date;
+          $return.textContent = element.return_date;
 
-            $deleteButton.appendChild($iconDelete);
-
-            $deleteButton.title = "Eliminar";
-            $deleteButton.dataset.action = "delete";
-
-            $buttons.appendChild($deleteButton);
-            $buttons.classList.add("prestamo-buttons");
-
-            $title.textContent = element.title;
-            $loan.textContent = element.loan_date;
-            $return.textContent = element.return_date;
-
-            $order.appendChild($title);
+          $order.appendChild($title);
+          if (filter.status === "Pendiente") {
             $order.appendChild($loan);
             $order.appendChild($return);
             $order.appendChild($buttons);
-            $fragment.appendChild($order);
-          });
-        } else {
-          const $emptyOrders = document.createElement("div");
-          const $message = document.createElement("p");
-          $ordersContainer.innerHTML = "";
-          $emptyOrders.appendChild($message);
-          $emptyOrders.style =
-            "width: 100%; height: 10rem; display: flex; align-items: center; justify-content: center;";
-          $message.style = "color: rgb(168, 168, 168);";
-          $message.textContent = "No hay elementos para mostrar";
-          $fragment.appendChild($emptyOrders);
-        }
-        $ordersContainer.appendChild($fragment);
-      } catch (error) {
-        console.log(error);
+            $order.classList.add("prestamo-element-pendiente");
+            $title.classList.add("prestamo-element-first-p");
+          } else {
+            $order.appendChild($return);
+
+            $order.classList.add("prestamo-element");
+          }
+
+          $fragment.appendChild($order);
+        });
+      } else {
+        const $emptyOrders = document.createElement("div");
+        const $message = document.createElement("p");
+        $ordersContainer.innerHTML = "";
+        $emptyOrders.appendChild($message);
+        $emptyOrders.style =
+          "width: 100%; height: 10rem; display: flex; align-items: center; justify-content: center;";
+        $message.style = "color: rgb(168, 168, 168);";
+        $message.textContent = "No hay elementos para mostrar";
+        $fragment.appendChild($emptyOrders);
       }
-    });
+      $ordersContainer.appendChild($fragment);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async function viewFavorites(event) {
+    const $target = event.target;
+    highlightButton($target);
+    try {
+      const result = await fetch(`${baseUrl}/getFavoriteBooks`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      const data = await result.json();
+      console.log(data);
+
+      const ordenes = data;
+
+      const $ordersContainer = document.querySelector(
+        ".profile-info-responses"
+      );
+      const $fragment = document.createDocumentFragment();
+      if (ordenes.length > 0) {
+        $ordersContainer.innerHTML = "";
+        ordenes.forEach((element) => {
+          const $order = document.createElement("div");
+          const $title = document.createElement("a");
+
+          // const $deleteButton = document.createElement("button");
+
+          // const $iconDelete = document.createElement("i");
+
+          $order.classList.add("prestamo-element-favorites");
+          $order.dataset.id = element.id;
+          $title.href = `./book?id=${element.id}`;
+          // $iconDelete.classList.add("fa-solid");
+          // $iconDelete.classList.add("fa-trash");
+          // $deleteButton.appendChild($iconDelete);
+
+          // $deleteButton.title = "Eliminar";
+          // $deleteButton.dataset.action = "delete";
+
+          // $buttons.appendChild($deleteButton);
+          // $buttons.classList.add("prestamo-buttons");
+
+          $title.textContent = element.title;
+
+          $order.appendChild($title);
+          $fragment.appendChild($order);
+        });
+      } else {
+        const $emptyOrders = document.createElement("div");
+        const $message = document.createElement("p");
+        $ordersContainer.innerHTML = "";
+        $emptyOrders.appendChild($message);
+        $emptyOrders.style =
+          "width: 100%; height: 10rem; display: flex; align-items: center; justify-content: center;";
+        $message.style = "color: rgb(168, 168, 168);";
+        $message.textContent = "No hay elementos para mostrar";
+        $fragment.appendChild($emptyOrders);
+      }
+      $ordersContainer.appendChild($fragment);
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   // Selecciona el primer elemento con la clase 'profile-info-responses'
@@ -206,28 +249,22 @@ document.addEventListener("DOMContentLoaded", () => {
     const ordersContainers = document.getElementsByClassName(
       "profile-info-responses"
     );
-
     // Itera sobre cada elemento y agrega un evento 'click' a cada uno
     Array.from(ordersContainers).forEach((ordersContainer) => {
       ordersContainer.addEventListener("click", async (event) => {
-        
-        let isEditing = false;
         const target = event.target.closest("button");
-        const order = target.closest(".prestamo-element");
-       
+        const order = target.closest(".prestamo-element-pendiente");
+
+        console.log(target);
+        console.log(order);
 
         if (target && target.dataset.action === "edit" && isEditing === false) {
-          
-
           const selectors = order.querySelectorAll("p");
-          
 
           const filteredSelectors = Array.from(selectors).slice(1);
-          
 
           filteredSelectors.forEach((element, index) => {
             const oldElement = element;
-            
 
             const input = document.createElement("input");
             input.classList.add("prestamo-inputs");
@@ -255,12 +292,34 @@ document.addEventListener("DOMContentLoaded", () => {
             });
 
             order.remove();
-            alert("Registro eliminado con exito!");
+            alert("Solicitud eliminada con exito!");
           } catch (error) {
             console.error(error);
           }
         }
       });
     });
+  }
+});
+
+let state = false;
+document.addEventListener("click", function (event) {
+  console.log(state);
+
+  const myElement = document.getElementById("user-info");
+  const profileIcon = document.getElementById("profile-button");
+  const isClickInside = myElement.contains(event.target);
+  const isClickInsideProfile = profileIcon.contains(event.target);
+
+  if (!isClickInside || (isClickInsideProfile && state === true)) {
+    myElement.classList.add("ghost");
+  }
+
+  if (isClickInsideProfile && state === false) {
+    myElement.classList.remove("ghost");
+    state = true;
+  } else if (!isClickInside) {
+    myElement.classList.add("ghost");
+    state = false;
   }
 });

@@ -85,58 +85,46 @@
       </div>
     </div>
     <% if (user) { %>
-      <div class="profile-info ghost" id="user-info">
-        <div class="profile-info-content">
-            <section class="profile-info-personal-data">
-              <div class="profile-info-personal-data-contents">
-                <p><b><%= user.username %></b></p>
-                <p><%= user.email %></p>
-              </div>
-              <div class="grupo"><img src="" alt="">305-SAB</div>
-            </section>
-            <hr style="width: 90%; align-self: center; border: none; height: 0.1rem; background-color: rgb(173, 173, 173); margin-top: 0.5rem;">
-            <div class="profile-info-buttons">
-              <div class="user-option">
-                Prestamos
-              <!-- <div class="triangle-user"></div> -->
-              </div>            
-                <div class="user-options-container">
-                  <div class="option ghost">
-                    Prestamos
-                  </div>
-                  <div class="option ghost">
-                    Favoritos
-                  </div>
-                </div>
-                <div class="sub-options">
-                  <button type="button" id="btn-waiting" class="sub-options-btn">En aprobacion</button>
-                  <button type="button" id="btn-pending" class="sub-options-btn">Por entregar</button>
-                  <button type="button" id="btn-history" class="sub-options-btn">Historial</button>
-                </div>
-            </div>
-            <hr style="width: 90%; align-self: center; border: none; height: 0.1rem; background-color: rgb(173, 173, 173); margin-top: 0.5rem;">
-            <section class="profile-info-responses">
-              <% if (orders.length > 0) { %>
-                <% orders.forEach(element => { %>
-                  <div class="prestamo-element" data-id="<%= element.id %>">
-                    <p><%= element.title %></p>
-                    <p><%= element.loan_date %></p>
-                    <p><%= element.return_date %></p>
-                    <div class="prestamo-buttons">
-                      <!-- <button type="button" title="Editar" data-action="edit"><i class="fa-solid fa-pen-to-square" ></i></button> -->
-                      <button type="button" title="Borrar" data-action="delete"><i class="fa-solid fa-trash"></i></button>
-                    </div>              
-                  </div>              
-                <% }); %>  
-              <% } else { %>
-                <div style="width: 100%; height: 10rem; display: flex; align-items: center; justify-content: center;">
-                  <p style="color: rgb(168, 168, 168);">Sin elementos</p>
-                </div>
-              <% } %>
-            </section>
+    <div class="profile-info ghost" id="user-info">
+      <div class="profile-info-content">
+        <section class="profile-info-personal-data">
+          <div class="profile-info-personal-data-contents">
+            <p><b><%= user.username %></b></p>
+            <p><%= user.email %></p>
+          </div>
+          <div class="grupo"><img style="width: 42px; height: 42px;" src="/img/user/userIcon.png" alt=""></div>
+        </section>
+        <hr style="width: 90%; align-self: center; border: none; height: 0.1rem; background-color: rgb(173, 173, 173); margin-top: 0.5rem;">
+        <div class="profile-info-buttons">
+          <div class="sub-options">
+            <button type="button" id="btn-waiting" class="sub-options-btn active" data-status="Pendiente">En revisión</button>
+            <button type="button" id="btn-pending" class="sub-options-btn" data-status="No devuelta">Préstamos activos</button>
+            <button type="button" id="btn-favorite" class="sub-options-btn">Favoritos</button>
+          </div>
         </div>
-    <% } %>
-  </div>
+        <hr style="width: 100%; align-self: center; border: none; height: 0.1rem; background-color: rgb(173, 173, 173); margin-top: 0.5rem;">
+        <section class="profile-info-responses">
+          <% if (orders.length > 0) { %>
+          <% orders.forEach(element => { %>
+          <div class="prestamo-element-pendiente" data-id="<%= element.id %>">
+            <p class="prestamo-element-first-p"><%= element.title %></p>
+            <p><%= element.loan_date %></p>
+            <p><%= element.return_date %></p>
+            <div class="prestamo-buttons">
+              <!-- <button type="button" title="Editar" data-action="edit"><i class="fa-solid fa-pen-to-square" ></i></button> -->
+              <button type="button" title="Borrar" data-action="delete"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </div>
+          <% }); %>
+          <% } else { %>
+          <div style="width: 100%; height: 10rem; display: flex; align-items: center; justify-content: center;">
+            <p style="color: rgb(168, 168, 168);">Sin elementos</p>
+          </div>
+          <% } %>
+        </section>
+      </div>
+      <% } %>
+    </div>
   </div>
 
   </div>

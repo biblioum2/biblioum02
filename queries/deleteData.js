@@ -147,9 +147,33 @@ const removeRating = async (userId, bookId) => {
         console.error('Error al eliminar la puntuación:', error);
     }
 };
+
+const removeBookFromFavorites = async (userId, bookId) => {
+    const query = `
+        DELETE FROM favorites
+        WHERE user_id = $1 AND book_id = $2;
+    `;
+
+    try {
+        const result = await pool.query(query, [userId, bookId]);
+       
+        if (result.rowCount > 0) {
+            console.log('Libro eliminado de favoritos');
+            return true; 
+        } else {
+            console.log('El libro no estaba en favoritos');
+            return false; 
+        }
+    } catch (error) {
+        console.error('Error al eliminar el libro de favoritos:', error);
+        throw error;
+    }
+};
+
 module.exports = {
     deleteUser,
     deleteOrder,
+    removeBookFromFavorites,
 };
 
 // deleteTableFavorites();
