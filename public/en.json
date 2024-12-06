@@ -1,0 +1,39 @@
+{
+    "header": {
+        "Select language": "Select language:",
+        "Attention hours": "Attention hours:",
+        "Days": "Monday - Friday, 09:00am - 19:00pm"
+    },
+
+    "Nav": {
+        "Start": "Main",
+        "Sign out": "Sign out",
+        "Log In": "Log In",
+        "Loans": "Loans",
+        "In approval": "In approval",
+        "For deliver": "For deliver",
+        "History": "History",
+        "Elements": "Without elements"
+    },
+
+    "Main": {
+        "Area of interest": "Area of interest",
+        "Main content": "Main content",
+        "Author": "Author",
+        "Category": "Category",
+        "Year": "Year",
+        "Apply": "Apply",
+        "Previous": "Previous",
+        "Next": "Next"
+    },
+
+    "Footer": {
+        "Contact us": "Contact us",
+        "Quick links": "Quick links",
+        "Main footer": "Main",
+        "About us": "About us",
+        "Virtual libraries": "Virtual libraries",
+        "Directory": "Directory",
+        "Follow us": "Follow us!"
+    }
+}

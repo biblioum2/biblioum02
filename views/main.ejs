@@ -39,7 +39,7 @@
         <div id="vista-de-libros">
           <div id="slider2">
             <div class="content-title">
-              <h2 class="title-slider">Área de interés</h2>
+              <h2 class="title-slider" data-section="Main" data-value="Area of interest">Área de interés</h2>
               <select id="selectCat" class="content-books-select" style="text-align: center;">
                 <% categories.forEach(category => { %>
                 <option value=<%= `${category.id}` %>> <%= category.name %> </option>
@@ -76,12 +76,12 @@
 
         </div>
         <div id="Contenido-titulo"> 
-          <h1  id="texto">CONTENIDO PRINCIPAL</h1>
+          <h1  id="texto" data-section="Main" data-value="Main content">CONTENIDO PRINCIPAL</h1>
         </div>
         <div id="containerFilters" class="container-filters">
           <ul class="filter-list">
             <li>
-              <label for="author">Autor</label>
+              <label for="author" data-section="Main" data-value="Author">Autor</label>
               <select name="author" id="authorFilter">
                 <option value="">-------</option>
                 <% authors.forEach(author => { %>
@@ -90,7 +90,7 @@
               </select>
             </li>
             <li>
-              <label for="category">Categoría</label>
+              <label for="category" data-section="Main" data-value="Category">Categoría</label>
               <select name="date" id="categoryFilter" class="category-filter">
                 <option value="">-------</option>
                 <% categories.forEach(category => { %>
@@ -99,7 +99,7 @@
               </select>
             </li>
             <li>
-              <label for="date">Año</label>
+              <label for="date" data-section="Main" data-value="Year">Año</label>
               <select name="date" id="yearFilter">
                 <option value="">-------</option>
                 <% years.forEach(year => { %>
@@ -108,7 +108,7 @@
               </select>
             </li>
             <li>
-              <button id="btnSetFilter" class="btn-apply-filter" type="button">Aplicar</button>
+              <button id="btnSetFilter" class="btn-apply-filter" type="button" data-section="Main" data-value="Apply">Aplicar</button>
             </li>
           </ul>
         </div>
@@ -128,13 +128,13 @@
           </a>
           <% }); %>
           <div id="pages-container" class="pagination-container">
-            <button class="pagination-btn-controller">Anterior</button>
+            <button class="pagination-btn-controller" data-section="Main" data-value="Previous">Anterior</button>
             <div id="pagesContainer" class="pagination-page-btns">
               <% for (let i = 1; i <= pagination; i++ ) { %>
               <button id="pagination-btn-<%= i %>" data-page="<%= i %>" class="pagination-btn <%= currentPage == i ? 'pagination-btn-focus' : '' %>"><%= i %></button>
               <% } %>
             </div>
-            <button class="pagination-btn-controller">Siguiente</button>
+            <button class="pagination-btn-controller" data-section="Main" data-value="Next">Siguiente</button>
           </div>
         </div>
       </div>
