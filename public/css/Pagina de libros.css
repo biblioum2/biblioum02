@@ -53,6 +53,31 @@
   width: 50%;
 }
 
+#botones-language {
+  justify-content: space-evenly;
+}
+
+#botones-language button {
+    width: 60px;
+    height: 30px;
+}
+
+#spain {
+    background-image: url(../img/spain.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
+#usa {
+    background-image: url(../img/usa.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+    cursor: pointer;
+}
+
 .headerstyle b{
   text-shadow: 1px 1px 5px #000;
 }

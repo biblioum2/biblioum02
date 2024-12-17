@@ -1,0 +1,51 @@
+{
+    "header": {
+        "Select language": "Seleccionar Lenguaje:",
+        "Attention hours": "Horario de atención:",
+        "Days": "Lunes - viernes, 09:00am - 19:00pm"
+    },
+
+    "Nav": {
+        "Start": "Inicio",
+        "Sign out": "Cerrar Sesión",
+        "Log In": "Iniciar Sesión"
+    },
+    
+    "Form":{
+          "title": "Solicitar Libro",
+          "Date": "Fecha de solicitud:",
+          "Date2": "Fecha de entrega:",
+          "Cancel": "Cancelar",
+          "Send": "Enviar"
+    },
+
+    "Info": {
+          "Author": "AUTOR:",
+          "Category": "CATEGORÍA:",
+          "Edition": "EDICIÓN:",
+          "Isbn": "ISBN-13",
+          "Language": "IDIOMA:",
+          "Resources": "DISPONIBLES:"
+    },
+
+    "Buttons":{
+           "Button1": "SOLICITAR",
+           "Button2": "OBTENER PDF"
+    },
+
+    "Description":{
+           "title-des": "Descripción",
+           "more": "Ver más"
+    },
+
+    "Footer": {
+        "Contact us": "Contáctanos!",
+        "Quick links": "Enlaces rápidos!",
+        "Main footer": "Inicio",
+        "About us": "Sobre nosotros",
+        "Virtual libraries": "Bibliotecas virtuales",
+        "Directory": "Directorio",
+        "Follow us": "Síguenos!"
+    }
+
+}

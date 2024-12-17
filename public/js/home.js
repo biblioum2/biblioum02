@@ -411,6 +411,24 @@ langButtons.forEach((button) => {
   })
 })
 
+const buttonBook = document.querySelectorAll("[data-book]");
+const changeText = document.querySelectorAll("[data-section]");
+buttonBook.forEach((button) => {
+  button.addEventListener("click", () => {
+    fetch(`../${button.dataset.book}.json`) // Cambiamos a usar data-book
+      .then(res => res.json())
+      .then(data => {
+        changeText.forEach((el) => {
+          const section = el.dataset.section;
+          const value = el.dataset.value;
+
+          el.innerHTML = data[section][value];
+        });
+      })
+  });
+});
+
+
 
 // MANEJO DE FILTROS PARA LOS LIBROS GENERALES DE MAIN //
 

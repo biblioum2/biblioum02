@@ -25,21 +25,21 @@
 <div id="requestBookModal" class="modal">
     <div class="modal-content">
         <span id="close-modal" class="close">&times;</span>
-        <h2>Solicitar Libro</h2>
+        <h2 data-section="Form" data-value="title">Solicitar Libro</h2>
         <form id="requestBookForm" method="post">
             <input style="display: none;" type="number" id="userId" value="<%= user.id %>" readonly>
             <input style="display: none;" type="number" id="bookId" value="<%= bookData.id%>" readonly>
             <label for="bookTitle">Libro:</label><br>
             <input class="modal-inputs" type="text" id="bookTitle" name="bookTitle" value="<%= bookData.title %>" readonly><br><br>
 
-            <label for="requestDate">Fecha de Solicitud:</label>
+            <label for="requestDate" data-section="Form" data-value="Date">Fecha de Solicitud:</label>
             <input class="modal-inputs" type="text" id="requestDate" name="requestDate" placeholder="Seleccione una fecha" required><br><br>
 
-            <label for="returnDate">Fecha de Entrega:</label>
+            <label for="returnDate" data-section="Form" data-value="Date2">Fecha de Entrega:</label>
             <input class="modal-inputs" type="text" id="returnDate" name="returnDate" placeholder="Seleccione una fecha" required><br><br>
             <div class="submit-btn-container">
-                <button id="sub-btn-2" class="submit-modal-btn-2" type="button">Cancelar</button>
-                <button id="sub-btn-1" class="submit-modal-btn-1" type="submit">Enviar</button>
+                <button id="sub-btn-2" class="submit-modal-btn-2" type="button" data-section="Form" data-value="Cancel">Cancelar</button>
+                <button id="sub-btn-1" class="submit-modal-btn-1" type="submit" data-section="Form" data-value="Send">Enviar</button>
             </div>
         </form>
     </div>
@@ -97,24 +97,24 @@
                     </div>
                     <br />
                     <br />
-                    <p><b>AUTOR: </b><%= bookData.author %></p><br>                
-                    <p><b>CATEGORIA: </b><%= bookData.categories %></p><br />
-                    <p><b>EDICIÓN: </b><%= bookData.edition %> Edición</p><br />
-                    <p><b>ISBN-13: </b><%= bookData.isbn %></p><br />
-                    <p><b>ARCHIVO: </b>Físico</p><br />
-                    <p><b>IDIOMA: </b>Español</p><br>
-                    <p><b>DISPONIBLES: </b><%= bookData.available_copies %></p>
+                    <p><b data-section="Info" data-value="Author">AUTOR: </b><%= bookData.author %></p><br>                
+                    <p><b data-section="Info" data-value="Category">CATEGORIA: </b><%= bookData.categories %></p><br />
+                    <p><b data-section="Info" data-value="Edition">EDICIÓN: </b><%= bookData.edition %> Edición</p><br />
+                    <p><b data-section="Info" data-value="Isbn">ISBN-13: </b><%= bookData.isbn %></p><br />
+                    <p><b data-section="Info" data-value="Archive">ARCHIVO: </b>Físico</p><br />
+                    <p><b data-section="Info" data-value="Language">IDIOMA: </b>Español</p><br>
+                    <p><b data-section="Info" data-value="Resources">DISPONIBLES: </b><%= bookData.available_copies %></p>
 
                 </div>
                 <div class="botones">
                     <% if (user) { %>
                         <div class="btn-1" id="solicitud-btn">
-                          <a><span>SOLICITAR</span></a>
+                          <a><span data-section="Buttons" data-value="Button1">SOLICITAR</span></a>
                        </div>                        
                     <% } %>
                    <!-- Created by   http://grohit.com/   -->
                <div class="btn-2">
-                 <a href="<%= bookData.lib %>" download="<%= bookData.title %>.pdf" target="_blank"><span>OBTENER PDF</span></a>
+                 <a href="<%= bookData.lib %>" download="<%= bookData.title %>.pdf" target="_blank"><span data-section="Buttons" data-value="Button2">OBTENER PDF</span></a>
                </div>
                 </div>
             </div>
@@ -122,12 +122,12 @@
         
         <div class="description">
             <div class="content-title">
-              <h2 class="title-slider">Descripción</h2>
+              <h2 class="title-slider" data-section="Description" data-value="title-des">Descripción</h2>
           </div>
           <div id="t1" class="text">
             <p><%= bookData.summary %></p>
             </div>
-            <button id="showMore" class="show-more">
+            <button id="showMore" class="show-more" data-section="Description" data-value="more">
                 Ver más
             </button>
             </div>
@@ -137,5 +137,6 @@
         <script src="js/book.js">            
         </script>
         <script src="js/header.js"></script>
+        <script src="/js/home.js"></script>
     </body>
 </html>
