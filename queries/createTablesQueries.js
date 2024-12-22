@@ -5,9 +5,9 @@ CREATE TABLE IF NOT EXISTS users (
     user_id SERIAL PRIMARY KEY,
     username VARCHAR(34) NOT NULL CONSTRAINT username_unique UNIQUE,
     email VARCHAR(90) NOT NULL CONSTRAINT email_unique UNIQUE,
-    password_hash VARCHAR(120) NOT NULL,
+    password_hash VARCHAR(60) NOT NULL,
     phone VARCHAR(10),
-    role VARCHAR(7) NOT NULL CHECK (role IN ('admin', 'student')),
+    role VARCHAR(7) NOT NULL CHECK (role IN ('admin', 'student')) DEFAULT 'student',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     socket_id VARCHAR(255) NULL
 );

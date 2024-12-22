@@ -80,7 +80,6 @@ const updateOrderStatus = async (orderId, status) => {
 };
 
 const updateUserData = async (userId, { name, email, password, role }) => {
-  // Construcción dinámica de la consulta SQL
   let query = 'UPDATE users SET ';
   const values = [];
   let valueIndex = 1;
