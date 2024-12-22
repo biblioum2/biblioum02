@@ -140,10 +140,12 @@ router.get("/uman", async (req, res) => {
   res.render("index", { title: "index" });
 });
 
+
 router.get("/", validateJwt, async (req, res) => {
   const user = req.user;
   const orders = await getFilteredOrders({user_id: user.id, status:'Pendiente' });
   console.log('user desde servidor main: ', user);
+
 
   const categories = await getAllCategories();
   const pagination = await getBooksTotal();
@@ -195,6 +197,7 @@ router.get("/", validateJwt, async (req, res) => {
   }
 });
 
+
 router.get("/book", validateJwt, async (req, res) => {
   const user = req.user;
   if (!user) {
@@ -203,6 +206,7 @@ router.get("/book", validateJwt, async (req, res) => {
   }
 
   const orders = await getFilteredOrders({user_id: user.id, status:'Pendiente' });
+
   const idBook = req.query.id;
   const isFavoriteBook = await checkFavoriteBook(user.id, idBook);
   console.log('EL LIBRO ES FAVORITO?',isFavoriteBook);
@@ -246,9 +250,11 @@ router.get("/category/:catId", async (req, res) => {
   }
 });
 
+
 router.get("/admin/users", validateJwt, async (req, res) => {
   const user = req.user;
   if (!user.id) {
+
     console.log('No hay usuario logueado');
     res.redirect('/login');
   }
@@ -347,9 +353,11 @@ router.delete("/admin/users/:id", async (req, res) => {
   }
 });
 
+
 router.get("/admin/books", validateJwt, async (req, res) => {
   const user = req.user;
   if (!user) {
+
     console.log('No hay usuario logueado');
     res.redirect('/login');
   }

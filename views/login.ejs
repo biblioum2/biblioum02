@@ -9,10 +9,12 @@
   <link href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css" rel="stylesheet" />
   <link rel="stylesheet" href="css/acceso.css">
   <link rel="icon" href="img/acceso.ico" />
+
 </head>
 
 <body>
   <div id="Regresar">
+
     <a href="/Pagina de UMAN/index.html">Ir al Inicio >> <i class="fas fa-home"></i></a>
   </div>
   <div class="Acceso">
@@ -34,6 +36,7 @@
           <input type="text" placeholder="Nombre de usuario" name="username" id="username" value="<%= username %>" required />
         </div>
         <% } %>
+
         <!-- <i class="bx bxs-user"></i> -->
         <% } %>
         <% if (authErrorPassword) {%>
@@ -61,7 +64,9 @@
       </form>
     </div>
   </div>
+
   <script src="js/login.js"></script>
+
 </body>
 
 </html>

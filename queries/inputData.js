@@ -1393,6 +1393,7 @@ const addOrUpdateRating = async (userId, bookId, score) => {
   } catch (error) {}
 };
 
+
 const usersData = [
   [
     {
@@ -2218,9 +2219,7 @@ const createUser = async (username, password, email, role) => {
   await pool.query(query, values);
 }
 
-// createUser('admin', 'Password#1', 'admin@uman.edu.mx', 'admin');
 
-// insertUser('admin', hashingpass, 'admin@uman.edu.mx', 'admin');
 // insertUser('cristian', 'password', 'adaksjdjkasdkja@gmail.com', 'admin');
 // insertUser('user', 'password', 'user@example.com', 'student');
 // usersData[0].forEach(user => insertUser(user.username, user.password_hash, user.email, user.role));

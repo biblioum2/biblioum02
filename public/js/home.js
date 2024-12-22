@@ -332,7 +332,9 @@ const updateBookCards = async (page) => {
       const pTitle = document.createElement("p");
       pTitle.className = "black";
       pTitle.textContent = element.title;
+
       divInfo.appendChild(pTitle);
+
       divCard.appendChild(img);
       divCard.appendChild(divInfo);
       a.appendChild(divCard);
